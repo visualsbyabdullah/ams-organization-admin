@@ -1,0 +1,53 @@
+:root {
+  --ams-canvas: #f6f7f9;
+  --ams-surface: #ffffff;
+  --ams-surface-muted: #f0f2f5;
+
+  --ams-text: #17191f;
+  --ams-text-muted: #6d737f;
+
+  --ams-border: #e2e5ea;
+  --ams-border-strong: #cdd2da;
+
+  --ams-primary: #b4161e;
+  --ams-primary-hover: #981219;
+  --ams-primary-foreground: #ffffff;
+
+  --ams-success: #16824a;
+  --ams-success-muted: #e8f6ee;
+
+  --ams-warning: #b86a05;
+  --ams-warning-muted: #fff3dd;
+
+  --ams-danger: #c4323d;
+  --ams-danger-muted: #fdebed;
+
+  --ams-info: #2768bf;
+  --ams-info-muted: #eaf2fd;
+
+  --ams-radius-control: 0.625rem;
+  --ams-radius-card: 1rem;
+
+  --ams-shadow-card:
+    0 1px 2px rgb(16 24 40 / 0.04),
+    0 1px 3px rgb(16 24 40 / 0.06);
+}
+
+:root {
+  --ams-control-height-sm: 2.25rem;
+  --ams-control-height-md: 2.5rem;
+  --ams-control-height-lg: 3rem;
+
+  --ams-button-padding-sm: 0.875rem;
+  --ams-button-padding-md: 1rem;
+  --ams-button-padding-lg: 1.25rem;
+  --ams-control-gap: 0.5rem;
+
+  --ams-chart-primary: #b4161e;
+  --ams-chart-present: #16824a;
+  --ams-chart-late: #d78a17;
+  --ams-chart-leave: #3978d4;
+  --ams-chart-absent: #d74650;
+  --ams-chart-neutral: #a4aab4;
+  --ams-chart-grid: #e8eaee;
+}

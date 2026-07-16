@@ -1,0 +1,61 @@
+@import "../styles/tokens.css";
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-manrope);
+
+  --color-canvas: var(--ams-canvas);
+  --color-surface: var(--ams-surface);
+  --color-surface-muted: var(--ams-surface-muted);
+
+  --color-text: var(--ams-text);
+  --color-text-muted: var(--ams-text-muted);
+
+  --color-border: var(--ams-border);
+  --color-border-strong: var(--ams-border-strong);
+
+  --color-primary: var(--ams-primary);
+  --color-primary-hover: var(--ams-primary-hover);
+  --color-primary-foreground: var(--ams-primary-foreground);
+
+  --color-success: var(--ams-success);
+  --color-success-muted: var(--ams-success-muted);
+
+  --color-warning: var(--ams-warning);
+  --color-warning-muted: var(--ams-warning-muted);
+
+  --color-danger: var(--ams-danger);
+  --color-danger-muted: var(--ams-danger-muted);
+
+  --color-info: var(--ams-info);
+  --color-info-muted: var(--ams-info-muted);
+
+  --radius-control: var(--ams-radius-control);
+  --radius-card: var(--ams-radius-card);
+
+  --shadow-card: var(--ams-shadow-card);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-width: 320px;
+  background: var(--ams-canvas);
+}
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  background: var(--ams-canvas);
+  color: var(--ams-text);
+  font-family: var(--font-manrope), sans-serif;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
