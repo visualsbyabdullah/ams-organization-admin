@@ -1,0 +1,100 @@
+import {
+  BarChart3,
+  BookOpenCheck,
+  Building2,
+  CalendarDays,
+  CircleDollarSign,
+  FileText,
+  GraduationCap,
+  Headphones,
+  LayoutDashboard,
+  ReceiptText,
+  Settings,
+  Star,
+  Users,
+} from "lucide-react";
+
+import type { NavigationGroup } from "@/types/navigation";
+
+export const NAVIGATION_GROUPS: NavigationGroup[] = [
+  {
+    label: "Workspace",
+    items: [
+      {
+        label: "Overview",
+        href: "/",
+        icon: LayoutDashboard,
+      },
+      {
+        label: "People",
+        href: "/people",
+        icon: Users,
+      },
+      {
+        label: "Time & Attendance",
+        href: "/attendance",
+        icon: CalendarDays,
+      },
+      {
+        label: "Leave",
+        href: "/leave",
+        icon: BookOpenCheck,
+      },
+    ],
+  },
+  {
+    label: "Operations",
+    items: [
+      {
+        label: "Payroll",
+        href: "/payroll",
+        icon: CircleDollarSign,
+      },
+      {
+        label: "Invoices",
+        href: "/invoices",
+        icon: ReceiptText,
+      },
+      {
+        label: "Performance",
+        href: "/performance",
+        icon: Star,
+      },
+      {
+        label: "Training",
+        href: "/training",
+        icon: GraduationCap,
+      },
+      {
+        label: "Documents",
+        href: "/documents",
+        icon: FileText,
+      },
+      {
+        label: "Support",
+        href: "/support",
+        icon: Headphones,
+      },
+    ],
+  },
+  {
+    label: "Organization",
+    items: [
+      {
+        label: "Reports",
+        href: "/reports",
+        icon: BarChart3,
+      },
+      {
+        label: "Branches",
+        href: "/branches",
+        icon: Building2,
+      },
+      {
+        label: "Settings",
+        href: "/settings",
+        icon: Settings,
+      },
+    ],
+  },
+];
