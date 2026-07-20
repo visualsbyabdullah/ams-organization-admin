@@ -103,7 +103,7 @@ export function LoanApplicationReview({
         </div>
 
         <DetailGrid
-          bordered={false}
+          variant="none"
           items={[
             {
               label: "Loan type",

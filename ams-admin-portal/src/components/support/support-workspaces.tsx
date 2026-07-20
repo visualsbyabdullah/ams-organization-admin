@@ -382,7 +382,7 @@ function TicketDetails({ ticket }: { ticket: SupportTicket }) {
         </div>
 
         <DetailGrid
-          bordered={false}
+          variant="none"
           items={[
             {
               label: "Requester",
@@ -2472,7 +2472,7 @@ export function SupportCategoriesWorkspace() {
                 </Badge>
               </div>
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Code",
@@ -2880,7 +2880,7 @@ export function SupportKnowledgeBaseWorkspace() {
                 </Badge>
               </div>
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Category",
@@ -3364,7 +3364,7 @@ export function SupportSettingsWorkspace() {
                 </Badge>
               </div>
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Scope",

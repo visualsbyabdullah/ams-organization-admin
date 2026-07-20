@@ -672,7 +672,7 @@ export function LoanRepaymentsWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Payroll period",

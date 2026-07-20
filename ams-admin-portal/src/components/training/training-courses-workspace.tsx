@@ -494,7 +494,7 @@ export function TrainingCoursesWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Category",

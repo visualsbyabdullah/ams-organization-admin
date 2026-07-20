@@ -409,7 +409,7 @@ export function ScheduledReportsWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Report",

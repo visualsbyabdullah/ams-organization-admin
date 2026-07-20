@@ -528,7 +528,7 @@ export function LoanPoliciesWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Policy scope",

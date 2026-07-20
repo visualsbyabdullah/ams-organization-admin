@@ -433,7 +433,7 @@ export function TrainingOverview() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Due date",

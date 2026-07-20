@@ -20,6 +20,7 @@ import { InvoiceTabs } from "@/components/invoices/invoice-tabs";
 import { RecurringInvoiceForm } from "@/components/invoices/recurring-invoice-form";
 import { createRecurringInvoiceColumns } from "@/components/invoices/invoice-table-columns";
 import { DataTable } from "@/components/shared/data-table";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -420,41 +421,36 @@ export function RecurringInvoicesWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Frequency</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {RECURRING_INVOICE_FREQUENCY_CONFIG[selectedInvoice.frequency].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Next invoice</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedInvoice.nextInvoiceDate)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Invoice total</dt>
-
-                  <dd className="mt-1 text-lg font-bold">
-                    {formatPKR(selectedInvoice.totalAmount)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Delivery</dt>
-
-                  <dd className="mt-1">
-                    <Badge variant={selectedInvoice.autoSend ? "success" : "neutral"}>
-                      {selectedInvoice.autoSend ? "Automatic" : "Manual review"}
-                    </Badge>
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Frequency",
+                    value:
+                      RECURRING_INVOICE_FREQUENCY_CONFIG[selectedInvoice.frequency].label,
+                  },
+                  {
+                    label: "Next invoice",
+                    value: formatDate(selectedInvoice.nextInvoiceDate),
+                  },
+                  {
+                    label: "Invoice total",
+                    value: (
+                      <span className="text-lg font-bold">
+                        {formatPKR(selectedInvoice.totalAmount)}
+                      </span>
+                    ),
+                  },
+                  {
+                    label: "Delivery",
+                    value: (
+                      <Badge variant={selectedInvoice.autoSend ? "success" : "neutral"}>
+                        {selectedInvoice.autoSend ? "Automatic" : "Manual review"}
+                      </Badge>
+                    ),
+                  },
+                ]}
+              />
             </section>
 
             <section>

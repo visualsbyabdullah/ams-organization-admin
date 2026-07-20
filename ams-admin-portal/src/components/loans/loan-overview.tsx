@@ -594,7 +594,7 @@ export function LoanOverview() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Requested amount",

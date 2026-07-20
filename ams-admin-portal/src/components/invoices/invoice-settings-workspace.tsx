@@ -19,6 +19,7 @@ import { InvoiceSettingsForm } from "@/components/invoices/invoice-settings-form
 import { InvoiceTabs } from "@/components/invoices/invoice-tabs";
 import { createInvoiceSettingsColumns } from "@/components/invoices/invoice-table-columns";
 import { DataTable } from "@/components/shared/data-table";
+import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -427,62 +428,42 @@ export function InvoiceSettingsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Scope</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {INVOICE_SETTINGS_SCOPE_CONFIG[selectedSettings.scope].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Branch</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.branchName ?? "All organization branches"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Invoice prefix</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.invoicePrefix}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Next sequence</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.nextSequence}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Payment terms</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.paymentTermDays} days
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Default tax</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.defaultTaxRate}%
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Scope",
+                    value: INVOICE_SETTINGS_SCOPE_CONFIG[selectedSettings.scope].label,
+                  },
+                  {
+                    label: "Branch",
+                    value: selectedSettings.branchName ?? "All organization branches",
+                  },
+                  {
+                    label: "Invoice prefix",
+                    value: selectedSettings.invoicePrefix,
+                  },
+                  {
+                    label: "Next sequence",
+                    value: selectedSettings.nextSequence,
+                  },
+                  {
+                    label: "Payment terms",
+                    value: `${selectedSettings.paymentTermDays} days`,
+                  },
+                  {
+                    label: "Default tax",
+                    value: `${selectedSettings.defaultTaxRate}%`,
+                  },
+                ]}
+              />
             </section>
 
             <section>
               <h3 className="text-sm font-bold">Billing controls</h3>
 
-              <div className="mt-3 space-y-3">
-                {[
+              <ToggleDetailList
+                items={[
                   {
                     label: "Partial payments",
                     enabled: selectedSettings.allowPartialPayments,
@@ -499,19 +480,8 @@ export function InvoiceSettingsWorkspace() {
                     label: "Payment reminders",
                     enabled: selectedSettings.sendDueReminders,
                   },
-                ].map((control) => (
-                  <div
-                    key={control.label}
-                    className="flex items-center justify-between rounded-control border border-border p-4"
-                  >
-                    <span className="text-sm font-semibold">{control.label}</span>
-
-                    <Badge variant={control.enabled ? "success" : "neutral"}>
-                      {control.enabled ? "Enabled" : "Disabled"}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
+                ]}
+              />
             </section>
 
             <section>

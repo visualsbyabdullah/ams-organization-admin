@@ -525,7 +525,7 @@ export function TrainingSettingsWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Scope",

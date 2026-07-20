@@ -590,7 +590,7 @@ export function TrainingSessionsWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Facilitator",

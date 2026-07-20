@@ -461,7 +461,7 @@ export function LeaveCalendarWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Start date",

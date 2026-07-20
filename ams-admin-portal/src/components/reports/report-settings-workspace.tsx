@@ -500,7 +500,7 @@ export function ReportSettingsWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Scope",

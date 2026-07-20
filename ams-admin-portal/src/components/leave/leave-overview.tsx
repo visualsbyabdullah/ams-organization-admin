@@ -493,7 +493,7 @@ export function LeaveOverview() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Start date",

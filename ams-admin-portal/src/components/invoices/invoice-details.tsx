@@ -1,3 +1,4 @@
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { Badge } from "@/components/ui/badge";
 import {
   INVOICE_CATEGORY_CONFIG,
@@ -35,49 +36,39 @@ export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
           </Badge>
         </div>
 
-        <dl className="grid gap-5 p-5 sm:grid-cols-2">
-          <div>
-            <dt className="text-xs text-text-muted">Client</dt>
-
-            <dd className="mt-1 text-sm font-semibold">{invoice.clientName}</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Branch</dt>
-
-            <dd className="mt-1 text-sm font-semibold">{branchName}</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Client email</dt>
-
-            <dd className="mt-1 text-sm font-semibold">{invoice.clientEmail}</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Client phone</dt>
-
-            <dd className="mt-1 text-sm font-semibold">
-              {invoice.clientPhone || "Not provided"}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Category</dt>
-
-            <dd className="mt-1">
-              <Badge variant={INVOICE_CATEGORY_CONFIG[invoice.category].badgeVariant}>
-                {INVOICE_CATEGORY_CONFIG[invoice.category].label}
-              </Badge>
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Due date</dt>
-
-            <dd className="mt-1 text-sm font-semibold">{formatDate(invoice.dueDate)}</dd>
-          </div>
-        </dl>
+        <DetailGrid
+          variant="none"
+          items={[
+            {
+              label: "Client",
+              value: invoice.clientName,
+            },
+            {
+              label: "Branch",
+              value: branchName,
+            },
+            {
+              label: "Client email",
+              value: invoice.clientEmail,
+            },
+            {
+              label: "Client phone",
+              value: invoice.clientPhone || "Not provided",
+            },
+            {
+              label: "Category",
+              value: (
+                <Badge variant={INVOICE_CATEGORY_CONFIG[invoice.category].badgeVariant}>
+                  {INVOICE_CATEGORY_CONFIG[invoice.category].label}
+                </Badge>
+              ),
+            },
+            {
+              label: "Due date",
+              value: formatDate(invoice.dueDate),
+            },
+          ]}
+        />
       </section>
 
       <section>
@@ -153,43 +144,35 @@ export function InvoiceDetails({ invoice }: InvoiceDetailsProps) {
         <section>
           <h3 className="text-sm font-bold">Payment information</h3>
 
-          <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-control border border-border p-4">
-              <dt className="text-xs text-text-muted">Method</dt>
-
-              <dd className="mt-1">
-                <Badge
-                  variant={
-                    INVOICE_PAYMENT_METHOD_CONFIG[invoice.paymentMethod].badgeVariant
-                  }
-                >
-                  {INVOICE_PAYMENT_METHOD_CONFIG[invoice.paymentMethod].label}
-                </Badge>
-              </dd>
-            </div>
-
-            <div className="rounded-control border border-border p-4">
-              <dt className="text-xs text-text-muted">Reference</dt>
-
-              <dd className="mt-1 text-sm font-semibold">
-                {invoice.paymentReference || "Not provided"}
-              </dd>
-            </div>
-
-            <div className="rounded-control border border-border p-4">
-              <dt className="text-xs text-text-muted">Payment date</dt>
-
-              <dd className="mt-1 text-sm font-semibold">
-                {invoice.paidAt ? formatDate(invoice.paidAt) : "Not recorded"}
-              </dd>
-            </div>
-
-            <div className="rounded-control border border-border p-4">
-              <dt className="text-xs text-text-muted">Created by</dt>
-
-              <dd className="mt-1 text-sm font-semibold">{invoice.createdBy}</dd>
-            </div>
-          </dl>
+          <DetailGrid
+            variant="outline"
+            items={[
+              {
+                label: "Method",
+                value: (
+                  <Badge
+                    variant={
+                      INVOICE_PAYMENT_METHOD_CONFIG[invoice.paymentMethod].badgeVariant
+                    }
+                  >
+                    {INVOICE_PAYMENT_METHOD_CONFIG[invoice.paymentMethod].label}
+                  </Badge>
+                ),
+              },
+              {
+                label: "Reference",
+                value: invoice.paymentReference || "Not provided",
+              },
+              {
+                label: "Payment date",
+                value: invoice.paidAt ? formatDate(invoice.paidAt) : "Not recorded",
+              },
+              {
+                label: "Created by",
+                value: invoice.createdBy,
+              },
+            ]}
+          />
         </section>
       )}
 

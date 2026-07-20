@@ -640,7 +640,7 @@ export function TrainingEnrollmentsWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Employee branch",

@@ -391,7 +391,7 @@ export function ReportExportsWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Requested by",

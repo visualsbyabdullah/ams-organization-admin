@@ -11,8 +11,18 @@ export type DetailGridItem = {
 type DetailGridProps = {
   items: readonly DetailGridItem[];
   columns?: 1 | 2;
-  /** Wrap each item in a bg-canvas card. Defaults to true (most common variant). */
-  bordered?: boolean;
+  /**
+   * "card" (default) wraps each item in a bg-canvas card.
+   * "outline" wraps each item in a bordered box with no fill.
+   * "none" renders no wrapper/padding at all.
+   */
+  variant?: "card" | "outline" | "none";
+};
+
+const WRAPPER_CLASSES: Record<NonNullable<DetailGridProps["variant"]>, string> = {
+  card: "rounded-control bg-canvas p-4",
+  outline: "rounded-control border border-border p-4",
+  none: "",
 };
 
 /**
@@ -21,19 +31,16 @@ type DetailGridProps = {
  *
  *   <DetailGrid items={[{ label: "Leave type", value: "Annual" }, ...]} />
  */
-export function DetailGrid({ items, columns = 2, bordered = true }: DetailGridProps) {
+export function DetailGrid({ items, columns = 2, variant = "card" }: DetailGridProps) {
   return (
     <dl
       className={cn(
-        bordered ? "mt-3 grid gap-3" : "grid gap-5 p-5",
+        variant === "none" ? "grid gap-5 p-5" : "mt-3 grid gap-3",
         columns === 2 && "sm:grid-cols-2",
       )}
     >
       {items.map((item) => (
-        <div
-          key={item.label}
-          className={bordered ? "rounded-control bg-canvas p-4" : undefined}
-        >
+        <div key={item.label} className={WRAPPER_CLASSES[variant] || undefined}>
           <dt className="text-xs text-text-muted">{item.label}</dt>
           <dd className="mt-1 text-sm font-semibold">{item.value}</dd>
         </div>

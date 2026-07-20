@@ -456,7 +456,7 @@ export function ReportLibraryWorkspace() {
               </div>
 
               <DetailGrid
-                bordered={false}
+                variant="none"
                 items={[
                   {
                     label: "Category",
