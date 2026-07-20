@@ -20,6 +20,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { LoanRepaymentForm } from "@/components/loans/loan-repayment-form";
 import { LoanTabs } from "@/components/loans/loan-tabs";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -670,80 +671,62 @@ export function LoanRepaymentsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Payroll period</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPeriod(selectedRepayment.payrollPeriod)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Payment source</dt>
-
-                  <dd className="mt-1">
-                    <Badge
-                      variant={
-                        LOAN_REPAYMENT_SOURCE_CONFIG[selectedRepayment.source]
-                          .badgeVariant
-                      }
-                    >
-                      {LOAN_REPAYMENT_SOURCE_CONFIG[selectedRepayment.source].label}
-                    </Badge>
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Installment amount</dt>
-
-                  <dd className="mt-1 text-lg font-bold">
-                    {formatPKR(selectedRepayment.amount)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Remaining balance</dt>
-
-                  <dd className="mt-1 text-lg font-bold">
-                    {formatPKR(selectedRepayment.balanceAmount)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Payment date</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedRepayment.paidDate
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Payroll period",
+                    value: formatPeriod(selectedRepayment.payrollPeriod),
+                  },
+                  {
+                    label: "Payment source",
+                    value: (
+                      <Badge
+                        variant={
+                          LOAN_REPAYMENT_SOURCE_CONFIG[selectedRepayment.source]
+                            .badgeVariant
+                        }
+                      >
+                        {LOAN_REPAYMENT_SOURCE_CONFIG[selectedRepayment.source].label}
+                      </Badge>
+                    ),
+                  },
+                  {
+                    label: "Installment amount",
+                    value: (
+                      <span className="text-lg font-bold">
+                        {formatPKR(selectedRepayment.amount)}
+                      </span>
+                    ),
+                  },
+                  {
+                    label: "Remaining balance",
+                    value: (
+                      <span className="text-lg font-bold">
+                        {formatPKR(selectedRepayment.balanceAmount)}
+                      </span>
+                    ),
+                  },
+                  {
+                    label: "Payment date",
+                    value: selectedRepayment.paidDate
                       ? formatDate(selectedRepayment.paidDate)
-                      : "Not paid"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Processed by</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedRepayment.processedBy || "Not processed"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Reference number</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedRepayment.referenceNumber || "Not assigned"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Employee branch</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEmployee.branchName}
-                  </dd>
-                </div>
-              </dl>
+                      : "Not paid",
+                  },
+                  {
+                    label: "Processed by",
+                    value: selectedRepayment.processedBy || "Not processed",
+                  },
+                  {
+                    label: "Reference number",
+                    value: selectedRepayment.referenceNumber || "Not assigned",
+                  },
+                  {
+                    label: "Employee branch",
+                    value: selectedEmployee.branchName,
+                  },
+                ]}
+              />
             </section>
 
             <section>

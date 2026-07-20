@@ -3,6 +3,7 @@
 import { type FormEvent, useState } from "react";
 
 import { FormField } from "@/components/forms/form-field";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -101,53 +102,51 @@ export function LoanApplicationReview({
           </Badge>
         </div>
 
-        <dl className="grid gap-5 p-5 sm:grid-cols-2">
-          <div>
-            <dt className="text-xs text-text-muted">Loan type</dt>
-
-            <dd className="mt-1">
-              <Badge variant={LOAN_TYPE_CONFIG[loan.type].badgeVariant}>
-                {LOAN_TYPE_CONFIG[loan.type].label}
-              </Badge>
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Branch</dt>
-
-            <dd className="mt-1 text-sm font-semibold">{branchName}</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Requested amount</dt>
-
-            <dd className="mt-1 text-lg font-bold">{formatPKR(loan.requestedAmount)}</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Request date</dt>
-
-            <dd className="mt-1 text-sm font-semibold">{formatDate(loan.requestDate)}</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Repayment method</dt>
-
-            <dd className="mt-1">
-              <Badge
-                variant={LOAN_REPAYMENT_METHOD_CONFIG[loan.repaymentMethod].badgeVariant}
-              >
-                {LOAN_REPAYMENT_METHOD_CONFIG[loan.repaymentMethod].label}
-              </Badge>
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Requested installments</dt>
-
-            <dd className="mt-1 text-sm font-semibold">{loan.installmentCount}</dd>
-          </div>
-        </dl>
+        <DetailGrid
+          bordered={false}
+          items={[
+            {
+              label: "Loan type",
+              value: (
+                <Badge variant={LOAN_TYPE_CONFIG[loan.type].badgeVariant}>
+                  {LOAN_TYPE_CONFIG[loan.type].label}
+                </Badge>
+              ),
+            },
+            {
+              label: "Branch",
+              value: branchName,
+            },
+            {
+              label: "Requested amount",
+              value: (
+                <span className="text-lg font-bold">
+                  {formatPKR(loan.requestedAmount)}
+                </span>
+              ),
+            },
+            {
+              label: "Request date",
+              value: formatDate(loan.requestDate),
+            },
+            {
+              label: "Repayment method",
+              value: (
+                <Badge
+                  variant={
+                    LOAN_REPAYMENT_METHOD_CONFIG[loan.repaymentMethod].badgeVariant
+                  }
+                >
+                  {LOAN_REPAYMENT_METHOD_CONFIG[loan.repaymentMethod].label}
+                </Badge>
+              ),
+            },
+            {
+              label: "Requested installments",
+              value: loan.installmentCount,
+            },
+          ]}
+        />
       </section>
 
       <section>

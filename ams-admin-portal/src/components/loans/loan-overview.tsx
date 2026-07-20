@@ -25,6 +25,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { LoanApplicationForm } from "@/components/loans/loan-application-form";
 import { LoanRepaymentChart } from "@/components/loans/loan-repayment-chart";
 import { LoanTabs } from "@/components/loans/loan-tabs";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -592,62 +593,44 @@ export function LoanOverview() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Requested amount</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPKR(selectedLoan.requestedAmount)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Approved amount</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPKR(selectedLoan.approvedAmount)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Installment</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPKR(selectedLoan.installmentAmount)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Total installments</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedLoan.installmentCount}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Repayment method</dt>
-
-                  <dd className="mt-1">
-                    <Badge
-                      variant={
-                        LOAN_REPAYMENT_METHOD_CONFIG[selectedLoan.repaymentMethod]
-                          .badgeVariant
-                      }
-                    >
-                      {LOAN_REPAYMENT_METHOD_CONFIG[selectedLoan.repaymentMethod].label}
-                    </Badge>
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Next repayment</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedLoan.nextDueDate)}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Requested amount",
+                    value: formatPKR(selectedLoan.requestedAmount),
+                  },
+                  {
+                    label: "Approved amount",
+                    value: formatPKR(selectedLoan.approvedAmount),
+                  },
+                  {
+                    label: "Installment",
+                    value: formatPKR(selectedLoan.installmentAmount),
+                  },
+                  {
+                    label: "Total installments",
+                    value: selectedLoan.installmentCount,
+                  },
+                  {
+                    label: "Repayment method",
+                    value: (
+                      <Badge
+                        variant={
+                          LOAN_REPAYMENT_METHOD_CONFIG[selectedLoan.repaymentMethod]
+                            .badgeVariant
+                        }
+                      >
+                        {LOAN_REPAYMENT_METHOD_CONFIG[selectedLoan.repaymentMethod].label}
+                      </Badge>
+                    ),
+                  },
+                  {
+                    label: "Next repayment",
+                    value: formatDate(selectedLoan.nextDueDate),
+                  },
+                ]}
+              />
             </section>
 
             <section>
@@ -691,43 +674,30 @@ export function LoanOverview() {
             <section>
               <h3 className="text-sm font-bold">Review information</h3>
 
-              <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">Reviewed by</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedLoan.reviewedBy || "Not reviewed"}
-                  </dd>
-                </div>
-
-                <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">Approved date</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedLoan.approvedAt
+              <DetailGrid
+                items={[
+                  {
+                    label: "Reviewed by",
+                    value: selectedLoan.reviewedBy || "Not reviewed",
+                  },
+                  {
+                    label: "Approved date",
+                    value: selectedLoan.approvedAt
                       ? formatDate(selectedLoan.approvedAt)
-                      : "Not approved"}
-                  </dd>
-                </div>
-
-                <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">Disbursed date</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedLoan.disbursedAt
+                      : "Not approved",
+                  },
+                  {
+                    label: "Disbursed date",
+                    value: selectedLoan.disbursedAt
                       ? formatDate(selectedLoan.disbursedAt)
-                      : "Not disbursed"}
-                  </dd>
-                </div>
-
-                <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">Branch</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEmployee.branchName}
-                  </dd>
-                </div>
-              </dl>
+                      : "Not disbursed",
+                  },
+                  {
+                    label: "Branch",
+                    value: selectedEmployee.branchName,
+                  },
+                ]}
+              />
             </section>
 
             <section>

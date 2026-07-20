@@ -19,6 +19,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { LoanPolicyForm } from "@/components/loans/loan-policy-form";
 import { LoanTabs } from "@/components/loans/loan-tabs";
+import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -526,71 +527,43 @@ export function LoanPoliciesWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Policy scope</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {LOAN_POLICY_SCOPE_CONFIG[selectedPolicy.scope].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Branch</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedPolicy.branchName || "All organization branches"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Minimum service</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedPolicy.minimumServiceMonths} months
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Maximum amount</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPKR(selectedPolicy.maximumAmount)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Salary multiple</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedPolicy.maximumSalaryMultiple}× monthly salary
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Maximum installments</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedPolicy.maximumInstallments}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Interest mode</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {LOAN_INTEREST_MODE_CONFIG[selectedPolicy.interestMode].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Guarantor threshold</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPKR(selectedPolicy.requireGuarantorAbove)}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Policy scope",
+                    value: LOAN_POLICY_SCOPE_CONFIG[selectedPolicy.scope].label,
+                  },
+                  {
+                    label: "Branch",
+                    value: selectedPolicy.branchName || "All organization branches",
+                  },
+                  {
+                    label: "Minimum service",
+                    value: `${selectedPolicy.minimumServiceMonths} months`,
+                  },
+                  {
+                    label: "Maximum amount",
+                    value: formatPKR(selectedPolicy.maximumAmount),
+                  },
+                  {
+                    label: "Salary multiple",
+                    value: `${selectedPolicy.maximumSalaryMultiple}× monthly salary`,
+                  },
+                  {
+                    label: "Maximum installments",
+                    value: selectedPolicy.maximumInstallments,
+                  },
+                  {
+                    label: "Interest mode",
+                    value: LOAN_INTEREST_MODE_CONFIG[selectedPolicy.interestMode].label,
+                  },
+                  {
+                    label: "Guarantor threshold",
+                    value: formatPKR(selectedPolicy.requireGuarantorAbove),
+                  },
+                ]}
+              />
             </section>
 
             <section>
@@ -622,8 +595,8 @@ export function LoanPoliciesWorkspace() {
             <section>
               <h3 className="text-sm font-bold">Policy controls</h3>
 
-              <div className="mt-3 space-y-3">
-                {[
+              <ToggleDetailList
+                items={[
                   {
                     label: "Automatic payroll deduction",
                     enabled: selectedPolicy.automaticPayrollDeduction,
@@ -644,19 +617,8 @@ export function LoanPoliciesWorkspace() {
                     label: "Administrator approval",
                     enabled: selectedPolicy.adminApprovalRequired,
                   },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center justify-between rounded-control border border-border p-4"
-                  >
-                    <span className="text-sm font-semibold">{item.label}</span>
-
-                    <Badge variant={item.enabled ? "success" : "neutral"}>
-                      {item.enabled ? "Enabled" : "Disabled"}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
+                ]}
+              />
             </section>
 
             <section>
