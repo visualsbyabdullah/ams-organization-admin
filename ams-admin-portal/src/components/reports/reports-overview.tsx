@@ -17,6 +17,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { ReportGenerationChart } from "@/components/reports/report-generation-chart";
 import { ReportTabs } from "@/components/reports/report-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -368,28 +369,26 @@ export function ReportsOverview() {
 
             <section>
               <h3 className="text-sm font-bold">Generation summary</h3>
-              <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">Output format</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {REPORT_FORMAT_CONFIG[selectedReport.defaultFormat].label}
-                  </dd>
-                </div>
-                <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">Estimated records</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedReport.recordEstimate.toLocaleString("en-PK")}
-                  </dd>
-                </div>
-                <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">Organization scope</dt>
-                  <dd className="mt-1 text-sm font-semibold">{selectedBranch.name}</dd>
-                </div>
-                <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">Requested by</dt>
-                  <dd className="mt-1 text-sm font-semibold">{CURRENT_ADMIN.name}</dd>
-                </div>
-              </dl>
+              <DetailGrid
+                items={[
+                  {
+                    label: "Output format",
+                    value: REPORT_FORMAT_CONFIG[selectedReport.defaultFormat].label,
+                  },
+                  {
+                    label: "Estimated records",
+                    value: selectedReport.recordEstimate.toLocaleString("en-PK"),
+                  },
+                  {
+                    label: "Organization scope",
+                    value: selectedBranch.name,
+                  },
+                  {
+                    label: "Requested by",
+                    value: CURRENT_ADMIN.name,
+                  },
+                ]}
+              />
             </section>
           </div>
         )}
@@ -437,32 +436,27 @@ export function ReportsOverview() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Requested by</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedExport.requestedBy}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Records</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedExport.recordCount.toLocaleString("en-PK")}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">File size</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatFileSize(selectedExport.fileSizeKb)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Created</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatReportDateTime(selectedExport.createdAt)}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Requested by",
+                    value: selectedExport.requestedBy,
+                  },
+                  {
+                    label: "Records",
+                    value: selectedExport.recordCount.toLocaleString("en-PK"),
+                  },
+                  {
+                    label: "File size",
+                    value: formatFileSize(selectedExport.fileSizeKb),
+                  },
+                  {
+                    label: "Created",
+                    value: formatReportDateTime(selectedExport.createdAt),
+                  },
+                ]}
+              />
             </section>
           </div>
         )}

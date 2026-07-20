@@ -19,6 +19,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { ReportSettingsForm } from "@/components/reports/report-settings-form";
 import { ReportTabs } from "@/components/reports/report-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -498,59 +499,41 @@ export function ReportSettingsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Scope</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {REPORT_SCOPE_CONFIG[selectedSettings.scope].label}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Branch</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.branchName ?? "All organization branches"}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Default format</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {REPORT_FORMAT_CONFIG[selectedSettings.defaultFormat].label}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Retention</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.retentionDays} days
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Maximum rows</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.maximumRowsPerExport.toLocaleString("en-PK")}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Scope",
+                    value: REPORT_SCOPE_CONFIG[selectedSettings.scope].label,
+                  },
+                  {
+                    label: "Branch",
+                    value: selectedSettings.branchName ?? "All organization branches",
+                  },
+                  {
+                    label: "Default format",
+                    value: REPORT_FORMAT_CONFIG[selectedSettings.defaultFormat].label,
+                  },
+                  {
+                    label: "Retention",
+                    value: `${selectedSettings.retentionDays} days`,
+                  },
+                  {
+                    label: "Maximum rows",
+                    value: selectedSettings.maximumRowsPerExport.toLocaleString("en-PK"),
+                  },
+                ]}
+              />
             </section>
 
             <section>
               <h3 className="text-sm font-bold">Reporting controls</h3>
-              <div className="mt-3 space-y-3">
-                {REPORT_SETTINGS_CONTROLS.map((control) => {
-                  const enabled = Boolean(selectedSettings[control.key]);
-
-                  return (
-                    <div
-                      key={control.key}
-                      className="flex items-center justify-between rounded-control border border-border p-4"
-                    >
-                      <span className="text-sm font-semibold">{control.label}</span>
-                      <Badge variant={enabled ? "success" : "neutral"}>
-                        {enabled ? "Enabled" : "Disabled"}
-                      </Badge>
-                    </div>
-                  );
-                })}
-              </div>
+              <ToggleDetailList
+                items={REPORT_SETTINGS_CONTROLS.map((control) => ({
+                  label: control.label,
+                  enabled: Boolean(selectedSettings[control.key]),
+                }))}
+              />
             </section>
 
             <section>

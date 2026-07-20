@@ -16,6 +16,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { ReportScheduleForm } from "@/components/reports/report-schedule-form";
 import { ReportTabs } from "@/components/reports/report-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -407,56 +408,46 @@ export function ScheduledReportsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Report</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedReport?.name ?? "Unknown report"}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Scope</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {REPORT_SCOPE_CONFIG[selectedSchedule.scope].label}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Branch</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSchedule.branchName ?? "All organization branches"}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Frequency</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {REPORT_SCHEDULE_FREQUENCY_CONFIG[selectedSchedule.frequency].label}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Run time</dt>
-                  <dd className="mt-1 text-sm font-semibold">{selectedSchedule.runAt}</dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Format</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {REPORT_FORMAT_CONFIG[selectedSchedule.format].label}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Next run</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatReportDateTime(selectedSchedule.nextRunAt)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Last run</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSchedule.lastRunAt
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Report",
+                    value: selectedReport?.name ?? "Unknown report",
+                  },
+                  {
+                    label: "Scope",
+                    value: REPORT_SCOPE_CONFIG[selectedSchedule.scope].label,
+                  },
+                  {
+                    label: "Branch",
+                    value: selectedSchedule.branchName ?? "All organization branches",
+                  },
+                  {
+                    label: "Frequency",
+                    value:
+                      REPORT_SCHEDULE_FREQUENCY_CONFIG[selectedSchedule.frequency].label,
+                  },
+                  {
+                    label: "Run time",
+                    value: selectedSchedule.runAt,
+                  },
+                  {
+                    label: "Format",
+                    value: REPORT_FORMAT_CONFIG[selectedSchedule.format].label,
+                  },
+                  {
+                    label: "Next run",
+                    value: formatReportDateTime(selectedSchedule.nextRunAt),
+                  },
+                  {
+                    label: "Last run",
+                    value: selectedSchedule.lastRunAt
                       ? formatReportDateTime(selectedSchedule.lastRunAt)
-                      : "Never"}
-                  </dd>
-                </div>
-              </dl>
+                      : "Never",
+                  },
+                ]}
+              />
             </section>
 
             <section>

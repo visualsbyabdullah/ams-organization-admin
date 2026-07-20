@@ -15,6 +15,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { ReportTabs } from "@/components/reports/report-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -389,46 +390,37 @@ export function ReportExportsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Requested by</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedExport.requestedBy}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Format</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {REPORT_FORMAT_CONFIG[selectedExport.format].label}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Records</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedExport.recordCount.toLocaleString("en-PK")}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">File size</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatFileSize(selectedExport.fileSizeKb)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Created</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatReportDateTime(selectedExport.createdAt)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Completed</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedExport.completedAt
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Requested by",
+                    value: selectedExport.requestedBy,
+                  },
+                  {
+                    label: "Format",
+                    value: REPORT_FORMAT_CONFIG[selectedExport.format].label,
+                  },
+                  {
+                    label: "Records",
+                    value: selectedExport.recordCount.toLocaleString("en-PK"),
+                  },
+                  {
+                    label: "File size",
+                    value: formatFileSize(selectedExport.fileSizeKb),
+                  },
+                  {
+                    label: "Created",
+                    value: formatReportDateTime(selectedExport.createdAt),
+                  },
+                  {
+                    label: "Completed",
+                    value: selectedExport.completedAt
                       ? formatReportDateTime(selectedExport.completedAt)
-                      : "Not completed"}
-                  </dd>
-                </div>
-              </dl>
+                      : "Not completed",
+                  },
+                ]}
+              />
             </section>
 
             {selectedExport.errorMessage && (
