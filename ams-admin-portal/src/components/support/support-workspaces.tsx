@@ -40,6 +40,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { FormField } from "@/components/forms/form-field";
 import { SupportTabs } from "@/components/support/support-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -380,63 +381,58 @@ function TicketDetails({ ticket }: { ticket: SupportTicket }) {
           </Badge>
         </div>
 
-        <dl className="grid gap-5 p-5 sm:grid-cols-2">
-          <div>
-            <dt className="text-xs text-text-muted">Requester</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {employee?.name ?? "Unknown employee"}
-            </dd>
-            <dd className="mt-1 text-xs text-text-muted">
-              {employee?.employeeCode ?? "Not assigned"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Branch</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {employee?.branchName ?? ticket.branchId}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Category</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {category?.name ?? "Unassigned"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Assigned to</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {ticket.assignedTo ?? "Unassigned"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Priority</dt>
-            <dd className="mt-1">
-              <Badge variant={SUPPORT_PRIORITY_CONFIG[ticket.priority].badgeVariant}>
-                {SUPPORT_PRIORITY_CONFIG[ticket.priority].label}
-              </Badge>
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">SLA state</dt>
-            <dd className="mt-1">
-              <Badge variant={SUPPORT_SLA_CONFIG[slaState].badgeVariant}>
-                {SUPPORT_SLA_CONFIG[slaState].label}
-              </Badge>
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Channel</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {SUPPORT_CHANNEL_CONFIG[ticket.channel].label}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Resolution due</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {formatSupportDateTime(ticket.dueAt)}
-            </dd>
-          </div>
-        </dl>
+        <DetailGrid
+          bordered={false}
+          items={[
+            {
+              label: "Requester",
+              value: (
+                <>
+                  <p>{employee?.name ?? "Unknown employee"}</p>
+                  <p className="mt-1 text-xs font-normal text-text-muted">
+                    {employee?.employeeCode ?? "Not assigned"}
+                  </p>
+                </>
+              ),
+            },
+            {
+              label: "Branch",
+              value: employee?.branchName ?? ticket.branchId,
+            },
+            {
+              label: "Category",
+              value: category?.name ?? "Unassigned",
+            },
+            {
+              label: "Assigned to",
+              value: ticket.assignedTo ?? "Unassigned",
+            },
+            {
+              label: "Priority",
+              value: (
+                <Badge variant={SUPPORT_PRIORITY_CONFIG[ticket.priority].badgeVariant}>
+                  {SUPPORT_PRIORITY_CONFIG[ticket.priority].label}
+                </Badge>
+              ),
+            },
+            {
+              label: "SLA state",
+              value: (
+                <Badge variant={SUPPORT_SLA_CONFIG[slaState].badgeVariant}>
+                  {SUPPORT_SLA_CONFIG[slaState].label}
+                </Badge>
+              ),
+            },
+            {
+              label: "Channel",
+              value: SUPPORT_CHANNEL_CONFIG[ticket.channel].label,
+            },
+            {
+              label: "Resolution due",
+              value: formatSupportDateTime(ticket.dueAt),
+            },
+          ]}
+        />
       </section>
 
       <section>
@@ -2475,30 +2471,27 @@ export function SupportCategoriesWorkspace() {
                   {SUPPORT_CATEGORY_STATUS_CONFIG[selectedCategory.status].label}
                 </Badge>
               </div>
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Code</dt>
-                  <dd className="mt-1 text-sm font-semibold">{selectedCategory.code}</dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Scope</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {SUPPORT_SCOPE_CONFIG[selectedCategory.scope].label}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Default assignee</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedCategory.defaultAssignee ?? "Unassigned"}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Resolution</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedCategory.resolutionHours} hours
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Code",
+                    value: selectedCategory.code,
+                  },
+                  {
+                    label: "Scope",
+                    value: SUPPORT_SCOPE_CONFIG[selectedCategory.scope].label,
+                  },
+                  {
+                    label: "Default assignee",
+                    value: selectedCategory.defaultAssignee ?? "Unassigned",
+                  },
+                  {
+                    label: "Resolution",
+                    value: `${selectedCategory.resolutionHours} hours`,
+                  },
+                ]}
+              />
             </section>
             <section>
               <h3 className="text-sm font-bold">Description</h3>
@@ -2886,34 +2879,31 @@ export function SupportKnowledgeBaseWorkspace() {
                   {SUPPORT_ARTICLE_STATUS_CONFIG[selectedArticle.status].label}
                 </Badge>
               </div>
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Category</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {SUPPORT_CATEGORIES.find(
-                      (category) => category.id === selectedArticle.categoryId,
-                    )?.name ?? "Unassigned"}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Visibility</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {SUPPORT_ARTICLE_VISIBILITY_CONFIG[selectedArticle.visibility].label}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Updated</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedArticle.updatedAt)}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Updated by</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedArticle.updatedBy}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Category",
+                    value:
+                      SUPPORT_CATEGORIES.find(
+                        (category) => category.id === selectedArticle.categoryId,
+                      )?.name ?? "Unassigned",
+                  },
+                  {
+                    label: "Visibility",
+                    value:
+                      SUPPORT_ARTICLE_VISIBILITY_CONFIG[selectedArticle.visibility].label,
+                  },
+                  {
+                    label: "Updated",
+                    value: formatDate(selectedArticle.updatedAt),
+                  },
+                  {
+                    label: "Updated by",
+                    value: selectedArticle.updatedBy,
+                  },
+                ]}
+              />
             </section>
             <section>
               <h3 className="text-sm font-bold">Summary</h3>
@@ -3373,51 +3363,36 @@ export function SupportSettingsWorkspace() {
                   {SUPPORT_SETTINGS_STATUS_CONFIG[selectedSettings.status].label}
                 </Badge>
               </div>
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Scope</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {SUPPORT_SCOPE_CONFIG[selectedSettings.scope].label}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Branch</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.branchName ?? "All organization branches"}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Default assignee</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.defaultAssignee ?? "Unassigned"}
-                  </dd>
-                </div>
-                <div>
-                  <dt className="text-xs text-text-muted">Resolution</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.resolutionHours} hours
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Scope",
+                    value: SUPPORT_SCOPE_CONFIG[selectedSettings.scope].label,
+                  },
+                  {
+                    label: "Branch",
+                    value: selectedSettings.branchName ?? "All organization branches",
+                  },
+                  {
+                    label: "Default assignee",
+                    value: selectedSettings.defaultAssignee ?? "Unassigned",
+                  },
+                  {
+                    label: "Resolution",
+                    value: `${selectedSettings.resolutionHours} hours`,
+                  },
+                ]}
+              />
             </section>
             <section>
               <h3 className="text-sm font-bold">Support controls</h3>
-              <div className="mt-3 space-y-3">
-                {SUPPORT_SETTINGS_CONTROLS.map((control) => {
-                  const enabled = Boolean(selectedSettings[control.key]);
-                  return (
-                    <div
-                      key={control.key}
-                      className="flex items-center justify-between rounded-control border border-border p-4"
-                    >
-                      <span className="text-sm font-semibold">{control.label}</span>
-                      <Badge variant={enabled ? "success" : "neutral"}>
-                        {enabled ? "Enabled" : "Disabled"}
-                      </Badge>
-                    </div>
-                  );
-                })}
-              </div>
+              <ToggleDetailList
+                items={SUPPORT_SETTINGS_CONTROLS.map((control) => ({
+                  label: control.label,
+                  enabled: Boolean(selectedSettings[control.key]),
+                }))}
+              />
             </section>
             <section>
               <h3 className="text-sm font-bold">Internal note</h3>
