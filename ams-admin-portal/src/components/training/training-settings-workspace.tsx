@@ -17,6 +17,7 @@ import {
 
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { TrainingSettingsForm } from "@/components/training/training-settings-form";
 import { TrainingTabs } from "@/components/training/training-tabs";
@@ -523,56 +524,42 @@ export function TrainingSettingsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Scope</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {TRAINING_SETTINGS_SCOPE_CONFIG[selectedSettings.scope].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Branch</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.branchName ?? "All organization branches"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Default completion window</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.defaultDueDays} days
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Due-date reminder</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.reminderDaysBeforeDue} days before
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Certificate expiry reminder</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.certificationExpiryReminderDays} days before
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Mandatory completion target</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.mandatoryCompletionTarget}%
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Scope",
+                    value: TRAINING_SETTINGS_SCOPE_CONFIG[selectedSettings.scope].label,
+                  },
+                  {
+                    label: "Branch",
+                    value: selectedSettings.branchName ?? "All organization branches",
+                  },
+                  {
+                    label: "Default completion window",
+                    value: `${selectedSettings.defaultDueDays} days`,
+                  },
+                  {
+                    label: "Due-date reminder",
+                    value: `${selectedSettings.reminderDaysBeforeDue} days before`,
+                  },
+                  {
+                    label: "Certificate expiry reminder",
+                    value: `${selectedSettings.certificationExpiryReminderDays} days before`,
+                  },
+                  {
+                    label: "Mandatory completion target",
+                    value: `${selectedSettings.mandatoryCompletionTarget}%`,
+                  },
+                ]}
+              />
             </section>
 
             <section>
               <h3 className="text-sm font-bold">Learning controls</h3>
 
-              <div className="mt-3 space-y-3">
-                {[
+              <ToggleDetailList
+                items={[
                   {
                     label: "Self-enrollment",
                     enabled: selectedSettings.allowSelfEnrollment,
@@ -585,19 +572,8 @@ export function TrainingSettingsWorkspace() {
                     label: "Automatic certificates",
                     enabled: selectedSettings.autoIssueCertificates,
                   },
-                ].map((control) => (
-                  <div
-                    key={control.label}
-                    className="flex items-center justify-between rounded-control border border-border p-4"
-                  >
-                    <span className="text-sm font-semibold">{control.label}</span>
-
-                    <Badge variant={control.enabled ? "success" : "neutral"}>
-                      {control.enabled ? "Enabled" : "Disabled"}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
+                ]}
+              />
             </section>
 
             <section>

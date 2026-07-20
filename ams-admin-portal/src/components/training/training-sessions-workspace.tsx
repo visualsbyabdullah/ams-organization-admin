@@ -20,6 +20,7 @@ import {
 
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { TrainingSessionForm } from "@/components/training/training-session-form";
@@ -588,47 +589,36 @@ export function TrainingSessionsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Facilitator</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSession.facilitator}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Venue</dt>
-                  <dd className="mt-1 text-sm font-semibold">{selectedSession.venue}</dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Time</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSession.startTime}â€“{selectedSession.endTime}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Delivery mode</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {TRAINING_DELIVERY_MODE_CONFIG[selectedSession.deliveryMode].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Capacity</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSession.capacity}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Enrolled</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSession.enrolledCount}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Facilitator",
+                    value: selectedSession.facilitator,
+                  },
+                  {
+                    label: "Venue",
+                    value: selectedSession.venue,
+                  },
+                  {
+                    label: "Time",
+                    value: `${selectedSession.startTime}â€“${selectedSession.endTime}`,
+                  },
+                  {
+                    label: "Delivery mode",
+                    value:
+                      TRAINING_DELIVERY_MODE_CONFIG[selectedSession.deliveryMode].label,
+                  },
+                  {
+                    label: "Capacity",
+                    value: selectedSession.capacity,
+                  },
+                  {
+                    label: "Enrolled",
+                    value: selectedSession.enrolledCount,
+                  },
+                ]}
+              />
             </section>
 
             <section>

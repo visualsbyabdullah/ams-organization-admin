@@ -45,7 +45,7 @@ export function DetailGrid({ items, columns = 2, bordered = true }: DetailGridPr
 export type ToggleDetailItem = {
   label: string;
   enabled: boolean;
-  detail: string;
+  detail?: string;
 };
 
 /**
@@ -63,7 +63,7 @@ export function ToggleDetailList({ items }: { items: readonly ToggleDetailItem[]
         >
           <div>
             <p className="text-sm font-semibold">{item.label}</p>
-            <p className="mt-1 text-xs text-text-muted">{item.detail}</p>
+            {item.detail && <p className="mt-1 text-xs text-text-muted">{item.detail}</p>}
           </div>
 
           <Badge variant={item.enabled ? "success" : "neutral"}>

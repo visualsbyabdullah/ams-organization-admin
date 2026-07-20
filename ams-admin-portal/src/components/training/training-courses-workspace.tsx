@@ -17,6 +17,7 @@ import {
 
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { TrainingCourseForm } from "@/components/training/training-course-form";
 import { TrainingTabs } from "@/components/training/training-tabs";
@@ -492,67 +493,50 @@ export function TrainingCoursesWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Category</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {TRAINING_CATEGORY_CONFIG[selectedCourse.category].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Delivery</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {TRAINING_DELIVERY_MODE_CONFIG[selectedCourse.deliveryMode].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Duration</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatTrainingDuration(selectedCourse.durationHours)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Passing score</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedCourse.passingScore > 0
-                      ? `${selectedCourse.passingScore}%`
-                      : "No assessment"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Capacity</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedCourse.capacity}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Certificate validity</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedCourse.certificationValidityMonths > 0
-                      ? `${selectedCourse.certificationValidityMonths} months`
-                      : "No expiry"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Provider</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedCourse.provider}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Course owner</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedCourse.ownerName}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Category",
+                    value: TRAINING_CATEGORY_CONFIG[selectedCourse.category].label,
+                  },
+                  {
+                    label: "Delivery",
+                    value:
+                      TRAINING_DELIVERY_MODE_CONFIG[selectedCourse.deliveryMode].label,
+                  },
+                  {
+                    label: "Duration",
+                    value: formatTrainingDuration(selectedCourse.durationHours),
+                  },
+                  {
+                    label: "Passing score",
+                    value:
+                      selectedCourse.passingScore > 0
+                        ? `${selectedCourse.passingScore}%`
+                        : "No assessment",
+                  },
+                  {
+                    label: "Capacity",
+                    value: selectedCourse.capacity,
+                  },
+                  {
+                    label: "Certificate validity",
+                    value:
+                      selectedCourse.certificationValidityMonths > 0
+                        ? `${selectedCourse.certificationValidityMonths} months`
+                        : "No expiry",
+                  },
+                  {
+                    label: "Provider",
+                    value: selectedCourse.provider,
+                  },
+                  {
+                    label: "Course owner",
+                    value: selectedCourse.ownerName,
+                  },
+                ]}
+              />
             </section>
 
             <section>

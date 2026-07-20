@@ -18,6 +18,7 @@ import {
 
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { TrainingEnrollmentForm } from "@/components/training/training-enrollment-form";
@@ -638,55 +639,42 @@ export function TrainingEnrollmentsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Employee branch</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEmployee.branchName}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Due date</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedEnrollment.dueDate)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Started date</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEnrollment.startedAt
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Employee branch",
+                    value: selectedEmployee.branchName,
+                  },
+                  {
+                    label: "Due date",
+                    value: formatDate(selectedEnrollment.dueDate),
+                  },
+                  {
+                    label: "Started date",
+                    value: selectedEnrollment.startedAt
                       ? formatDate(selectedEnrollment.startedAt)
-                      : "Not started"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Completed date</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEnrollment.completedAt
+                      : "Not started",
+                  },
+                  {
+                    label: "Completed date",
+                    value: selectedEnrollment.completedAt
                       ? formatDate(selectedEnrollment.completedAt)
-                      : "Not completed"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Score</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEnrollment.score !== undefined
-                      ? `${selectedEnrollment.score}%`
-                      : "Not scored"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Attempts</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEnrollment.attempts}
-                  </dd>
-                </div>
-              </dl>
+                      : "Not completed",
+                  },
+                  {
+                    label: "Score",
+                    value:
+                      selectedEnrollment.score !== undefined
+                        ? `${selectedEnrollment.score}%`
+                        : "Not scored",
+                  },
+                  {
+                    label: "Attempts",
+                    value: selectedEnrollment.attempts,
+                  },
+                ]}
+              />
             </section>
 
             <section>

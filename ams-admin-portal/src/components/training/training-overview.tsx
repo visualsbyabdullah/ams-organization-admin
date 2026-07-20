@@ -16,6 +16,7 @@ import {
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { TrainingActivityChart } from "@/components/training/training-activity-chart";
@@ -431,37 +432,30 @@ export function TrainingOverview() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Due date</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedEnrollment.dueDate)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Assigned by</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEnrollment.assignedBy}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Attempts</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEnrollment.attempts}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Score</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEnrollment.score !== undefined
-                      ? `${selectedEnrollment.score}%`
-                      : "Not scored"}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                bordered={false}
+                items={[
+                  {
+                    label: "Due date",
+                    value: formatDate(selectedEnrollment.dueDate),
+                  },
+                  {
+                    label: "Assigned by",
+                    value: selectedEnrollment.assignedBy,
+                  },
+                  {
+                    label: "Attempts",
+                    value: selectedEnrollment.attempts,
+                  },
+                  {
+                    label: "Score",
+                    value:
+                      selectedEnrollment.score !== undefined
+                        ? `${selectedEnrollment.score}%`
+                        : "Not scored",
+                  },
+                ]}
+              />
             </section>
 
             <section>
