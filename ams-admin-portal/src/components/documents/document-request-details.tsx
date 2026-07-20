@@ -1,4 +1,5 @@
-﻿import { Badge } from "@/components/ui/badge";
+﻿import { DetailGrid } from "@/components/shared/detail-grid";
+import { Badge } from "@/components/ui/badge";
 import {
   DOCUMENT_CATEGORY_CONFIG,
   DOCUMENT_REQUEST_STATUS_CONFIG,
@@ -35,56 +36,53 @@ export function DocumentRequestDetails({ request }: DocumentRequestDetailsProps)
           </Badge>
         </div>
 
-        <dl className="grid gap-5 p-5 sm:grid-cols-2">
-          <div>
-            <dt className="text-xs text-text-muted">Employee</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {employee?.name ?? "Employee unavailable"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Employee ID</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {employee?.employeeCode ?? "Not available"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Branch</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {employee?.branchName ?? "Branch unavailable"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Category</dt>
-            <dd className="mt-1">
-              <Badge variant={DOCUMENT_CATEGORY_CONFIG[request.category].badgeVariant}>
-                {DOCUMENT_CATEGORY_CONFIG[request.category].label}
-              </Badge>
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Due date</dt>
-            <dd className="mt-1 text-sm font-semibold">{formatDate(request.dueDate)}</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Requirement</dt>
-            <dd className="mt-1">
-              <Badge variant={request.mandatory ? "warning" : "neutral"}>
-                {request.mandatory ? "Mandatory" : "Optional"}
-              </Badge>
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Requested by</dt>
-            <dd className="mt-1 text-sm font-semibold">{request.requestedBy}</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Submitted date</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {request.submittedAt ? formatDate(request.submittedAt) : "Not submitted"}
-            </dd>
-          </div>
-        </dl>
+        <DetailGrid
+          variant="none"
+          items={[
+            {
+              label: "Employee",
+              value: employee?.name ?? "Employee unavailable",
+            },
+            {
+              label: "Employee ID",
+              value: employee?.employeeCode ?? "Not available",
+            },
+            {
+              label: "Branch",
+              value: employee?.branchName ?? "Branch unavailable",
+            },
+            {
+              label: "Category",
+              value: (
+                <Badge variant={DOCUMENT_CATEGORY_CONFIG[request.category].badgeVariant}>
+                  {DOCUMENT_CATEGORY_CONFIG[request.category].label}
+                </Badge>
+              ),
+            },
+            {
+              label: "Due date",
+              value: formatDate(request.dueDate),
+            },
+            {
+              label: "Requirement",
+              value: (
+                <Badge variant={request.mandatory ? "warning" : "neutral"}>
+                  {request.mandatory ? "Mandatory" : "Optional"}
+                </Badge>
+              ),
+            },
+            {
+              label: "Requested by",
+              value: request.requestedBy,
+            },
+            {
+              label: "Submitted date",
+              value: request.submittedAt
+                ? formatDate(request.submittedAt)
+                : "Not submitted",
+            },
+          ]}
+        />
       </section>
 
       <section>

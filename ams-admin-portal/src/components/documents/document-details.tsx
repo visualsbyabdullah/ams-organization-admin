@@ -1,6 +1,7 @@
 ﻿import { FileText } from "lucide-react";
 
 import { IconContainer } from "@/components/shared/icon-container";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { Badge } from "@/components/ui/badge";
 import {
   DOCUMENT_CATEGORY_CONFIG,
@@ -59,67 +60,53 @@ export function DocumentDetails({ document }: DocumentDetailsProps) {
           </Badge>
         </div>
 
-        <dl className="grid gap-5 p-5 sm:grid-cols-2">
-          <div>
-            <dt className="text-xs text-text-muted">Owner</dt>
-            <dd className="mt-1 text-sm font-semibold">{ownerName}</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Owner type</dt>
-            <dd className="mt-1">
-              <Badge
-                variant={DOCUMENT_OWNER_TYPE_CONFIG[document.ownerType].badgeVariant}
-              >
-                {DOCUMENT_OWNER_TYPE_CONFIG[document.ownerType].label}
-              </Badge>
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Category</dt>
-            <dd className="mt-1">
-              <Badge variant={DOCUMENT_CATEGORY_CONFIG[document.category].badgeVariant}>
-                {DOCUMENT_CATEGORY_CONFIG[document.category].label}
-              </Badge>
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Visibility</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {DOCUMENT_VISIBILITY_CONFIG[document.visibility].label}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Branch</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {document.branchName ?? "All organization branches"}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Uploaded</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {formatDate(document.uploadedAt)} by {document.uploadedBy}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Issue date</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {document.issueDate ? formatDate(document.issueDate) : "Not recorded"}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Expiry date</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {document.expiryDate ? formatDate(document.expiryDate) : "No expiry"}
-            </dd>
-          </div>
-        </dl>
+        <DetailGrid
+          variant="none"
+          items={[
+            {
+              label: "Owner",
+              value: ownerName,
+            },
+            {
+              label: "Owner type",
+              value: (
+                <Badge
+                  variant={DOCUMENT_OWNER_TYPE_CONFIG[document.ownerType].badgeVariant}
+                >
+                  {DOCUMENT_OWNER_TYPE_CONFIG[document.ownerType].label}
+                </Badge>
+              ),
+            },
+            {
+              label: "Category",
+              value: (
+                <Badge variant={DOCUMENT_CATEGORY_CONFIG[document.category].badgeVariant}>
+                  {DOCUMENT_CATEGORY_CONFIG[document.category].label}
+                </Badge>
+              ),
+            },
+            {
+              label: "Visibility",
+              value: DOCUMENT_VISIBILITY_CONFIG[document.visibility].label,
+            },
+            {
+              label: "Branch",
+              value: document.branchName ?? "All organization branches",
+            },
+            {
+              label: "Uploaded",
+              value: `${formatDate(document.uploadedAt)} by ${document.uploadedBy}`,
+            },
+            {
+              label: "Issue date",
+              value: document.issueDate ? formatDate(document.issueDate) : "Not recorded",
+            },
+            {
+              label: "Expiry date",
+              value: document.expiryDate ? formatDate(document.expiryDate) : "No expiry",
+            },
+          ]}
+        />
       </section>
 
       <section>

@@ -1,4 +1,5 @@
-﻿import { Badge } from "@/components/ui/badge";
+﻿import { DetailGrid } from "@/components/shared/detail-grid";
+import { Badge } from "@/components/ui/badge";
 import {
   DOCUMENT_CATEGORY_CONFIG,
   DOCUMENT_TEMPLATE_OUTPUT_CONFIG,
@@ -29,64 +30,61 @@ export function DocumentTemplateDetails({ template }: DocumentTemplateDetailsPro
           </Badge>
         </div>
 
-        <dl className="grid gap-5 p-5 sm:grid-cols-2">
-          <div>
-            <dt className="text-xs text-text-muted">Category</dt>
-            <dd className="mt-1">
-              <Badge variant={DOCUMENT_CATEGORY_CONFIG[template.category].badgeVariant}>
-                {DOCUMENT_CATEGORY_CONFIG[template.category].label}
-              </Badge>
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Scope</dt>
-            <dd className="mt-1">
-              <Badge
-                variant={DOCUMENT_TEMPLATE_SCOPE_CONFIG[template.scope].badgeVariant}
-              >
-                {DOCUMENT_TEMPLATE_SCOPE_CONFIG[template.scope].label}
-              </Badge>
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Branch</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {template.branchName ?? "All organization branches"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Output format</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {DOCUMENT_TEMPLATE_OUTPUT_CONFIG[template.outputFormat].label}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Self-service</dt>
-            <dd className="mt-1">
-              <Badge variant={template.selfService ? "success" : "neutral"}>
-                {template.selfService ? "Enabled" : "Disabled"}
-              </Badge>
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Approval</dt>
-            <dd className="mt-1">
-              <Badge variant={template.approvalRequired ? "warning" : "neutral"}>
-                {template.approvalRequired ? "Required" : "Not required"}
-              </Badge>
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Updated</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {formatDate(template.updatedAt)}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Updated by</dt>
-            <dd className="mt-1 text-sm font-semibold">{template.updatedBy}</dd>
-          </div>
-        </dl>
+        <DetailGrid
+          variant="none"
+          items={[
+            {
+              label: "Category",
+              value: (
+                <Badge variant={DOCUMENT_CATEGORY_CONFIG[template.category].badgeVariant}>
+                  {DOCUMENT_CATEGORY_CONFIG[template.category].label}
+                </Badge>
+              ),
+            },
+            {
+              label: "Scope",
+              value: (
+                <Badge
+                  variant={DOCUMENT_TEMPLATE_SCOPE_CONFIG[template.scope].badgeVariant}
+                >
+                  {DOCUMENT_TEMPLATE_SCOPE_CONFIG[template.scope].label}
+                </Badge>
+              ),
+            },
+            {
+              label: "Branch",
+              value: template.branchName ?? "All organization branches",
+            },
+            {
+              label: "Output format",
+              value: DOCUMENT_TEMPLATE_OUTPUT_CONFIG[template.outputFormat].label,
+            },
+            {
+              label: "Self-service",
+              value: (
+                <Badge variant={template.selfService ? "success" : "neutral"}>
+                  {template.selfService ? "Enabled" : "Disabled"}
+                </Badge>
+              ),
+            },
+            {
+              label: "Approval",
+              value: (
+                <Badge variant={template.approvalRequired ? "warning" : "neutral"}>
+                  {template.approvalRequired ? "Required" : "Not required"}
+                </Badge>
+              ),
+            },
+            {
+              label: "Updated",
+              value: formatDate(template.updatedAt),
+            },
+            {
+              label: "Updated by",
+              value: template.updatedBy,
+            },
+          ]}
+        />
       </section>
 
       <section>

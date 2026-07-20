@@ -1,4 +1,5 @@
-﻿import { Badge } from "@/components/ui/badge";
+﻿import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
+import { Badge } from "@/components/ui/badge";
 import {
   DOCUMENT_SETTINGS_CONTROL_LABELS,
   DOCUMENT_SETTINGS_SCOPE_CONFIG,
@@ -56,48 +57,39 @@ export function DocumentSettingsDetails({ settings }: DocumentSettingsDetailsPro
           </Badge>
         </div>
 
-        <dl className="grid gap-5 p-5 sm:grid-cols-2">
-          <div>
-            <dt className="text-xs text-text-muted">Scope</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {DOCUMENT_SETTINGS_SCOPE_CONFIG[settings.scope].label}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Branch</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {settings.branchName ?? "All organization branches"}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Retention</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {settings.retentionYears} years
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Upload limit</dt>
-            <dd className="mt-1 text-sm font-semibold">{settings.maximumUploadMb} MB</dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">First reminder</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {settings.expiryReminderDays} days before
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Second reminder</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {settings.secondExpiryReminderDays} days before
-            </dd>
-          </div>
-          <div>
-            <dt className="text-xs text-text-muted">Default visibility</dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {DOCUMENT_VISIBILITY_CONFIG[settings.defaultVisibility].label}
-            </dd>
-          </div>
-        </dl>
+        <DetailGrid
+          variant="none"
+          items={[
+            {
+              label: "Scope",
+              value: DOCUMENT_SETTINGS_SCOPE_CONFIG[settings.scope].label,
+            },
+            {
+              label: "Branch",
+              value: settings.branchName ?? "All organization branches",
+            },
+            {
+              label: "Retention",
+              value: `${settings.retentionYears} years`,
+            },
+            {
+              label: "Upload limit",
+              value: `${settings.maximumUploadMb} MB`,
+            },
+            {
+              label: "First reminder",
+              value: `${settings.expiryReminderDays} days before`,
+            },
+            {
+              label: "Second reminder",
+              value: `${settings.secondExpiryReminderDays} days before`,
+            },
+            {
+              label: "Default visibility",
+              value: DOCUMENT_VISIBILITY_CONFIG[settings.defaultVisibility].label,
+            },
+          ]}
+        />
       </section>
 
       <section>
@@ -113,19 +105,7 @@ export function DocumentSettingsDetails({ settings }: DocumentSettingsDetailsPro
 
       <section>
         <h3 className="text-sm font-bold">Document controls</h3>
-        <div className="mt-3 space-y-3">
-          {controls.map((control) => (
-            <div
-              key={control.label}
-              className="flex items-center justify-between rounded-control border border-border p-4"
-            >
-              <span className="text-sm font-semibold">{control.label}</span>
-              <Badge variant={control.enabled ? "success" : "neutral"}>
-                {control.enabled ? "Enabled" : "Disabled"}
-              </Badge>
-            </div>
-          ))}
-        </div>
+        <ToggleDetailList items={controls} />
       </section>
 
       <section>
