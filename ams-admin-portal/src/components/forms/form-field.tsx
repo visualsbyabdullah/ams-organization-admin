@@ -1,10 +1,10 @@
-import type { ReactNode } from "react";
+﻿import type { ReactNode } from "react";
 
 import { cn } from "@/lib/utils";
 
 type FormFieldProps = {
   label: string;
-  htmlFor: string;
+  htmlFor?: string;
   description?: string;
   error?: string;
   optional?: boolean;
@@ -54,3 +54,4 @@ export function FormField({
     </div>
   );
 }
+

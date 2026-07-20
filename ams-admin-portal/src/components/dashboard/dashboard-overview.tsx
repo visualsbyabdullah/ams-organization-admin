@@ -1,16 +1,19 @@
 "use client";
 
+import Link from "next/link";
 import {
   ArrowRight,
   Plus,
-} from "lucide-react";
+  } from "lucide-react";
 
 import { AttendanceTrendChart } from "@/components/dashboard/attendance-trend-chart";
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { ComparisonBarChart } from "@/components/dashboard/comparison-bar-chart";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { WorkforceDistributionChart } from "@/components/dashboard/workforce-distribution-chart";
-import { Button } from "@/components/ui/button";
+import { Button,
+  buttonVariants,
+} from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { UI_COPY } from "@/config/ui";
 import { useBranchScope } from "@/context/branch-scope-context";
@@ -83,7 +86,7 @@ export function DashboardOverview() {
         </ChartCard>
 
         <ChartCard
-          title="Today’s workforce"
+          title="TodayÃ¢â‚¬â„¢s workforce"
           description="Current employee attendance distribution"
         >
           <WorkforceDistributionChart
@@ -135,13 +138,15 @@ export function DashboardOverview() {
             )}
           </div>
 
-          <Button
-            variant="outline"
-            className="mt-4 w-full"
-          >
-            Open approval inbox
-            <ArrowRight />
-          </Button>
+          <Link
+              href="/approvals"
+              className={`${buttonVariants({
+                variant: "outline",
+              })} w-full`}
+            >
+              Open approval inbox
+              <ArrowRight size={17} />
+            </Link>
         </Card>
       </section>
     </div>

@@ -1,17 +1,24 @@
 "use client";
 
+import { getPeopleMetricToneStyle } from "@/config/people-metrics";
+
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
+  CalendarClock,
+  CircleCheck,
+  Clock3,
   Download,
   MoreHorizontal,
   Plus,
   Search,
-  SlidersHorizontal,
+  Upload,
   Users,
 } from "lucide-react";
 
+import { BulkEmployeeImportDrawer } from "@/components/people/bulk-employee-import-drawer";
 import { PeopleTabs } from "@/components/people/people-tabs";
+import { useImportedEmployees } from "@/components/people/use-imported-employees";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -37,11 +44,11 @@ import {
 import { useBranchScope } from "@/context/branch-scope-context";
 import { EMPLOYEES } from "@/data/employees";
 import { formatDate } from "@/lib/date";
-import { cn } from "@/lib/utils";
-import type { EmployeeStatus } from "@/types/employee";
 
 export function EmployeeDirectory() {
   const { selectedBranch } = useBranchScope();
+  const importedEmployees =
+    useImportedEmployees();
 
   const [searchQuery, setSearchQuery] =
     useState("");
@@ -49,67 +56,94 @@ export function EmployeeDirectory() {
     useState("all");
   const [status, setStatus] =
     useState("all");
+  const [
+    bulkImportOpen,
+    setBulkImportOpen,
+  ] = useState(false);
+
+  const allEmployees = useMemo(
+    () => [
+      ...importedEmployees,
+      ...EMPLOYEES,
+    ],
+    [importedEmployees],
+  );
 
   const departments = useMemo(
     () =>
       Array.from(
         new Set(
-          EMPLOYEES.map(
-            (employee) => employee.department,
+          allEmployees.map(
+            (employee) =>
+              employee.department,
           ),
         ),
       ).sort(),
-    [],
+    [allEmployees],
   );
 
   const scopedEmployees = useMemo(() => {
-    return EMPLOYEES.filter((employee) => {
-      const matchesBranch =
-        selectedBranch.isAggregate ||
-        employee.branchId === selectedBranch.id;
+    return allEmployees.filter(
+      (employee) => {
+        const matchesBranch =
+          selectedBranch.isAggregate ||
+          employee.branchId ===
+            selectedBranch.id;
 
-      const searchValue =
-        `${employee.name} ${employee.email} ${employee.employeeCode} ${employee.designation}`.toLowerCase();
+        const searchValue =
+          `${employee.name} ${employee.email} ${employee.employeeCode} ${employee.designation}`.toLowerCase();
 
-      const matchesSearch = searchValue.includes(
-        searchQuery.toLowerCase().trim(),
-      );
+        const matchesSearch =
+          searchValue.includes(
+            searchQuery
+              .toLowerCase()
+              .trim(),
+          );
 
-      const matchesDepartment =
-        department === "all" ||
-        employee.department === department;
+        const matchesDepartment =
+          department === "all" ||
+          employee.department ===
+            department;
 
-      const matchesStatus =
-        status === "all" ||
-        employee.status === status;
+        const matchesStatus =
+          status === "all" ||
+          employee.status === status;
 
-      return (
-        matchesBranch &&
-        matchesSearch &&
-        matchesDepartment &&
-        matchesStatus
-      );
-    });
+        return (
+          matchesBranch &&
+          matchesSearch &&
+          matchesDepartment &&
+          matchesStatus
+        );
+      },
+    );
   }, [
+    allEmployees,
     department,
     searchQuery,
     selectedBranch,
     status,
   ]);
 
-  const activeCount = scopedEmployees.filter(
-    (employee) => employee.status === "active",
-  ).length;
+  const activeCount =
+    scopedEmployees.filter(
+      (employee) =>
+        employee.status === "active",
+    ).length;
 
-  const leaveCount = scopedEmployees.filter(
-    (employee) =>
-      employee.status === "on_leave",
-  ).length;
+  const leaveCount =
+    scopedEmployees.filter(
+      (employee) =>
+        employee.status ===
+        "on_leave",
+    ).length;
 
-  const probationCount = scopedEmployees.filter(
-    (employee) =>
-      employee.status === "probation",
-  ).length;
+  const probationCount =
+    scopedEmployees.filter(
+      (employee) =>
+        employee.status ===
+        "probation",
+    ).length;
 
   return (
     <div className="mx-auto max-w-360">
@@ -122,6 +156,16 @@ export function EmployeeDirectory() {
             <Button variant="outline">
               <Download size={17} />
               Export
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() =>
+                setBulkImportOpen(true)
+              }
+            >
+              <Upload size={17} />
+              Add employees
             </Button>
 
             <Link
@@ -143,34 +187,55 @@ export function EmployeeDirectory() {
         {[
           {
             label: "Total employees",
-            value: scopedEmployees.length,
+            value:
+              scopedEmployees.length,
+            icon: Users,
           },
           {
             label: "Active",
             value: activeCount,
+            icon: CircleCheck,
           },
           {
             label: "On leave",
             value: leaveCount,
+            icon: CalendarClock,
           },
           {
             label: "On probation",
             value: probationCount,
+            icon: Clock3,
           },
-        ].map((item) => (
-          <Card
-            key={item.label}
-            className="p-5"
-          >
-            <p className="text-sm font-medium text-text-muted">
-              {item.label}
-            </p>
+        ].map((item) => {
+          const Icon = item.icon;
 
-            <p className="mt-3 text-3xl font-bold tracking-tight">
-              {item.value}
-            </p>
-          </Card>
-        ))}
+          return (
+            <Card
+              key={item.label}
+              className="p-5"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium text-text-muted">
+                    {item.label}
+                  </p>
+
+                  <p className="mt-3 text-3xl font-bold tracking-tight">
+                    {item.value}
+                  </p>
+                </div>
+
+                <span
+                  className={`flex size-10 items-center justify-center rounded-control ${getPeopleMetricToneStyle(
+                    item.label,
+                  )}`}
+                >
+                  <Icon size={20} />
+                </span>
+              </div>
+            </Card>
+          );
+        })}
       </section>
 
       <Card className="mt-6">
@@ -184,7 +249,9 @@ export function EmployeeDirectory() {
             <Input
               value={searchQuery}
               onChange={(event) =>
-                setSearchQuery(event.target.value)
+                setSearchQuery(
+                  event.target.value,
+                )
               }
               placeholder="Search by employee, email, ID or designation"
               className="pl-9"
@@ -195,53 +262,57 @@ export function EmployeeDirectory() {
             <Select
               value={department}
               onChange={(event) =>
-                setDepartment(event.target.value)
+                setDepartment(
+                  event.target.value,
+                )
               }
             >
               <option value="all">
-                {EMPLOYEE_FILTERS.allDepartments}
+                {
+                  EMPLOYEE_FILTERS.allDepartments
+                }
               </option>
 
-              {departments.map((item) => (
-                <option
-                  key={item}
-                  value={item}
-                >
-                  {item}
-                </option>
-              ))}
+              {departments.map(
+                (item) => (
+                  <option
+                    key={item}
+                    value={item}
+                  >
+                    {item}
+                  </option>
+                ),
+              )}
             </Select>
 
             <Select
               value={status}
               onChange={(event) =>
-                setStatus(event.target.value)
+                setStatus(
+                  event.target.value,
+                )
               }
             >
               <option value="all">
-                {EMPLOYEE_FILTERS.allStatuses}
+                {
+                  EMPLOYEE_FILTERS.allStatuses
+                }
               </option>
 
               {Object.entries(
                 EMPLOYEE_STATUS_CONFIG,
-              ).map(([value, config]) => (
-                <option
-                  key={value}
-                  value={value}
-                >
-                  {config.label}
-                </option>
-              ))}
+              ).map(
+                ([value, config]) => (
+                  <option
+                    key={value}
+                    value={value}
+                  >
+                    {config.label}
+                  </option>
+                ),
+              )}
             </Select>
           </div>
-
-          <Button
-            variant="outline"
-            size="icon"
-            aria-label="More filters"
-          >
-            <SlidersHorizontal size={17} />
-          </Button>
         </div>
 
         {scopedEmployees.length > 0 ? (
@@ -249,11 +320,21 @@ export function EmployeeDirectory() {
             <Table>
               <TableHeader>
                 <TableRow className="bg-canvas">
-                  <TableHead>Employee</TableHead>
-                  <TableHead>Employment</TableHead>
-                  <TableHead>Branch</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Joined</TableHead>
+                  <TableHead>
+                    Employee
+                  </TableHead>
+                  <TableHead>
+                    Employment
+                  </TableHead>
+                  <TableHead>
+                    Branch
+                  </TableHead>
+                  <TableHead>
+                    Status
+                  </TableHead>
+                  <TableHead>
+                    Joined
+                  </TableHead>
                   <TableHead className="w-16">
                     Actions
                   </TableHead>
@@ -276,7 +357,9 @@ export function EmployeeDirectory() {
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <Avatar
-                              name={employee.name}
+                              name={
+                                employee.name
+                              }
                               initials={
                                 employee.initials
                               }
@@ -284,14 +367,19 @@ export function EmployeeDirectory() {
 
                             <div>
                               <p className="font-semibold text-text">
-                                {employee.name}
+                                {
+                                  employee.name
+                                }
                               </p>
 
                               <p className="mt-1 text-xs text-text-muted">
                                 {
                                   employee.employeeCode
                                 }{" "}
-                                · {employee.email}
+                                Ã‚Â·{" "}
+                                {
+                                  employee.email
+                                }
                               </p>
                             </div>
                           </div>
@@ -299,16 +387,22 @@ export function EmployeeDirectory() {
 
                         <TableCell>
                           <p className="font-medium">
-                            {employee.designation}
+                            {
+                              employee.designation
+                            }
                           </p>
 
                           <p className="mt-1 text-xs text-text-muted">
-                            {employee.department}
+                            {
+                              employee.department
+                            }
                           </p>
                         </TableCell>
 
                         <TableCell>
-                          {employee.branchName}
+                          {
+                            employee.branchName
+                          }
                         </TableCell>
 
                         <TableCell>
@@ -317,7 +411,9 @@ export function EmployeeDirectory() {
                               statusConfig.badgeVariant
                             }
                           >
-                            {statusConfig.label}
+                            {
+                              statusConfig.label
+                            }
                           </Badge>
                         </TableCell>
 
@@ -347,7 +443,8 @@ export function EmployeeDirectory() {
 
             <div className="flex items-center justify-between border-t border-border px-4 py-3">
               <p className="text-sm text-text-muted">
-                Showing {scopedEmployees.length}{" "}
+                Showing{" "}
+                {scopedEmployees.length}{" "}
                 employees
               </p>
 
@@ -372,7 +469,7 @@ export function EmployeeDirectory() {
           </>
         ) : (
           <div className="flex min-h-80 flex-col items-center justify-center p-8 text-center">
-            <span className="flex size-12 items-center justify-center rounded-full bg-surface-muted text-text-muted">
+            <span className="flex size-12 items-center justify-center rounded-full bg-info-muted text-info">
               <Users size={22} />
             </span>
 
@@ -381,12 +478,24 @@ export function EmployeeDirectory() {
             </h2>
 
             <p className="mt-2 max-w-md text-sm text-text-muted">
-              Change the filters or add a new employee
-              to this branch.
+              Change the filters or add a
+              new employee to this branch.
             </p>
           </div>
         )}
       </Card>
+
+      <BulkEmployeeImportDrawer
+        open={bulkImportOpen}
+        onClose={() =>
+          setBulkImportOpen(false)
+        }
+        selectedBranchId={
+          selectedBranch.isAggregate
+            ? "all"
+            : selectedBranch.id
+        }
+      />
     </div>
   );
 }

@@ -1,0 +1,142 @@
+﻿import type {
+  PayrollAdjustment,
+} from "@/types/payroll-adjustment";
+
+export const PAYROLL_ADJUSTMENTS: PayrollAdjustment[] =
+  [
+    {
+      id: "adjustment-001",
+      employeeId: "emp-001",
+      branchId: "islamabad",
+      type: "bonus",
+      direction: "earning",
+      status: "approved",
+      frequency: "one_time",
+      amount: 25000,
+      effectivePeriod: "2026-07",
+      taxable: true,
+      reason:
+        "Quarterly performance achievement.",
+      internalNote:
+        "Approved by department head.",
+      createdAt: "2026-07-10",
+      createdBy: "Maaz",
+      reviewedAt: "2026-07-11",
+      reviewedBy: "Maaz",
+    },
+    {
+      id: "adjustment-002",
+      employeeId: "emp-002",
+      branchId: "lahore",
+      type: "overtime",
+      direction: "earning",
+      status: "pending_approval",
+      frequency: "one_time",
+      amount: 8500,
+      effectivePeriod: "2026-07",
+      taxable: true,
+      reason:
+        "Approved overtime during month-end operations.",
+      internalNote:
+        "Attendance record requires final verification.",
+      createdAt: "2026-07-14",
+      createdBy: "Ayesha Khan",
+    },
+    {
+      id: "adjustment-003",
+      employeeId: "emp-003",
+      branchId: "islamabad",
+      type: "reimbursement",
+      direction: "earning",
+      status: "applied",
+      frequency: "one_time",
+      amount: 12500,
+      effectivePeriod: "2026-07",
+      taxable: false,
+      reason:
+        "Approved client travel expenses.",
+      internalNote:
+        "Supporting receipts verified.",
+      createdAt: "2026-07-08",
+      createdBy: "Maaz",
+      reviewedAt: "2026-07-09",
+      reviewedBy: "Maaz",
+      appliedAt: "2026-07-15",
+    },
+    {
+      id: "adjustment-004",
+      employeeId: "emp-004",
+      branchId: "karachi",
+      type: "loan_recovery",
+      direction: "deduction",
+      status: "approved",
+      frequency: "recurring",
+      amount: 10000,
+      effectivePeriod: "2026-07",
+      taxable: false,
+      reason:
+        "Monthly employee loan instalment.",
+      internalNote:
+        "Fourth instalment of twelve.",
+      createdAt: "2026-07-01",
+      createdBy: "Maaz",
+      reviewedAt: "2026-07-02",
+      reviewedBy: "Maaz",
+    },
+    {
+      id: "adjustment-005",
+      employeeId: "emp-005",
+      branchId: "lahore",
+      type: "arrears",
+      direction: "earning",
+      status: "draft",
+      frequency: "one_time",
+      amount: 18000,
+      effectivePeriod: "2026-07",
+      taxable: true,
+      reason:
+        "Previous-month salary correction.",
+      internalNote:
+        "Finance calculation is not finalized.",
+      createdAt: "2026-07-15",
+      createdBy: "Ayesha Khan",
+    },
+    {
+      id: "adjustment-006",
+      employeeId: "emp-006",
+      branchId: "islamabad",
+      type: "deduction",
+      direction: "deduction",
+      status: "rejected",
+      frequency: "one_time",
+      amount: 3500,
+      effectivePeriod: "2026-07",
+      taxable: false,
+      reason:
+        "Proposed attendance-related deduction.",
+      internalNote:
+        "Rejected because attendance exception remains unresolved.",
+      createdAt: "2026-07-12",
+      createdBy: "Maaz",
+      reviewedAt: "2026-07-13",
+      reviewedBy: "Maaz",
+    },
+    {
+      id: "adjustment-007",
+      employeeId: "emp-002",
+      branchId: "lahore",
+      type: "allowance",
+      direction: "earning",
+      status: "pending_approval",
+      frequency: "recurring",
+      amount: 5000,
+      effectivePeriod: "2026-08",
+      taxable: true,
+      reason:
+        "Temporary acting-role allowance.",
+      internalNote:
+        "Proposed for three payroll periods.",
+      createdAt: "2026-07-16",
+      createdBy: "Ayesha Khan",
+    },
+  ];

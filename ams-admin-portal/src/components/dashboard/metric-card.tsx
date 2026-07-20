@@ -1,4 +1,4 @@
-import type { LucideIcon } from "lucide-react";
+﻿import type { LucideIcon } from "lucide-react";
 
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -7,11 +7,12 @@ type MetricTone =
   | "success"
   | "warning"
   | "info"
-  | "danger";
+  | "danger"
+  | "neutral";
 
 type MetricCardProps = {
   label: string;
-  value: string;
+  value: string | number;
   detail: string;
   icon: LucideIcon;
   tone: MetricTone;
@@ -25,6 +26,7 @@ const TONE_STYLES: Record<
   warning: "bg-warning-muted text-warning",
   info: "bg-info-muted text-info",
   danger: "bg-danger-muted text-danger",
+  neutral: "bg-surface-muted text-text-muted",
 };
 
 export function MetricCard({
@@ -63,3 +65,5 @@ export function MetricCard({
     </Card>
   );
 }
+
+

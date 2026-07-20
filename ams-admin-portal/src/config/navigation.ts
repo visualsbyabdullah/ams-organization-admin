@@ -1,4 +1,6 @@
 import {
+  ShieldCheck,
+
   BarChart3,
   BookOpenCheck,
   Building2,
@@ -12,6 +14,7 @@ import {
   Settings,
   Star,
   Users,
+  HandCoins,
 } from "lucide-react";
 
 import type { NavigationGroup } from "@/types/navigation";
@@ -49,6 +52,11 @@ export const NAVIGATION_GROUPS: NavigationGroup[] = [
         label: "Payroll",
         href: "/payroll",
         icon: CircleDollarSign,
+      },
+      {
+        label: "Employee Loans",
+        href: "/loans",
+        icon: HandCoins,
       },
       {
         label: "Invoices",
@@ -94,6 +102,11 @@ export const NAVIGATION_GROUPS: NavigationGroup[] = [
         label: "Settings",
         href: "/settings",
         icon: Settings,
+      },
+      {
+        label: "Governance & Recovery",
+        href: "/governance",
+        icon: ShieldCheck,
       },
     ],
   },

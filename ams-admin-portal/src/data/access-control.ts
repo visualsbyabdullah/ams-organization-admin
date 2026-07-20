@@ -1,0 +1,274 @@
+﻿import {
+  PERMISSION_ACTIONS,
+  PERMISSION_MODULES,
+} from "@/config/access-control";
+import type {
+  AccessRole,
+  PermissionAction,
+  UserAccessRecord,
+} from "@/types/access-control";
+
+const ALL_ACTIONS =
+  PERMISSION_ACTIONS.map(
+    (action) => action.id,
+  );
+
+function createAllPermissions() {
+  return Object.fromEntries(
+    PERMISSION_MODULES.map((module) => [
+      module.id,
+      [...ALL_ACTIONS],
+    ]),
+  ) as Record<string, PermissionAction[]>;
+}
+
+export const ACCESS_ROLES: AccessRole[] = [
+  {
+    id: "organization-admin",
+    name: "Organization Admin",
+    description:
+      "Complete control across all organization branches and modules.",
+    type: "system",
+    status: "active",
+    branchScope: "all",
+    permissions: createAllPermissions(),
+  },
+  {
+    id: "hr-admin",
+    name: "HR Admin",
+    description:
+      "Manages employees, attendance, leave, documents and performance.",
+    type: "system",
+    status: "active",
+    branchScope: "all",
+    permissions: {
+      overview: ["view"],
+      people: [
+        "view",
+        "create",
+        "edit",
+        "approve",
+        "export",
+      ],
+      attendance: [
+        "view",
+        "create",
+        "edit",
+        "approve",
+        "export",
+      ],
+      leave: [
+        "view",
+        "create",
+        "edit",
+        "approve",
+        "export",
+      ],
+      payroll: ["view"],
+      invoices: [],
+      performance: [
+        "view",
+        "create",
+        "edit",
+        "approve",
+      ],
+      training: [
+        "view",
+        "create",
+        "edit",
+      ],
+      documents: [
+        "view",
+        "create",
+        "edit",
+        "export",
+      ],
+      support: [
+        "view",
+        "create",
+        "edit",
+      ],
+      reports: ["view", "export"],
+      branches: ["view"],
+      settings: [],
+    },
+  },
+  {
+    id: "payroll-manager",
+    name: "Payroll Manager",
+    description:
+      "Manages employee salaries, payroll runs and financial adjustments.",
+    type: "system",
+    status: "active",
+    branchScope: "all",
+    permissions: {
+      overview: ["view"],
+      people: ["view"],
+      attendance: ["view", "export"],
+      leave: ["view"],
+      payroll: [
+        "view",
+        "create",
+        "edit",
+        "approve",
+        "export",
+      ],
+      invoices: [
+        "view",
+        "create",
+        "edit",
+        "export",
+      ],
+      performance: [],
+      training: [],
+      documents: ["view", "export"],
+      support: [],
+      reports: ["view", "export"],
+      branches: ["view"],
+      settings: [],
+    },
+  },
+  {
+    id: "branch-manager",
+    name: "Branch Manager",
+    description:
+      "Controls operational workflows for assigned branches.",
+    type: "system",
+    status: "active",
+    branchScope: "assigned",
+    permissions: {
+      overview: ["view"],
+      people: ["view", "edit"],
+      attendance: [
+        "view",
+        "edit",
+        "approve",
+        "export",
+      ],
+      leave: [
+        "view",
+        "approve",
+      ],
+      payroll: ["view"],
+      invoices: ["view"],
+      performance: [
+        "view",
+        "create",
+        "edit",
+      ],
+      training: ["view"],
+      documents: ["view"],
+      support: [
+        "view",
+        "create",
+        "edit",
+      ],
+      reports: ["view", "export"],
+      branches: ["view"],
+      settings: [],
+    },
+  },
+  {
+    id: "line-manager",
+    name: "Line Manager",
+    description:
+      "Reviews attendance, leave and performance for assigned employees.",
+    type: "system",
+    status: "active",
+    branchScope: "assigned",
+    permissions: {
+      overview: ["view"],
+      people: ["view"],
+      attendance: [
+        "view",
+        "approve",
+      ],
+      leave: [
+        "view",
+        "approve",
+      ],
+      payroll: [],
+      invoices: [],
+      performance: [
+        "view",
+        "create",
+        "edit",
+      ],
+      training: ["view"],
+      documents: ["view"],
+      support: ["view", "create"],
+      reports: ["view"],
+      branches: [],
+      settings: [],
+    },
+  },
+  {
+    id: "employee",
+    name: "Employee",
+    description:
+      "Self-service access to personal attendance, leave, documents and requests.",
+    type: "system",
+    status: "active",
+    branchScope: "assigned",
+    permissions: {
+      overview: ["view"],
+      people: ["view"],
+      attendance: ["view"],
+      leave: ["view", "create"],
+      payroll: ["view"],
+      invoices: [],
+      performance: ["view"],
+      training: ["view"],
+      documents: ["view"],
+      support: ["view", "create"],
+      reports: [],
+      branches: [],
+      settings: [],
+    },
+  },
+];
+
+export const ACCESS_USERS: UserAccessRecord[] = [
+  {
+    employeeId: "emp-001",
+    roleId: "hr-admin",
+    branchId: "islamabad",
+    status: "active",
+    lastActive: "Today, 1:42 PM",
+  },
+  {
+    employeeId: "emp-002",
+    roleId: "employee",
+    branchId: "lahore",
+    status: "active",
+    lastActive: "Today, 12:18 PM",
+  },
+  {
+    employeeId: "emp-003",
+    roleId: "payroll-manager",
+    branchId: "islamabad",
+    status: "active",
+    lastActive: "Yesterday, 5:06 PM",
+  },
+  {
+    employeeId: "emp-004",
+    roleId: "branch-manager",
+    branchId: "karachi",
+    status: "active",
+    lastActive: "Today, 11:34 AM",
+  },
+  {
+    employeeId: "emp-005",
+    roleId: "employee",
+    branchId: "lahore",
+    status: "invited",
+    lastActive: "Not signed in",
+  },
+  {
+    employeeId: "emp-006",
+    roleId: "employee",
+    branchId: "islamabad",
+    status: "disabled",
+    lastActive: "12 Jul 2026",
+  },
+];

@@ -1,4 +1,124 @@
-import type { BranchOption } from "@/types/branch";
+import type {
+  BranchOption,
+  BranchRecord,
+} from "@/types/branch";
+
+export const BRANCHES: BranchRecord[] = [
+  {
+    id: "islamabad",
+    code: "ISB",
+    name: "Islamabad Branch",
+    status: "active",
+    city: "Islamabad",
+    province:
+      "Islamabad Capital Territory",
+    country: "Pakistan",
+    addressLine:
+      "Blue Area, Jinnah Avenue",
+    postalCode: "44000",
+    latitude: 33.6844,
+    longitude: 73.0479,
+    timezone: "Asia/Karachi",
+    phone: "+92 51 000 0000",
+    email:
+      "islamabad@ams.example",
+    managerName: "Ayesha Khan",
+    employeeCount: 108,
+    capacity: 140,
+    workingHoursStart: "09:00",
+    workingHoursEnd: "18:00",
+    workingDays: [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+    ],
+    attendanceEnabled: true,
+    payrollEnabled: true,
+    remoteWorkEnabled: true,
+    note:
+      "Primary organization branch and administrative office.",
+    createdAt: "2025-01-10",
+    updatedAt: "2026-07-15",
+    updatedBy: "Maaz",
+  },
+  {
+    id: "lahore",
+    code: "LHR",
+    name: "Lahore Branch",
+    status: "active",
+    city: "Lahore",
+    province: "Punjab",
+    country: "Pakistan",
+    addressLine:
+      "Gulberg III, Main Boulevard",
+    postalCode: "54660",
+    latitude: 31.5204,
+    longitude: 74.3587,
+    timezone: "Asia/Karachi",
+    phone: "+92 42 000 0000",
+    email: "lahore@ams.example",
+    managerName: "Bilal Raza",
+    employeeCount: 96,
+    capacity: 125,
+    workingHoursStart: "09:00",
+    workingHoursEnd: "18:00",
+    workingDays: [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ],
+    attendanceEnabled: true,
+    payrollEnabled: true,
+    remoteWorkEnabled: false,
+    note:
+      "Regional operations and customer-support branch.",
+    createdAt: "2025-03-18",
+    updatedAt: "2026-07-13",
+    updatedBy: "Maaz",
+  },
+  {
+    id: "karachi",
+    code: "KHI",
+    name: "Karachi Branch",
+    status: "active",
+    city: "Karachi",
+    province: "Sindh",
+    country: "Pakistan",
+    addressLine:
+      "Shahrah-e-Faisal",
+    postalCode: "75350",
+    latitude: 24.8607,
+    longitude: 67.0011,
+    timezone: "Asia/Karachi",
+    phone: "+92 21 000 0000",
+    email: "karachi@ams.example",
+    managerName: "Sara Ahmed",
+    employeeCount: 80,
+    capacity: 110,
+    workingHoursStart: "09:00",
+    workingHoursEnd: "18:00",
+    workingDays: [
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+    ],
+    attendanceEnabled: true,
+    payrollEnabled: true,
+    remoteWorkEnabled: true,
+    note:
+      "South-region branch supporting operations and finance.",
+    createdAt: "2025-06-02",
+    updatedAt: "2026-07-12",
+    updatedBy: "Maaz",
+  },
+];
 
 export const BRANCH_OPTIONS: BranchOption[] = [
   {
@@ -6,16 +126,8 @@ export const BRANCH_OPTIONS: BranchOption[] = [
     name: "All Branches",
     isAggregate: true,
   },
-  {
-    id: "islamabad",
-    name: "Islamabad Branch",
-  },
-  {
-    id: "lahore",
-    name: "Lahore Branch",
-  },
-  {
-    id: "karachi",
-    name: "Karachi Branch",
-  },
+  ...BRANCHES.map((branch) => ({
+    id: branch.id,
+    name: branch.name,
+  })),
 ];

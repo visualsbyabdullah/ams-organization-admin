@@ -1,0 +1,10 @@
+**/node_modules/
+**/.next/
+**/.ams-backups/
+**/AMS_*_CONTEXT.txt
+**/AMS_*_DIAGNOSTIC.txt
+**/AMS_*_DIAGNOSTIC.zip
+**/*.backup-*
+**/.env
+**/.env.local
+**/.env.*.local

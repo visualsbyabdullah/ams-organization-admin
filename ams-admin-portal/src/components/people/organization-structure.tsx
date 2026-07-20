@@ -1,5 +1,7 @@
 "use client";
 
+import { getPeopleMetricToneStyle } from "@/config/people-metrics";
+
 import { useMemo, useState } from "react";
 import {
   Building2,
@@ -222,7 +224,7 @@ export function OrganizationStructure() {
                   </p>
                 </div>
 
-                <span className="flex size-10 items-center justify-center rounded-control bg-surface-muted text-text-muted">
+                <span className={`flex size-10 items-center justify-center rounded-control ${getPeopleMetricToneStyle(metric.label)}`}>
                   <Icon size={19} />
                 </span>
               </div>
@@ -269,7 +271,7 @@ export function OrganizationStructure() {
                           {
                             summary.departmentCount
                           }{" "}
-                          departments ·{" "}
+                          departments Ã‚Â·{" "}
                           {summary.managerCount}{" "}
                           managers
                         </p>
@@ -372,7 +374,7 @@ export function OrganizationStructure() {
                           </p>
 
                           <p className="mt-1 text-xs text-text-muted">
-                            {department.code} ·{" "}
+                            {department.code} Ã‚Â·{" "}
                             {
                               department.description
                             }

@@ -1,0 +1,348 @@
+﻿import type {
+  EmployeeLoan,
+  LoanRepaymentTrendPoint,
+} from "@/types/loan";
+
+export const EMPLOYEE_LOANS: EmployeeLoan[] =
+  [
+    {
+      id: "loan-001",
+      employeeId: "emp-002",
+      branchId: "lahore",
+      type: "personal",
+      status: "pending_approval",
+      requestedAmount: 200000,
+      approvedAmount: 0,
+      installmentCount: 12,
+      installmentAmount: 16667,
+      paidAmount: 0,
+      outstandingBalance: 0,
+      overdueAmount: 0,
+      repaymentMethod:
+        "payroll_deduction",
+      repaymentStartDate:
+        "2026-08-01",
+      nextDueDate: "2026-08-31",
+      requestDate: "2026-07-15",
+      purpose:
+        "Personal household expense support.",
+      note:
+        "Manager recommendation is attached to the request.",
+    },
+    {
+      id: "loan-002",
+      employeeId: "emp-001",
+      branchId: "islamabad",
+      type: "education",
+      status: "repaying",
+      requestedAmount: 300000,
+      approvedAmount: 300000,
+      installmentCount: 12,
+      installmentAmount: 25000,
+      paidAmount: 150000,
+      outstandingBalance: 150000,
+      overdueAmount: 0,
+      repaymentMethod:
+        "payroll_deduction",
+      repaymentStartDate:
+        "2026-02-01",
+      nextDueDate: "2026-07-31",
+      requestDate: "2026-01-10",
+      approvedAt: "2026-01-12",
+      disbursedAt: "2026-01-15",
+      reviewedBy: "Maaz",
+      purpose:
+        "Professional certification and tuition expenses.",
+      note:
+        "Repayment is being deducted through monthly payroll.",
+    },
+    {
+      id: "loan-003",
+      employeeId: "emp-004",
+      branchId: "karachi",
+      type: "medical",
+      status: "approved",
+      requestedAmount: 150000,
+      approvedAmount: 150000,
+      installmentCount: 10,
+      installmentAmount: 15000,
+      paidAmount: 0,
+      outstandingBalance: 150000,
+      overdueAmount: 0,
+      repaymentMethod:
+        "payroll_deduction",
+      repaymentStartDate:
+        "2026-08-01",
+      nextDueDate: "2026-08-31",
+      requestDate: "2026-07-12",
+      approvedAt: "2026-07-14",
+      reviewedBy: "Maaz",
+      purpose:
+        "Immediate family medical treatment expenses.",
+      note:
+        "Approved and waiting for disbursement.",
+    },
+    {
+      id: "loan-004",
+      employeeId: "emp-005",
+      branchId: "lahore",
+      type: "salary_advance",
+      status: "repaying",
+      requestedAmount: 100000,
+      approvedAmount: 100000,
+      installmentCount: 10,
+      installmentAmount: 10000,
+      paidAmount: 40000,
+      outstandingBalance: 60000,
+      overdueAmount: 10000,
+      repaymentMethod:
+        "payroll_deduction",
+      repaymentStartDate:
+        "2026-03-01",
+      nextDueDate: "2026-07-31",
+      requestDate: "2026-02-15",
+      approvedAt: "2026-02-17",
+      disbursedAt: "2026-02-20",
+      reviewedBy: "Ayesha Khan",
+      purpose:
+        "Advance salary support for relocation expenses.",
+      note:
+        "One repayment installment is overdue.",
+    },
+    {
+      id: "loan-005",
+      employeeId: "emp-003",
+      branchId: "islamabad",
+      type: "personal",
+      status: "completed",
+      requestedAmount: 250000,
+      approvedAmount: 250000,
+      installmentCount: 10,
+      installmentAmount: 25000,
+      paidAmount: 250000,
+      outstandingBalance: 0,
+      overdueAmount: 0,
+      repaymentMethod:
+        "payroll_deduction",
+      repaymentStartDate:
+        "2025-09-01",
+      nextDueDate: "2026-06-30",
+      requestDate: "2025-08-10",
+      approvedAt: "2025-08-12",
+      disbursedAt: "2025-08-15",
+      reviewedBy: "Maaz",
+      purpose:
+        "Personal financial support.",
+      note:
+        "Loan repayment was completed successfully.",
+    },
+    {
+      id: "loan-006",
+      employeeId: "emp-006",
+      branchId: "islamabad",
+      type: "emergency",
+      status: "on_hold",
+      requestedAmount: 80000,
+      approvedAmount: 80000,
+      installmentCount: 8,
+      installmentAmount: 10000,
+      paidAmount: 20000,
+      outstandingBalance: 60000,
+      overdueAmount: 0,
+      repaymentMethod:
+        "payroll_deduction",
+      repaymentStartDate:
+        "2026-05-01",
+      nextDueDate: "2026-07-31",
+      requestDate: "2026-04-10",
+      approvedAt: "2026-04-11",
+      disbursedAt: "2026-04-12",
+      reviewedBy: "Maaz",
+      purpose:
+        "Emergency family support.",
+      note:
+        "Repayment is temporarily held while payroll record is under review.",
+    },
+  ];
+
+export const LOAN_REPAYMENT_TRENDS: Record<
+  string,
+  LoanRepaymentTrendPoint[]
+> = {
+  all: [
+    {
+      month: "Jan",
+      scheduled: 180000,
+      collected: 170000,
+      overdue: 10000,
+    },
+    {
+      month: "Feb",
+      scheduled: 210000,
+      collected: 205000,
+      overdue: 5000,
+    },
+    {
+      month: "Mar",
+      scheduled: 235000,
+      collected: 225000,
+      overdue: 10000,
+    },
+    {
+      month: "Apr",
+      scheduled: 250000,
+      collected: 245000,
+      overdue: 5000,
+    },
+    {
+      month: "May",
+      scheduled: 270000,
+      collected: 260000,
+      overdue: 10000,
+    },
+    {
+      month: "Jun",
+      scheduled: 285000,
+      collected: 275000,
+      overdue: 10000,
+    },
+    {
+      month: "Jul",
+      scheduled: 300000,
+      collected: 290000,
+      overdue: 10000,
+    },
+  ],
+  islamabad: [
+    {
+      month: "Jan",
+      scheduled: 90000,
+      collected: 90000,
+      overdue: 0,
+    },
+    {
+      month: "Feb",
+      scheduled: 105000,
+      collected: 105000,
+      overdue: 0,
+    },
+    {
+      month: "Mar",
+      scheduled: 115000,
+      collected: 115000,
+      overdue: 0,
+    },
+    {
+      month: "Apr",
+      scheduled: 125000,
+      collected: 125000,
+      overdue: 0,
+    },
+    {
+      month: "May",
+      scheduled: 135000,
+      collected: 135000,
+      overdue: 0,
+    },
+    {
+      month: "Jun",
+      scheduled: 145000,
+      collected: 145000,
+      overdue: 0,
+    },
+    {
+      month: "Jul",
+      scheduled: 155000,
+      collected: 155000,
+      overdue: 0,
+    },
+  ],
+  lahore: [
+    {
+      month: "Jan",
+      scheduled: 55000,
+      collected: 50000,
+      overdue: 5000,
+    },
+    {
+      month: "Feb",
+      scheduled: 65000,
+      collected: 60000,
+      overdue: 5000,
+    },
+    {
+      month: "Mar",
+      scheduled: 75000,
+      collected: 70000,
+      overdue: 5000,
+    },
+    {
+      month: "Apr",
+      scheduled: 80000,
+      collected: 75000,
+      overdue: 5000,
+    },
+    {
+      month: "May",
+      scheduled: 85000,
+      collected: 75000,
+      overdue: 10000,
+    },
+    {
+      month: "Jun",
+      scheduled: 90000,
+      collected: 80000,
+      overdue: 10000,
+    },
+    {
+      month: "Jul",
+      scheduled: 95000,
+      collected: 85000,
+      overdue: 10000,
+    },
+  ],
+  karachi: [
+    {
+      month: "Jan",
+      scheduled: 35000,
+      collected: 30000,
+      overdue: 5000,
+    },
+    {
+      month: "Feb",
+      scheduled: 40000,
+      collected: 40000,
+      overdue: 0,
+    },
+    {
+      month: "Mar",
+      scheduled: 45000,
+      collected: 40000,
+      overdue: 5000,
+    },
+    {
+      month: "Apr",
+      scheduled: 45000,
+      collected: 45000,
+      overdue: 0,
+    },
+    {
+      month: "May",
+      scheduled: 50000,
+      collected: 50000,
+      overdue: 0,
+    },
+    {
+      month: "Jun",
+      scheduled: 50000,
+      collected: 50000,
+      overdue: 0,
+    },
+    {
+      month: "Jul",
+      scheduled: 50000,
+      collected: 50000,
+      overdue: 0,
+    },
+  ],
+};

@@ -1,0 +1,442 @@
+﻿import type {
+  AttendanceRecord,
+  AttendanceSummary,
+  AttendanceTrendPoint,
+  DepartmentAttendancePoint,
+} from "@/types/attendance";
+
+export const ATTENDANCE_RECORDS: AttendanceRecord[] =
+  [
+    {
+      id: "attendance-001",
+      employeeId: "emp-001",
+      branchId: "islamabad",
+      date: "2026-07-16",
+      scheduledStart: "09:00",
+      scheduledEnd: "18:00",
+      checkIn: "08:54",
+      checkOut: "17:58",
+      status: "present",
+      workedMinutes: 544,
+      note: "",
+    },
+    {
+      id: "attendance-002",
+      employeeId: "emp-002",
+      branchId: "lahore",
+      date: "2026-07-16",
+      scheduledStart: "09:00",
+      scheduledEnd: "18:00",
+      checkIn: "09:19",
+      checkOut: "18:06",
+      status: "late",
+      workedMinutes: 527,
+      note: "Traffic delay reported.",
+    },
+    {
+      id: "attendance-003",
+      employeeId: "emp-003",
+      branchId: "islamabad",
+      date: "2026-07-16",
+      scheduledStart: "09:00",
+      scheduledEnd: "18:00",
+      checkIn: "",
+      checkOut: "",
+      status: "on_leave",
+      workedMinutes: 0,
+      note: "Approved annual leave.",
+    },
+    {
+      id: "attendance-004",
+      employeeId: "emp-004",
+      branchId: "karachi",
+      date: "2026-07-16",
+      scheduledStart: "08:00",
+      scheduledEnd: "17:00",
+      checkIn: "07:52",
+      checkOut: "",
+      status: "missing_checkout",
+      workedMinutes: 0,
+      note: "",
+    },
+    {
+      id: "attendance-005",
+      employeeId: "emp-005",
+      branchId: "lahore",
+      date: "2026-07-16",
+      scheduledStart: "09:00",
+      scheduledEnd: "18:00",
+      checkIn: "08:58",
+      checkOut: "18:02",
+      status: "present",
+      workedMinutes: 544,
+      note: "",
+    },
+    {
+      id: "attendance-006",
+      employeeId: "emp-006",
+      branchId: "islamabad",
+      date: "2026-07-16",
+      scheduledStart: "09:00",
+      scheduledEnd: "18:00",
+      checkIn: "",
+      checkOut: "",
+      status: "absent",
+      workedMinutes: 0,
+      note: "No attendance or leave record.",
+    },
+  ];
+
+export const ATTENDANCE_SUMMARIES: Record<
+  string,
+  AttendanceSummary
+> = {
+  all: {
+    scheduled: 252,
+    present: 214,
+    late: 12,
+    absent: 7,
+    onLeave: 19,
+    missingCheckout: 8,
+  },
+  islamabad: {
+    scheduled: 107,
+    present: 84,
+    late: 7,
+    absent: 4,
+    onLeave: 12,
+    missingCheckout: 3,
+  },
+  lahore: {
+    scheduled: 82,
+    present: 73,
+    late: 3,
+    absent: 2,
+    onLeave: 4,
+    missingCheckout: 2,
+  },
+  karachi: {
+    scheduled: 63,
+    present: 57,
+    late: 2,
+    absent: 1,
+    onLeave: 3,
+    missingCheckout: 3,
+  },
+};
+
+export const ATTENDANCE_TRENDS: Record<
+  string,
+  AttendanceTrendPoint[]
+> = {
+  all: [
+    {
+      day: "Mon",
+      present: 205,
+      late: 14,
+      absent: 8,
+    },
+    {
+      day: "Tue",
+      present: 211,
+      late: 10,
+      absent: 7,
+    },
+    {
+      day: "Wed",
+      present: 208,
+      late: 13,
+      absent: 9,
+    },
+    {
+      day: "Thu",
+      present: 217,
+      late: 8,
+      absent: 5,
+    },
+    {
+      day: "Fri",
+      present: 214,
+      late: 12,
+      absent: 7,
+    },
+    {
+      day: "Sat",
+      present: 178,
+      late: 6,
+      absent: 4,
+    },
+    {
+      day: "Sun",
+      present: 82,
+      late: 3,
+      absent: 2,
+    },
+  ],
+  islamabad: [
+    {
+      day: "Mon",
+      present: 79,
+      late: 8,
+      absent: 5,
+    },
+    {
+      day: "Tue",
+      present: 82,
+      late: 6,
+      absent: 4,
+    },
+    {
+      day: "Wed",
+      present: 80,
+      late: 9,
+      absent: 5,
+    },
+    {
+      day: "Thu",
+      present: 86,
+      late: 5,
+      absent: 3,
+    },
+    {
+      day: "Fri",
+      present: 84,
+      late: 7,
+      absent: 4,
+    },
+    {
+      day: "Sat",
+      present: 61,
+      late: 4,
+      absent: 2,
+    },
+    {
+      day: "Sun",
+      present: 30,
+      late: 2,
+      absent: 1,
+    },
+  ],
+  lahore: [
+    {
+      day: "Mon",
+      present: 69,
+      late: 4,
+      absent: 3,
+    },
+    {
+      day: "Tue",
+      present: 71,
+      late: 3,
+      absent: 2,
+    },
+    {
+      day: "Wed",
+      present: 70,
+      late: 5,
+      absent: 3,
+    },
+    {
+      day: "Thu",
+      present: 74,
+      late: 2,
+      absent: 2,
+    },
+    {
+      day: "Fri",
+      present: 73,
+      late: 3,
+      absent: 2,
+    },
+    {
+      day: "Sat",
+      present: 59,
+      late: 2,
+      absent: 1,
+    },
+    {
+      day: "Sun",
+      present: 27,
+      late: 1,
+      absent: 1,
+    },
+  ],
+  karachi: [
+    {
+      day: "Mon",
+      present: 54,
+      late: 2,
+      absent: 2,
+    },
+    {
+      day: "Tue",
+      present: 58,
+      late: 1,
+      absent: 1,
+    },
+    {
+      day: "Wed",
+      present: 57,
+      late: 2,
+      absent: 2,
+    },
+    {
+      day: "Thu",
+      present: 59,
+      late: 1,
+      absent: 1,
+    },
+    {
+      day: "Fri",
+      present: 57,
+      late: 2,
+      absent: 1,
+    },
+    {
+      day: "Sat",
+      present: 48,
+      late: 1,
+      absent: 1,
+    },
+    {
+      day: "Sun",
+      present: 25,
+      late: 0,
+      absent: 0,
+    },
+  ],
+};
+
+export const DEPARTMENT_ATTENDANCE: Record<
+  string,
+  DepartmentAttendancePoint[]
+> = {
+  all: [
+    {
+      name: "Operations",
+      present: 44,
+      late: 4,
+      absent: 2,
+    },
+    {
+      name: "Sales",
+      present: 39,
+      late: 3,
+      absent: 2,
+    },
+    {
+      name: "HR",
+      present: 17,
+      late: 1,
+      absent: 0,
+    },
+    {
+      name: "Finance",
+      present: 15,
+      late: 1,
+      absent: 1,
+    },
+    {
+      name: "Marketing",
+      present: 20,
+      late: 2,
+      absent: 1,
+    },
+  ],
+  islamabad: [
+    {
+      name: "Operations",
+      present: 18,
+      late: 2,
+      absent: 1,
+    },
+    {
+      name: "Sales",
+      present: 11,
+      late: 2,
+      absent: 1,
+    },
+    {
+      name: "HR",
+      present: 8,
+      late: 0,
+      absent: 0,
+    },
+    {
+      name: "Finance",
+      present: 6,
+      late: 1,
+      absent: 1,
+    },
+    {
+      name: "Marketing",
+      present: 7,
+      late: 1,
+      absent: 0,
+    },
+  ],
+  lahore: [
+    {
+      name: "Operations",
+      present: 15,
+      late: 1,
+      absent: 1,
+    },
+    {
+      name: "Sales",
+      present: 18,
+      late: 1,
+      absent: 0,
+    },
+    {
+      name: "HR",
+      present: 5,
+      late: 0,
+      absent: 0,
+    },
+    {
+      name: "Finance",
+      present: 5,
+      late: 1,
+      absent: 0,
+    },
+    {
+      name: "Marketing",
+      present: 7,
+      late: 0,
+      absent: 1,
+    },
+  ],
+  karachi: [
+    {
+      name: "Operations",
+      present: 11,
+      late: 1,
+      absent: 0,
+    },
+    {
+      name: "Sales",
+      present: 10,
+      late: 0,
+      absent: 1,
+    },
+    {
+      name: "HR",
+      present: 4,
+      late: 1,
+      absent: 0,
+    },
+    {
+      name: "Finance",
+      present: 4,
+      late: 0,
+      absent: 0,
+    },
+    {
+      name: "Marketing",
+      present: 6,
+      late: 1,
+      absent: 0,
+    },
+  ],
+};
