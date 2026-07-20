@@ -1,18 +1,8 @@
-﻿export type ShiftCategory =
-  | "standard"
-  | "morning"
-  | "evening"
-  | "night"
-  | "flexible";
+﻿export type ShiftCategory = "standard" | "morning" | "evening" | "night" | "flexible";
 
-export type ShiftStatus =
-  | "active"
-  | "inactive";
+export type ShiftStatus = "active" | "inactive";
 
-export type ScheduleAssignmentStatus =
-  | "scheduled"
-  | "confirmed"
-  | "conflict";
+export type ScheduleAssignmentStatus = "scheduled" | "confirmed" | "conflict";
 
 export type ShiftTemplate = {
   id: string;

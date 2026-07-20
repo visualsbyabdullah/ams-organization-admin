@@ -9,15 +9,9 @@
   TrainingSettingsStatus,
 } from "@/types/training";
 
-type BadgeVariant =
-  | "neutral"
-  | "success"
-  | "warning"
-  | "danger"
-  | "info";
+type BadgeVariant = "neutral" | "success" | "warning" | "danger" | "info";
 
-export const TRAINING_REFERENCE_DATE =
-  "2026-07-16";
+export const TRAINING_REFERENCE_DATE = "2026-07-16";
 
 export const TRAINING_TABS = [
   { label: "Overview", href: "/training" },
@@ -206,11 +200,9 @@ export const TRAINING_COPY = {
     upcomingDescription:
       "Next scheduled instructor-led training sessions in the selected scope.",
     registerTitle: "Active enrollments",
-    registerDescription:
-      "Employee training currently assigned, underway or overdue.",
+    registerDescription: "Employee training currently assigned, underway or overdue.",
     emptyTitle: "No active enrollments",
-    emptyDescription:
-      "Assign a published course to begin tracking employee progress.",
+    emptyDescription: "Assign a published course to begin tracking employee progress.",
   },
   courses: {
     title: "Training courses",
@@ -221,14 +213,12 @@ export const TRAINING_COPY = {
     registerTitle: "Course catalogue",
     registerDescription:
       "Published, draft and archived training courses available across the organization.",
-    searchPlaceholder:
-      "Search title, code, category, provider or owner",
+    searchPlaceholder: "Search title, code, category, provider or owner",
     allStatuses: "All course statuses",
     allCategories: "All categories",
     allModes: "All delivery modes",
     emptyTitle: "No courses found",
-    emptyDescription:
-      "Change the filters or add a new training course.",
+    emptyDescription: "Change the filters or add a new training course.",
     columns: {
       course: "Course",
       category: "Category",
@@ -252,13 +242,11 @@ export const TRAINING_COPY = {
     attentionTitle: "Completion queue",
     attentionDescription:
       "Overdue and near-due training requiring employee or manager follow-up.",
-    searchPlaceholder:
-      "Search employee, ID, department, course or certificate",
+    searchPlaceholder: "Search employee, ID, department, course or certificate",
     allStatuses: "All enrollment statuses",
     allCourses: "All courses",
     emptyTitle: "No enrollments found",
-    emptyDescription:
-      "Change the filters or assign a course to an employee.",
+    emptyDescription: "Change the filters or assign a course to an employee.",
     columns: {
       employee: "Employee",
       course: "Course",
@@ -277,18 +265,14 @@ export const TRAINING_COPY = {
     createAction: "Schedule session",
     exportAction: "Export sessions",
     registerTitle: "Session calendar",
-    registerDescription:
-      "Upcoming and historical instructor-led training sessions.",
+    registerDescription: "Upcoming and historical instructor-led training sessions.",
     upcomingTitle: "Next sessions",
-    upcomingDescription:
-      "Scheduled sessions ordered by date within the selected scope.",
-    searchPlaceholder:
-      "Search course, facilitator, venue or branch",
+    upcomingDescription: "Scheduled sessions ordered by date within the selected scope.",
+    searchPlaceholder: "Search course, facilitator, venue or branch",
     allStatuses: "All session statuses",
     allModes: "All delivery modes",
     emptyTitle: "No sessions found",
-    emptyDescription:
-      "Change the filters or schedule a new training session.",
+    emptyDescription: "Change the filters or schedule a new training session.",
     columns: {
       course: "Course",
       date: "Date and time",
@@ -311,13 +295,11 @@ export const TRAINING_COPY = {
     effectiveTitle: "Effective settings",
     effectiveDescription:
       "Training rules currently applied within the selected organization scope.",
-    searchPlaceholder:
-      "Search settings name, branch or updated administrator",
+    searchPlaceholder: "Search settings name, branch or updated administrator",
     allStatuses: "All settings statuses",
     allScopes: "Organization and branch",
     emptyTitle: "No training settings found",
-    emptyDescription:
-      "Change the filters or create a training settings record.",
+    emptyDescription: "Change the filters or create a training settings record.",
     columns: {
       settings: "Settings",
       scope: "Scope",

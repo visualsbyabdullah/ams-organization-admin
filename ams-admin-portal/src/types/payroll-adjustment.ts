@@ -8,20 +8,12 @@
   | "loan_recovery"
   | "penalty";
 
-export type PayrollAdjustmentDirection =
-  | "earning"
-  | "deduction";
+export type PayrollAdjustmentDirection = "earning" | "deduction";
 
 export type PayrollAdjustmentStatus =
-  | "draft"
-  | "pending_approval"
-  | "approved"
-  | "rejected"
-  | "applied";
+  "draft" | "pending_approval" | "approved" | "rejected" | "applied";
 
-export type PayrollAdjustmentFrequency =
-  | "one_time"
-  | "recurring";
+export type PayrollAdjustmentFrequency = "one_time" | "recurring";
 
 export type PayrollAdjustment = {
   id: string;

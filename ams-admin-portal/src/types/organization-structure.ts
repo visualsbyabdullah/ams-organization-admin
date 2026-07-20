@@ -1,6 +1,4 @@
-export type DepartmentStatus =
-  | "active"
-  | "inactive";
+export type DepartmentStatus = "active" | "inactive";
 
 export type Department = {
   id: string;
@@ -12,11 +10,7 @@ export type Department = {
   status: DepartmentStatus;
 };
 
-export type DesignationLevel =
-  | "leadership"
-  | "management"
-  | "professional"
-  | "entry";
+export type DesignationLevel = "leadership" | "management" | "professional" | "entry";
 
 export type Designation = {
   id: string;

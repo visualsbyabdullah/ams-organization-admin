@@ -1,37 +1,16 @@
-﻿import type {
-  PayrollPaymentMethod,
-} from "@/types/payroll";
+﻿import type { PayrollPaymentMethod } from "@/types/payroll";
 
-export type PayrollSettingsStatus =
-  | "active"
-  | "draft"
-  | "archived";
+export type PayrollSettingsStatus = "active" | "draft" | "archived";
 
-export type PayrollSettingsScope =
-  | "organization"
-  | "branch";
+export type PayrollSettingsScope = "organization" | "branch";
 
-export type PayrollSchedule =
-  | "monthly"
-  | "biweekly"
-  | "weekly";
+export type PayrollSchedule = "monthly" | "biweekly" | "weekly";
 
-export type PayrollPayDateRule =
-  | "month_end"
-  | "fixed_day"
-  | "last_working_day";
+export type PayrollPayDateRule = "month_end" | "fixed_day" | "last_working_day";
 
-export type PayrollRoundingMode =
-  | "none"
-  | "nearest_1"
-  | "nearest_10"
-  | "nearest_100";
+export type PayrollRoundingMode = "none" | "nearest_1" | "nearest_10" | "nearest_100";
 
-export type PayrollBankFileFormat =
-  | "none"
-  | "csv"
-  | "xlsx"
-  | "bank_template";
+export type PayrollBankFileFormat = "none" | "csv" | "xlsx" | "bank_template";
 
 export type PayrollSettingsRecord = {
   id: string;

@@ -1,18 +1,13 @@
 ﻿"use client";
 
-import {
-  type FormEvent,
-  useState,
-} from "react";
+import { type FormEvent, useState } from "react";
 
 import { FormField } from "@/components/forms/form-field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  LOAN_REPAYMENT_SOURCE_CONFIG,
-} from "@/config/loan-repayments";
+import { LOAN_REPAYMENT_SOURCE_CONFIG } from "@/config/loan-repayments";
 import { formatPKR } from "@/lib/currency";
 import type {
   LoanRepayment,
@@ -23,10 +18,7 @@ import type {
 type LoanRepaymentFormProps = {
   repayment: LoanRepayment;
   onCancel: () => void;
-  onSubmit: (
-    repaymentId: string,
-    values: LoanRepaymentPaymentValues,
-  ) => void;
+  onSubmit: (repaymentId: string, values: LoanRepaymentPaymentValues) => void;
 };
 
 export function LoanRepaymentForm({
@@ -34,51 +26,25 @@ export function LoanRepaymentForm({
   onCancel,
   onSubmit,
 }: LoanRepaymentFormProps) {
-  const [paidAmount, setPaidAmount] =
-    useState(
-      String(repayment.balanceAmount),
-    );
+  const [paidAmount, setPaidAmount] = useState(String(repayment.balanceAmount));
 
-  const [paidDate, setPaidDate] =
-    useState(
-      new Date()
-        .toISOString()
-        .slice(0, 10),
-    );
+  const [paidDate, setPaidDate] = useState(new Date().toISOString().slice(0, 10));
 
-  const [source, setSource] =
-    useState<LoanRepaymentSource>(
-      repayment.source,
-    );
+  const [source, setSource] = useState<LoanRepaymentSource>(repayment.source);
 
-  const [
-    referenceNumber,
-    setReferenceNumber,
-  ] = useState(
-    repayment.referenceNumber,
-  );
+  const [referenceNumber, setReferenceNumber] = useState(repayment.referenceNumber);
 
-  const [note, setNote] =
-    useState(repayment.note);
+  const [note, setNote] = useState(repayment.note);
 
-  const [submitted, setSubmitted] =
-    useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const paymentValue = Math.max(
-    Number(paidAmount) || 0,
-    0,
-  );
+  const paymentValue = Math.max(Number(paidAmount) || 0, 0);
 
   const isValid = Boolean(
-    paymentValue > 0 &&
-      paymentValue <=
-        repayment.balanceAmount &&
-      paidDate,
+    paymentValue > 0 && paymentValue <= repayment.balanceAmount && paidDate,
   );
 
-  function handleSubmit(
-    event: FormEvent<HTMLFormElement>,
-  ) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitted(true);
 
@@ -90,51 +56,31 @@ export function LoanRepaymentForm({
       paidAmount: paymentValue,
       paidDate,
       source,
-      referenceNumber:
-        referenceNumber.trim(),
+      referenceNumber: referenceNumber.trim(),
       note: note.trim(),
     });
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-6"
-    >
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="grid gap-3 sm:grid-cols-3">
         <div className="rounded-control bg-canvas p-4">
-          <p className="text-xs text-text-muted">
-            Installment
-          </p>
+          <p className="text-xs text-text-muted">Installment</p>
 
-          <p className="mt-1 font-bold">
-            {formatPKR(
-              repayment.amount,
-            )}
-          </p>
+          <p className="mt-1 font-bold">{formatPKR(repayment.amount)}</p>
         </div>
 
         <div className="rounded-control bg-info-muted p-4">
-          <p className="text-xs text-info">
-            Previously paid
-          </p>
+          <p className="text-xs text-info">Previously paid</p>
 
-          <p className="mt-1 font-bold text-info">
-            {formatPKR(
-              repayment.paidAmount,
-            )}
-          </p>
+          <p className="mt-1 font-bold text-info">{formatPKR(repayment.paidAmount)}</p>
         </div>
 
         <div className="rounded-control bg-warning-muted p-4">
-          <p className="text-xs text-warning">
-            Remaining
-          </p>
+          <p className="text-xs text-warning">Remaining</p>
 
           <p className="mt-1 font-bold text-warning">
-            {formatPKR(
-              repayment.balanceAmount,
-            )}
+            {formatPKR(repayment.balanceAmount)}
           </p>
         </div>
       </div>
@@ -144,13 +90,8 @@ export function LoanRepaymentForm({
           label="Payment amount"
           htmlFor="repaymentPaidAmount"
           error={
-            submitted &&
-            (paymentValue <= 0 ||
-              paymentValue >
-                repayment.balanceAmount)
-              ? `Enter an amount up to ${formatPKR(
-                  repayment.balanceAmount,
-                )}`
+            submitted && (paymentValue <= 0 || paymentValue > repayment.balanceAmount)
+              ? `Enter an amount up to ${formatPKR(repayment.balanceAmount)}`
               : undefined
           }
         >
@@ -158,115 +99,64 @@ export function LoanRepaymentForm({
             id="repaymentPaidAmount"
             type="number"
             min="1"
-            max={
-              repayment.balanceAmount
-            }
+            max={repayment.balanceAmount}
             value={paidAmount}
-            onChange={(event) =>
-              setPaidAmount(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setPaidAmount(event.target.value)}
           />
         </FormField>
 
         <FormField
           label="Payment date"
           htmlFor="repaymentPaidDate"
-          error={
-            submitted && !paidDate
-              ? "Select a payment date"
-              : undefined
-          }
+          error={submitted && !paidDate ? "Select a payment date" : undefined}
         >
           <Input
             id="repaymentPaidDate"
             type="date"
             value={paidDate}
-            onChange={(event) =>
-              setPaidDate(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setPaidDate(event.target.value)}
           />
         </FormField>
 
-        <FormField
-          label="Payment source"
-          htmlFor="repaymentSource"
-        >
+        <FormField label="Payment source" htmlFor="repaymentSource">
           <Select
             id="repaymentSource"
             value={source}
-            onChange={(event) =>
-              setSource(
-                event.target
-                  .value as LoanRepaymentSource,
-              )
-            }
+            onChange={(event) => setSource(event.target.value as LoanRepaymentSource)}
           >
-            {Object.entries(
-              LOAN_REPAYMENT_SOURCE_CONFIG,
-            ).map(
-              ([value, config]) => (
-                <option
-                  key={value}
-                  value={value}
-                >
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(LOAN_REPAYMENT_SOURCE_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
-        <FormField
-          label="Reference number"
-          htmlFor="repaymentReference"
-          optional
-        >
+        <FormField label="Reference number" htmlFor="repaymentReference" optional>
           <Input
             id="repaymentReference"
             value={referenceNumber}
-            onChange={(event) =>
-              setReferenceNumber(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setReferenceNumber(event.target.value)}
             placeholder="Payroll, bank or receipt reference"
           />
         </FormField>
       </div>
 
-      <FormField
-        label="Payment note"
-        htmlFor="repaymentNote"
-        optional
-      >
+      <FormField label="Payment note" htmlFor="repaymentNote" optional>
         <Textarea
           id="repaymentNote"
           value={note}
-          onChange={(event) =>
-            setNote(
-              event.target.value,
-            )
-          }
+          onChange={(event) => setNote(event.target.value)}
           placeholder="Add collection, payroll or employee context..."
         />
       </FormField>
 
       <div className="flex justify-end gap-3 border-t border-border pt-5">
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
 
-        <Button type="submit">
-          Record payment
-        </Button>
+        <Button type="submit">Record payment</Button>
       </div>
     </form>
   );

@@ -25,8 +25,7 @@ export const TRAINING_COURSES: TrainingCourse[] = [
     description:
       "Mandatory annual awareness covering passwords, phishing, data protection and incident reporting.",
     updatedAt: "2026-07-12",
-    note:
-      "Assigned to all active employees during the annual compliance cycle.",
+    note: "Assigned to all active employees during the annual compliance cycle.",
   },
   {
     id: "course-002",
@@ -401,8 +400,7 @@ export const TRAINING_SETTINGS: TrainingSettings[] = [
     mandatoryCompletionTarget: 95,
     updatedAt: "2026-07-12",
     updatedBy: "Maaz",
-    note:
-      "Default learning rules used when no active branch override exists.",
+    note: "Default learning rules used when no active branch override exists.",
   },
   {
     id: "training-settings-002",
@@ -420,8 +418,7 @@ export const TRAINING_SETTINGS: TrainingSettings[] = [
     mandatoryCompletionTarget: 98,
     updatedAt: "2026-07-14",
     updatedBy: "Maaz",
-    note:
-      "Shorter completion window for Islamabad operational training.",
+    note: "Shorter completion window for Islamabad operational training.",
   },
   {
     id: "training-settings-003",
@@ -457,15 +454,11 @@ export const TRAINING_SETTINGS: TrainingSettings[] = [
     mandatoryCompletionTarget: 100,
     updatedAt: "2026-07-10",
     updatedBy: "Maaz",
-    note:
-      "Safety and compliance assignments use a shorter completion window.",
+    note: "Safety and compliance assignments use a shorter completion window.",
   },
 ];
 
-export const TRAINING_TRENDS: Record<
-  string,
-  TrainingTrendPoint[]
-> = {
+export const TRAINING_TRENDS: Record<string, TrainingTrendPoint[]> = {
   all: [
     { month: "Jan", assigned: 28, completed: 22, overdue: 2 },
     { month: "Feb", assigned: 34, completed: 29, overdue: 2 },

@@ -15,10 +15,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { ReportScheduleForm } from "@/components/reports/report-schedule-form";
 import { ReportTabs } from "@/components/reports/report-tabs";
-import {
-  DataTable,
-  type DataTableColumn,
-} from "@/components/shared/data-table";
+import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -42,15 +39,12 @@ import type { ReportSchedule } from "@/types/report";
 
 export function ScheduledReportsWorkspace() {
   const { selectedBranch, selectedBranchId } = useBranchScope();
-  const [schedules, setSchedules] =
-    useState<ReportSchedule[]>(REPORT_SCHEDULES);
+  const [schedules, setSchedules] = useState<ReportSchedule[]>(REPORT_SCHEDULES);
   const [searchQuery, setSearchQuery] = useState("");
   const [frequencyFilter, setFrequencyFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedScheduleId, setSelectedScheduleId] =
-    useState<string | null>(null);
-  const [editorMode, setEditorMode] =
-    useState<"create" | "edit" | null>(null);
+  const [selectedScheduleId, setSelectedScheduleId] = useState<string | null>(null);
+  const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedSchedules = useMemo(
     () =>
@@ -67,9 +61,7 @@ export function ScheduledReportsWorkspace() {
     const query = searchQuery.trim().toLowerCase();
 
     return scopedSchedules.filter((schedule) => {
-      const report = REPORT_DEFINITIONS.find(
-        (item) => item.id === schedule.reportId,
-      );
+      const report = REPORT_DEFINITIONS.find((item) => item.id === schedule.reportId);
 
       const searchableValue = [
         schedule.name,
@@ -84,8 +76,7 @@ export function ScheduledReportsWorkspace() {
 
       return (
         searchableValue.includes(query) &&
-        (frequencyFilter === "all" ||
-          schedule.frequency === frequencyFilter) &&
+        (frequencyFilter === "all" || schedule.frequency === frequencyFilter) &&
         (statusFilter === "all" || schedule.status === statusFilter)
       );
     });
@@ -95,9 +86,7 @@ export function ScheduledReportsWorkspace() {
     schedules.find((schedule) => schedule.id === selectedScheduleId) ?? null;
 
   const selectedReport = selectedSchedule
-    ? REPORT_DEFINITIONS.find(
-        (report) => report.id === selectedSchedule.reportId,
-      )
+    ? REPORT_DEFINITIONS.find((report) => report.id === selectedSchedule.reportId)
     : undefined;
 
   const activeSchedules = scopedSchedules.filter(
@@ -162,9 +151,7 @@ export function ScheduledReportsWorkspace() {
         id: "report",
         header: "Report",
         cell: (schedule) => {
-          const report = REPORT_DEFINITIONS.find(
-            (item) => item.id === schedule.reportId,
-          );
+          const report = REPORT_DEFINITIONS.find((item) => item.id === schedule.reportId);
 
           return (
             <div>
@@ -188,8 +175,7 @@ export function ScheduledReportsWorkspace() {
       {
         id: "frequency",
         header: "Frequency",
-        cell: (schedule) =>
-          REPORT_SCHEDULE_FREQUENCY_CONFIG[schedule.frequency].label,
+        cell: (schedule) => REPORT_SCHEDULE_FREQUENCY_CONFIG[schedule.frequency].label,
       },
       {
         id: "format",
@@ -214,11 +200,7 @@ export function ScheduledReportsWorkspace() {
         id: "status",
         header: "Status",
         cell: (schedule) => (
-          <Badge
-            variant={
-              REPORT_SCHEDULE_STATUS_CONFIG[schedule.status].badgeVariant
-            }
-          >
+          <Badge variant={REPORT_SCHEDULE_STATUS_CONFIG[schedule.status].badgeVariant}>
             {REPORT_SCHEDULE_STATUS_CONFIG[schedule.status].label}
           </Badge>
         ),
@@ -250,9 +232,7 @@ export function ScheduledReportsWorkspace() {
       const exists = currentSchedules.some((item) => item.id === schedule.id);
 
       return exists
-        ? currentSchedules.map((item) =>
-            item.id === schedule.id ? schedule : item,
-          )
+        ? currentSchedules.map((item) => (item.id === schedule.id ? schedule : item))
         : [schedule, ...currentSchedules];
     });
 
@@ -310,9 +290,7 @@ export function ScheduledReportsWorkspace() {
 
       <Card className="mt-6 overflow-hidden">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {REPORT_COPY.scheduled.registerTitle}
-          </h2>
+          <h2 className="text-lg font-bold">{REPORT_COPY.scheduled.registerTitle}</h2>
           <p className="mt-1 text-sm text-text-muted">
             {REPORT_COPY.scheduled.registerDescription}
           </p>
@@ -332,16 +310,12 @@ export function ScheduledReportsWorkspace() {
               value={frequencyFilter}
               onChange={(event) => setFrequencyFilter(event.target.value)}
             >
-              <option value="all">
-                {REPORT_COPY.scheduled.allFrequencies}
-              </option>
-              {Object.entries(REPORT_SCHEDULE_FREQUENCY_CONFIG).map(
-                ([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ),
-              )}
+              <option value="all">{REPORT_COPY.scheduled.allFrequencies}</option>
+              {Object.entries(REPORT_SCHEDULE_FREQUENCY_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
 
             <Select
@@ -349,13 +323,11 @@ export function ScheduledReportsWorkspace() {
               onChange={(event) => setStatusFilter(event.target.value)}
             >
               <option value="all">{REPORT_COPY.scheduled.allStatuses}</option>
-              {Object.entries(REPORT_SCHEDULE_STATUS_CONFIG).map(
-                ([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(REPORT_SCHEDULE_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
           </div>
         </div>
@@ -368,9 +340,7 @@ export function ScheduledReportsWorkspace() {
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <CalendarClock className="size-8 text-text-muted" />
-              <h3 className="mt-4 font-bold">
-                {REPORT_COPY.scheduled.emptyTitle}
-              </h3>
+              <h3 className="mt-4 font-bold">{REPORT_COPY.scheduled.emptyTitle}</h3>
               <p className="mt-2 text-sm text-text-muted">
                 {REPORT_COPY.scheduled.emptyDescription}
               </p>
@@ -430,8 +400,7 @@ export function ScheduledReportsWorkspace() {
 
                 <Badge
                   variant={
-                    REPORT_SCHEDULE_STATUS_CONFIG[selectedSchedule.status]
-                      .badgeVariant
+                    REPORT_SCHEDULE_STATUS_CONFIG[selectedSchedule.status].badgeVariant
                   }
                 >
                   {REPORT_SCHEDULE_STATUS_CONFIG[selectedSchedule.status].label}
@@ -454,25 +423,18 @@ export function ScheduledReportsWorkspace() {
                 <div>
                   <dt className="text-xs text-text-muted">Branch</dt>
                   <dd className="mt-1 text-sm font-semibold">
-                    {selectedSchedule.branchName ??
-                      "All organization branches"}
+                    {selectedSchedule.branchName ?? "All organization branches"}
                   </dd>
                 </div>
                 <div>
                   <dt className="text-xs text-text-muted">Frequency</dt>
                   <dd className="mt-1 text-sm font-semibold">
-                    {
-                      REPORT_SCHEDULE_FREQUENCY_CONFIG[
-                        selectedSchedule.frequency
-                      ].label
-                    }
+                    {REPORT_SCHEDULE_FREQUENCY_CONFIG[selectedSchedule.frequency].label}
                   </dd>
                 </div>
                 <div>
                   <dt className="text-xs text-text-muted">Run time</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSchedule.runAt}
-                  </dd>
+                  <dd className="mt-1 text-sm font-semibold">{selectedSchedule.runAt}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-text-muted">Format</dt>
@@ -520,9 +482,7 @@ export function ScheduledReportsWorkspace() {
               </div>
 
               <Badge
-                variant={
-                  selectedSchedule.includeEmptyReport ? "success" : "neutral"
-                }
+                variant={selectedSchedule.includeEmptyReport ? "success" : "neutral"}
               >
                 {selectedSchedule.includeEmptyReport ? "Enabled" : "Disabled"}
               </Badge>
@@ -534,23 +494,13 @@ export function ScheduledReportsWorkspace() {
       <Drawer
         open={editorMode !== null}
         onClose={() => setEditorMode(null)}
-        title={
-          editorMode === "create"
-            ? "Add report schedule"
-            : "Edit report schedule"
-        }
+        title={editorMode === "create" ? "Add report schedule" : "Edit report schedule"}
         description="Configure recurring report generation, scope, format and internal recipients."
       >
         {editorMode && (
           <ReportScheduleForm
-            key={
-              editorMode === "create"
-                ? "new-report-schedule"
-                : selectedSchedule?.id
-            }
-            schedule={
-              editorMode === "edit" ? selectedSchedule ?? undefined : undefined
-            }
+            key={editorMode === "create" ? "new-report-schedule" : selectedSchedule?.id}
+            schedule={editorMode === "edit" ? (selectedSchedule ?? undefined) : undefined}
             reports={REPORT_DEFINITIONS}
             selectedBranchId={selectedBranchId}
             onCancel={() => setEditorMode(null)}

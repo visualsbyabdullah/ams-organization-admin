@@ -11,28 +11,17 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
-import type {
-  DepartmentAttendancePoint,
-} from "@/types/attendance";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
+import type { DepartmentAttendancePoint } from "@/types/attendance";
 
 type DepartmentAttendanceChartProps = {
   data: DepartmentAttendancePoint[];
 };
 
-export function DepartmentAttendanceChart({
-  data,
-}: DepartmentAttendanceChartProps) {
+export function DepartmentAttendanceChart({ data }: DepartmentAttendanceChartProps) {
   return (
     <div className="h-72 w-full">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
           margin={{
@@ -56,16 +45,10 @@ export function DepartmentAttendanceChart({
             dy={8}
           />
 
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={CHART_AXIS_STYLE}
-          />
+          <YAxis axisLine={false} tickLine={false} tick={CHART_AXIS_STYLE} />
 
           <Tooltip
-            contentStyle={
-              CHART_TOOLTIP_STYLE
-            }
+            contentStyle={CHART_TOOLTIP_STYLE}
             cursor={{
               fill: "var(--ams-surface-muted)",
             }}
@@ -84,26 +67,17 @@ export function DepartmentAttendanceChart({
             dataKey="present"
             name="Present"
             stackId="attendance"
-            fill={
-              CHART_COLORS.present
-            }
+            fill={CHART_COLORS.present}
             radius={[0, 0, 4, 4]}
           />
 
-          <Bar
-            dataKey="late"
-            name="Late"
-            stackId="attendance"
-            fill={CHART_COLORS.late}
-          />
+          <Bar dataKey="late" name="Late" stackId="attendance" fill={CHART_COLORS.late} />
 
           <Bar
             dataKey="absent"
             name="Absent"
             stackId="attendance"
-            fill={
-              CHART_COLORS.absent
-            }
+            fill={CHART_COLORS.absent}
             radius={[5, 5, 0, 0]}
           />
         </BarChart>

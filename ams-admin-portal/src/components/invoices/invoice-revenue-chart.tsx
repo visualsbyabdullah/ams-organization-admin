@@ -11,29 +11,18 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 import { formatPKR } from "@/lib/currency";
-import type {
-  InvoiceTrendPoint,
-} from "@/types/invoice";
+import type { InvoiceTrendPoint } from "@/types/invoice";
 
 type InvoiceRevenueChartProps = {
   data: readonly InvoiceTrendPoint[];
 };
 
-export function InvoiceRevenueChart({
-  data,
-}: InvoiceRevenueChartProps) {
+export function InvoiceRevenueChart({ data }: InvoiceRevenueChartProps) {
   return (
     <div className="h-72 w-full [&_*:focus]:outline-none [&_svg]:outline-none">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           accessibilityLayer={false}
           data={data}
@@ -63,16 +52,12 @@ export function InvoiceRevenueChart({
             tickLine={false}
             tick={CHART_AXIS_STYLE}
             width={72}
-            tickFormatter={(value: number | string) =>
-              formatPKR(Number(value), true)
-            }
+            tickFormatter={(value: number | string) => formatPKR(Number(value), true)}
           />
 
           <Tooltip
             contentStyle={CHART_TOOLTIP_STYLE}
-            formatter={(value: number | string) =>
-              formatPKR(Number(value))
-            }
+            formatter={(value: number | string) => formatPKR(Number(value))}
           />
 
           <Legend

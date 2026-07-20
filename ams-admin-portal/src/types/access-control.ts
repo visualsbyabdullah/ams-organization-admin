@@ -1,27 +1,13 @@
 ﻿export type PermissionAction =
-  | "view"
-  | "create"
-  | "edit"
-  | "approve"
-  | "delete"
-  | "export";
+  "view" | "create" | "edit" | "approve" | "delete" | "export";
 
-export type RoleType =
-  | "system"
-  | "custom";
+export type RoleType = "system" | "custom";
 
-export type RoleStatus =
-  | "active"
-  | "inactive";
+export type RoleStatus = "active" | "inactive";
 
-export type BranchAccessScope =
-  | "all"
-  | "assigned";
+export type BranchAccessScope = "all" | "assigned";
 
-export type PortalAccessStatus =
-  | "active"
-  | "invited"
-  | "disabled";
+export type PortalAccessStatus = "active" | "invited" | "disabled";
 
 export type AccessRole = {
   id: string;
@@ -30,10 +16,7 @@ export type AccessRole = {
   type: RoleType;
   status: RoleStatus;
   branchScope: BranchAccessScope;
-  permissions: Record<
-    string,
-    PermissionAction[]
-  >;
+  permissions: Record<string, PermissionAction[]>;
 };
 
 export type UserAccessRecord = {

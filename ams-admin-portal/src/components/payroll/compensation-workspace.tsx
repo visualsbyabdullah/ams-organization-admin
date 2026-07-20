@@ -1,9 +1,6 @@
 ﻿"use client";
 
-import {
-  useMemo,
-  useState,
-} from "react";
+import { useMemo, useState } from "react";
 import {
   Banknote,
   CalendarClock,
@@ -49,10 +46,7 @@ import {
   PAY_FREQUENCY_CONFIG,
 } from "@/config/compensation";
 import { useBranchScope } from "@/context/branch-scope-context";
-import {
-  COMPENSATION_HISTORY,
-  COMPENSATION_RECORDS,
-} from "@/data/compensation";
+import { COMPENSATION_HISTORY, COMPENSATION_RECORDS } from "@/data/compensation";
 import { EMPLOYEES } from "@/data/employees";
 import { formatPKR } from "@/lib/currency";
 import { formatDate } from "@/lib/date";
@@ -62,14 +56,9 @@ import type {
   DepartmentCompensationPoint,
 } from "@/types/compensation";
 
-type EditorMode =
-  | "create"
-  | "edit"
-  | null;
+type EditorMode = "create" | "edit" | null;
 
-function getTotalFixedCompensation(
-  record: CompensationRecord,
-) {
+function getTotalFixedCompensation(record: CompensationRecord) {
   return (
     record.baseSalary +
     record.housingAllowance +
@@ -79,442 +68,232 @@ function getTotalFixedCompensation(
   );
 }
 
-function getDaysUntil(
-  date: string,
-) {
-  const referenceDate =
-    new Date(
-      `${COMPENSATION_REFERENCE_DATE}T00:00:00`,
-    );
+function getDaysUntil(date: string) {
+  const referenceDate = new Date(`${COMPENSATION_REFERENCE_DATE}T00:00:00`);
 
-  const targetDate =
-    new Date(
-      `${date}T00:00:00`,
-    );
+  const targetDate = new Date(`${date}T00:00:00`);
 
-  return Math.floor(
-    (targetDate.getTime() -
-      referenceDate.getTime()) /
-      86400000,
-  );
+  return Math.floor((targetDate.getTime() - referenceDate.getTime()) / 86400000);
 }
 
 export function CompensationWorkspace() {
-  const { selectedBranch } =
-    useBranchScope();
+  const { selectedBranch } = useBranchScope();
 
-  const [
-    records,
-    setRecords,
-  ] = useState<
-    CompensationRecord[]
-  >(COMPENSATION_RECORDS);
+  const [records, setRecords] = useState<CompensationRecord[]>(COMPENSATION_RECORDS);
 
-  const [
-    history,
-    setHistory,
-  ] = useState<
-    CompensationHistoryType[]
-  >(COMPENSATION_HISTORY);
+  const [history, setHistory] = useState<CompensationHistoryType[]>(COMPENSATION_HISTORY);
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [statusFilter, setStatusFilter] =
-    useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  const [
-    frequencyFilter,
-    setFrequencyFilter,
-  ] = useState("all");
+  const [frequencyFilter, setFrequencyFilter] = useState("all");
 
-  const [
-    selectedRecordId,
-    setSelectedRecordId,
-  ] = useState<string | null>(null);
+  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
 
-  const [
-    editorMode,
-    setEditorMode,
-  ] = useState<EditorMode>(null);
+  const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
   const scopedRecords = useMemo(
     () =>
       records.filter(
-        (record) =>
-          selectedBranch.isAggregate ||
-          record.branchId ===
-            selectedBranch.id,
+        (record) => selectedBranch.isAggregate || record.branchId === selectedBranch.id,
       ),
     [records, selectedBranch],
   );
 
-  const visibleRecords =
-    useMemo(() => {
-      const query = searchQuery
-        .trim()
+  const visibleRecords = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    return scopedRecords.filter((record) => {
+      const employee = EMPLOYEES.find((item) => item.id === record.employeeId);
+
+      if (!employee) {
+        return false;
+      }
+
+      const searchableValue = [
+        employee.name,
+        employee.employeeCode,
+        employee.department,
+        employee.designation,
+        employee.email,
+      ]
+        .join(" ")
         .toLowerCase();
 
-      return scopedRecords.filter(
-        (record) => {
-          const employee =
-            EMPLOYEES.find(
-              (item) =>
-                item.id ===
-                record.employeeId,
-            );
+      const matchesStatus = statusFilter === "all" || record.status === statusFilter;
 
-          if (!employee) {
-            return false;
-          }
+      const matchesFrequency =
+        frequencyFilter === "all" || record.payFrequency === frequencyFilter;
 
-          const searchableValue = [
-            employee.name,
-            employee.employeeCode,
-            employee.department,
-            employee.designation,
-            employee.email,
-          ]
-            .join(" ")
-            .toLowerCase();
+      return searchableValue.includes(query) && matchesStatus && matchesFrequency;
+    });
+  }, [frequencyFilter, scopedRecords, searchQuery, statusFilter]);
 
-          const matchesStatus =
-            statusFilter === "all" ||
-            record.status ===
-              statusFilter;
+  const selectedRecord = records.find((record) => record.id === selectedRecordId) ?? null;
 
-          const matchesFrequency =
-            frequencyFilter === "all" ||
-            record.payFrequency ===
-              frequencyFilter;
+  const selectedEmployee = selectedRecord
+    ? EMPLOYEES.find((employee) => employee.id === selectedRecord.employeeId)
+    : null;
 
-          return (
-            searchableValue.includes(
-              query,
-            ) &&
-            matchesStatus &&
-            matchesFrequency
-          );
-        },
-      );
-    }, [
-      frequencyFilter,
-      scopedRecords,
-      searchQuery,
-      statusFilter,
-    ]);
+  const selectedHistory = history
+    .filter((item) => item.compensationId === selectedRecord?.id)
+    .sort((first, second) => second.effectiveDate.localeCompare(first.effectiveDate));
 
-  const selectedRecord =
-    records.find(
-      (record) =>
-        record.id ===
-        selectedRecordId,
-    ) ?? null;
+  const upcomingReviews = scopedRecords
+    .filter((record) => {
+      const daysUntil = getDaysUntil(record.nextReviewDate);
 
-  const selectedEmployee =
-    selectedRecord
-      ? EMPLOYEES.find(
-          (employee) =>
-            employee.id ===
-            selectedRecord.employeeId,
-        )
-      : null;
+      return record.status !== "archived" && daysUntil >= 0 && daysUntil <= 90;
+    })
+    .sort((first, second) => first.nextReviewDate.localeCompare(second.nextReviewDate));
 
-  const selectedHistory =
-    history
-      .filter(
-        (item) =>
-          item.compensationId ===
-          selectedRecord?.id,
-      )
-      .sort((first, second) =>
-        second.effectiveDate.localeCompare(
-          first.effectiveDate,
-        ),
-      );
+  const totalBaseSalary = scopedRecords.reduce(
+    (total, record) => total + record.baseSalary,
+    0,
+  );
 
-  const upcomingReviews =
-    scopedRecords
-      .filter((record) => {
-        const daysUntil =
-          getDaysUntil(
-            record.nextReviewDate,
-          );
-
-        return (
-          record.status !==
-            "archived" &&
-          daysUntil >= 0 &&
-          daysUntil <= 90
-        );
-      })
-      .sort((first, second) =>
-        first.nextReviewDate.localeCompare(
-          second.nextReviewDate,
-        ),
-      );
-
-  const totalBaseSalary =
-    scopedRecords.reduce(
-      (total, record) =>
-        total + record.baseSalary,
-      0,
-    );
-
-  const totalFixedCompensation =
-    scopedRecords.reduce(
-      (total, record) =>
-        total +
-        getTotalFixedCompensation(
-          record,
-        ),
-      0,
-    );
+  const totalFixedCompensation = scopedRecords.reduce(
+    (total, record) => total + getTotalFixedCompensation(record),
+    0,
+  );
 
   const averageBaseSalary =
-    scopedRecords.length > 0
-      ? Math.round(
-          totalBaseSalary /
-            scopedRecords.length,
-        )
-      : 0;
+    scopedRecords.length > 0 ? Math.round(totalBaseSalary / scopedRecords.length) : 0;
 
-  const totalAllowances =
-    totalFixedCompensation -
-    totalBaseSalary;
+  const totalAllowances = totalFixedCompensation - totalBaseSalary;
 
-  const chartData =
-    useMemo<
-      DepartmentCompensationPoint[]
-    >(() => {
-      const grouped =
-        new Map<
-          string,
-          {
-            baseTotal: number;
-            compensationTotal: number;
-            count: number;
-          }
-        >();
+  const chartData = useMemo<DepartmentCompensationPoint[]>(() => {
+    const grouped = new Map<
+      string,
+      {
+        baseTotal: number;
+        compensationTotal: number;
+        count: number;
+      }
+    >();
 
-      scopedRecords.forEach(
-        (record) => {
-          const employee =
-            EMPLOYEES.find(
-              (item) =>
-                item.id ===
-                record.employeeId,
-            );
+    scopedRecords.forEach((record) => {
+      const employee = EMPLOYEES.find((item) => item.id === record.employeeId);
 
-          if (!employee) {
-            return;
-          }
+      if (!employee) {
+        return;
+      }
 
-          const current =
-            grouped.get(
-              employee.department,
-            ) ?? {
-              baseTotal: 0,
-              compensationTotal: 0,
-              count: 0,
-            };
+      const current = grouped.get(employee.department) ?? {
+        baseTotal: 0,
+        compensationTotal: 0,
+        count: 0,
+      };
 
-          current.baseTotal +=
-            record.baseSalary;
+      current.baseTotal += record.baseSalary;
 
-          current.compensationTotal +=
-            getTotalFixedCompensation(
-              record,
-            );
+      current.compensationTotal += getTotalFixedCompensation(record);
 
-          current.count += 1;
+      current.count += 1;
 
-          grouped.set(
-            employee.department,
-            current,
-          );
-        },
-      );
+      grouped.set(employee.department, current);
+    });
 
-      return Array.from(
-        grouped.entries(),
-      ).map(
-        ([department, values]) => ({
-          department,
-          averageBaseSalary:
-            Math.round(
-              values.baseTotal /
-                values.count,
-            ),
-          averageTotalCompensation:
-            Math.round(
-              values.compensationTotal /
-                values.count,
-            ),
-        }),
-      );
-    }, [scopedRecords]);
+    return Array.from(grouped.entries()).map(([department, values]) => ({
+      department,
+      averageBaseSalary: Math.round(values.baseTotal / values.count),
+      averageTotalCompensation: Math.round(values.compensationTotal / values.count),
+    }));
+  }, [scopedRecords]);
 
   const metrics = [
     {
       label: "Active compensation",
-      value: scopedRecords.filter(
-        (record) =>
-          record.status === "active",
-      ).length,
+      value: scopedRecords.filter((record) => record.status === "active").length,
       detail: selectedBranch.name,
       icon: Users,
       tone: "success" as const,
     },
     {
       label: "Average base salary",
-      value: formatPKR(
-        averageBaseSalary,
-        true,
-      ),
-      detail:
-        "Monthly employee average",
+      value: formatPKR(averageBaseSalary, true),
+      detail: "Monthly employee average",
       icon: CircleDollarSign,
       tone: "info" as const,
     },
     {
       label: "Monthly allowances",
-      value: formatPKR(
-        totalAllowances,
-        true,
-      ),
-      detail:
-        "Recurring fixed allowances",
+      value: formatPKR(totalAllowances, true),
+      detail: "Recurring fixed allowances",
       icon: WalletCards,
       tone: "warning" as const,
     },
     {
       label: "Pending reviews",
-      value: scopedRecords.filter(
-        (record) =>
-          record.status ===
-          "pending_review",
-      ).length,
-      detail:
-        "Require compensation action",
+      value: scopedRecords.filter((record) => record.status === "pending_review").length,
+      detail: "Require compensation action",
       icon: CalendarClock,
       tone: "danger" as const,
     },
   ];
 
-  function saveRecord(
-    nextRecord: CompensationRecord,
-  ) {
-    const previousRecord =
-      records.find(
-        (record) =>
-          record.id ===
-          nextRecord.id,
-      );
+  function saveRecord(nextRecord: CompensationRecord) {
+    const previousRecord = records.find((record) => record.id === nextRecord.id);
 
-    setRecords(
-      (currentRecords) => {
-        const exists =
-          currentRecords.some(
-            (record) =>
-              record.id ===
-              nextRecord.id,
-          );
+    setRecords((currentRecords) => {
+      const exists = currentRecords.some((record) => record.id === nextRecord.id);
 
-        return exists
-          ? currentRecords.map(
-              (record) =>
-                record.id ===
-                nextRecord.id
-                  ? nextRecord
-                  : record,
-            )
-          : [
-              nextRecord,
-              ...currentRecords,
-            ];
-      },
-    );
+      return exists
+        ? currentRecords.map((record) =>
+            record.id === nextRecord.id ? nextRecord : record,
+          )
+        : [nextRecord, ...currentRecords];
+    });
 
-    if (
-      previousRecord &&
-      previousRecord.baseSalary !==
-        nextRecord.baseSalary
-    ) {
-      setHistory(
-        (currentHistory) => [
-          {
-            id: crypto.randomUUID(),
-            compensationId:
-              nextRecord.id,
-            employeeId:
-              nextRecord.employeeId,
-            previousBaseSalary:
-              previousRecord.baseSalary,
-            newBaseSalary:
-              nextRecord.baseSalary,
-            effectiveDate:
-              nextRecord.effectiveDate,
-            reason:
-              nextRecord.lastChangeReason,
-            approvedBy:
-              nextRecord.updatedBy,
-            note:
-              nextRecord.note,
-          },
-          ...currentHistory,
-        ],
-      );
+    if (previousRecord && previousRecord.baseSalary !== nextRecord.baseSalary) {
+      setHistory((currentHistory) => [
+        {
+          id: crypto.randomUUID(),
+          compensationId: nextRecord.id,
+          employeeId: nextRecord.employeeId,
+          previousBaseSalary: previousRecord.baseSalary,
+          newBaseSalary: nextRecord.baseSalary,
+          effectiveDate: nextRecord.effectiveDate,
+          reason: nextRecord.lastChangeReason,
+          approvedBy: nextRecord.updatedBy,
+          note: nextRecord.note,
+        },
+        ...currentHistory,
+      ]);
     }
 
-    setSelectedRecordId(
-      nextRecord.id,
-    );
+    setSelectedRecordId(nextRecord.id);
 
     setEditorMode(null);
   }
 
-  function approveRecord(
-    recordId: string,
-  ) {
-    setRecords(
-      (currentRecords) =>
-        currentRecords.map(
-          (record) =>
-            record.id === recordId
-              ? {
-                  ...record,
-                  status: "active",
-                  updatedAt:
-                    new Date()
-                      .toISOString()
-                      .slice(0, 10),
-                  updatedBy: "Maaz",
-                }
-              : record,
-        ),
+  function approveRecord(recordId: string) {
+    setRecords((currentRecords) =>
+      currentRecords.map((record) =>
+        record.id === recordId
+          ? {
+              ...record,
+              status: "active",
+              updatedAt: new Date().toISOString().slice(0, 10),
+              updatedBy: "Maaz",
+            }
+          : record,
+      ),
     );
   }
 
   return (
     <div className="mx-auto max-w-360">
       <PageHeader
-        eyebrow={
-          COMPENSATION_COPY.eyebrow
-        }
-        title={
-          COMPENSATION_COPY.title
-        }
-        description={
-          COMPENSATION_COPY.description
-        }
+        eyebrow={COMPENSATION_COPY.eyebrow}
+        title={COMPENSATION_COPY.title}
+        description={COMPENSATION_COPY.description}
         actions={
           <>
             <Button variant="outline">
               <Download />
-              {
-                COMPENSATION_COPY.exportAction
-              }
+              {COMPENSATION_COPY.exportAction}
             </Button>
 
             <Button
@@ -524,9 +303,7 @@ export function CompensationWorkspace() {
               }}
             >
               <Plus />
-              {
-                COMPENSATION_COPY.addAction
-              }
+              {COMPENSATION_COPY.addAction}
             </Button>
           </>
         }
@@ -538,108 +315,66 @@ export function CompensationWorkspace() {
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
         <ChartCard
-          title={
-            COMPENSATION_COPY.chartTitle
-          }
-          description={
-            COMPENSATION_COPY.chartDescription
-          }
+          title={COMPENSATION_COPY.chartTitle}
+          description={COMPENSATION_COPY.chartDescription}
         >
           {chartData.length > 0 ? (
-            <DepartmentCompensationChart
-              data={chartData}
-            />
+            <DepartmentCompensationChart data={chartData} />
           ) : (
             <div className="flex h-72 items-center justify-center text-sm text-text-muted">
-              No compensation data is
-              available.
+              No compensation data is available.
             </div>
           )}
         </ChartCard>
 
         <Card className="p-5">
-          <h2 className="text-lg font-bold">
-            {
-              COMPENSATION_COPY.attentionTitle
-            }
-          </h2>
+          <h2 className="text-lg font-bold">{COMPENSATION_COPY.attentionTitle}</h2>
 
           <p className="mt-1 text-sm text-text-muted">
-            {
-              COMPENSATION_COPY.attentionDescription
-            }
+            {COMPENSATION_COPY.attentionDescription}
           </p>
 
           <div className="mt-5 space-y-3">
-            {upcomingReviews.length >
-            0 ? (
-              upcomingReviews.map(
-                (record) => {
-                  const employee =
-                    EMPLOYEES.find(
-                      (item) =>
-                        item.id ===
-                        record.employeeId,
-                    );
+            {upcomingReviews.length > 0 ? (
+              upcomingReviews.map((record) => {
+                const employee = EMPLOYEES.find((item) => item.id === record.employeeId);
 
-                  if (!employee) {
-                    return null;
-                  }
+                if (!employee) {
+                  return null;
+                }
 
-                  return (
-                    <button
-                      key={record.id}
-                      type="button"
-                      onClick={() =>
-                        setSelectedRecordId(
-                          record.id,
-                        )
-                      }
-                      className="flex w-full items-center justify-between gap-4 rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
+                return (
+                  <button
+                    key={record.id}
+                    type="button"
+                    onClick={() => setSelectedRecordId(record.id)}
+                    className="flex w-full items-center justify-between gap-4 rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
+                  >
+                    <div>
+                      <p className="text-sm font-semibold">{employee.name}</p>
+
+                      <p className="mt-1 text-xs text-text-muted">
+                        Review {formatDate(record.nextReviewDate)}
+                      </p>
+                    </div>
+
+                    <Badge
+                      variant={COMPENSATION_STATUS_CONFIG[record.status].badgeVariant}
                     >
-                      <div>
-                        <p className="text-sm font-semibold">
-                          {employee.name}
-                        </p>
-
-                        <p className="mt-1 text-xs text-text-muted">
-                          Review{" "}
-                          {formatDate(
-                            record.nextReviewDate,
-                          )}
-                        </p>
-                      </div>
-
-                      <Badge
-                        variant={
-                          COMPENSATION_STATUS_CONFIG[
-                            record.status
-                          ].badgeVariant
-                        }
-                      >
-                        {
-                          COMPENSATION_STATUS_CONFIG[
-                            record.status
-                          ].label
-                        }
-                      </Badge>
-                    </button>
-                  );
-                },
-              )
+                      {COMPENSATION_STATUS_CONFIG[record.status].label}
+                    </Badge>
+                  </button>
+                );
+              })
             ) : (
               <div className="rounded-control bg-success-muted p-4 text-sm font-medium text-success">
-                No compensation reviews are due
-                within ninety days.
+                No compensation reviews are due within ninety days.
               </div>
             )}
           </div>
@@ -648,16 +383,10 @@ export function CompensationWorkspace() {
 
       <Card className="mt-6">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {
-              COMPENSATION_COPY.tableTitle
-            }
-          </h2>
+          <h2 className="text-lg font-bold">{COMPENSATION_COPY.tableTitle}</h2>
 
           <p className="mt-1 text-sm text-text-muted">
-            {
-              COMPENSATION_COPY.tableDescription
-            }
+            {COMPENSATION_COPY.tableDescription}
           </p>
 
           <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1fr)_14rem_14rem]">
@@ -666,72 +395,36 @@ export function CompensationWorkspace() {
 
               <Input
                 value={searchQuery}
-                onChange={(event) =>
-                  setSearchQuery(
-                    event.target.value,
-                  )
-                }
-                placeholder={
-                  COMPENSATION_COPY.searchPlaceholder
-                }
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder={COMPENSATION_COPY.searchPlaceholder}
                 className="pl-9"
               />
             </div>
 
             <Select
               value={statusFilter}
-              onChange={(event) =>
-                setStatusFilter(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setStatusFilter(event.target.value)}
             >
-              <option value="all">
-                {
-                  COMPENSATION_COPY.allStatuses
-                }
-              </option>
+              <option value="all">{COMPENSATION_COPY.allStatuses}</option>
 
-              {Object.entries(
-                COMPENSATION_STATUS_CONFIG,
-              ).map(
-                ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(COMPENSATION_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
 
             <Select
               value={frequencyFilter}
-              onChange={(event) =>
-                setFrequencyFilter(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setFrequencyFilter(event.target.value)}
             >
-              <option value="all">
-                {
-                  COMPENSATION_COPY.allFrequencies
-                }
-              </option>
+              <option value="all">{COMPENSATION_COPY.allFrequencies}</option>
 
-              {Object.entries(
-                PAY_FREQUENCY_CONFIG,
-              ).map(
-                ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(PAY_FREQUENCY_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
           </div>
         </div>
@@ -740,208 +433,115 @@ export function CompensationWorkspace() {
           <Table>
             <TableHeader>
               <TableRow className="bg-canvas">
-                <TableHead>
-                  Employee
-                </TableHead>
+                <TableHead>Employee</TableHead>
 
-                <TableHead>
-                  Base salary
-                </TableHead>
+                <TableHead>Base salary</TableHead>
 
-                <TableHead>
-                  Allowances
-                </TableHead>
+                <TableHead>Allowances</TableHead>
 
-                <TableHead>
-                  Fixed compensation
-                </TableHead>
+                <TableHead>Fixed compensation</TableHead>
 
-                <TableHead>
-                  Bonus target
-                </TableHead>
+                <TableHead>Bonus target</TableHead>
 
-                <TableHead>
-                  Effective date
-                </TableHead>
+                <TableHead>Effective date</TableHead>
 
-                <TableHead>
-                  Next review
-                </TableHead>
+                <TableHead>Next review</TableHead>
 
-                <TableHead>
-                  Status
-                </TableHead>
+                <TableHead>Status</TableHead>
 
-                <TableHead className="w-16">
-                  Actions
-                </TableHead>
+                <TableHead className="w-16">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {visibleRecords.map(
-                (record) => {
-                  const employee =
-                    EMPLOYEES.find(
-                      (item) =>
-                        item.id ===
-                        record.employeeId,
-                    );
+              {visibleRecords.map((record) => {
+                const employee = EMPLOYEES.find((item) => item.id === record.employeeId);
 
-                  if (!employee) {
-                    return null;
-                  }
+                if (!employee) {
+                  return null;
+                }
 
-                  const totalFixed =
-                    getTotalFixedCompensation(
-                      record,
-                    );
+                const totalFixed = getTotalFixedCompensation(record);
 
-                  const allowances =
-                    totalFixed -
-                    record.baseSalary;
+                const allowances = totalFixed - record.baseSalary;
 
-                  const statusConfig =
-                    COMPENSATION_STATUS_CONFIG[
-                      record.status
-                    ];
+                const statusConfig = COMPENSATION_STATUS_CONFIG[record.status];
 
-                  return (
-                    <TableRow
-                      key={record.id}
-                      className="cursor-pointer transition hover:bg-canvas"
-                      onClick={() =>
-                        setSelectedRecordId(
-                          record.id,
-                        )
-                      }
-                    >
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar
-                            name={
-                              employee.name
-                            }
-                            initials={
-                              employee.initials
-                            }
-                          />
+                return (
+                  <TableRow
+                    key={record.id}
+                    className="cursor-pointer transition hover:bg-canvas"
+                    onClick={() => setSelectedRecordId(record.id)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar name={employee.name} initials={employee.initials} />
 
-                          <div>
-                            <p className="font-semibold">
-                              {employee.name}
-                            </p>
+                        <div>
+                          <p className="font-semibold">{employee.name}</p>
 
-                            <p className="mt-1 text-xs text-text-muted">
-                              {
-                                employee.employeeCode
-                              }{" "}
-                              ·{" "}
-                              {
-                                employee.department
-                              }
-                            </p>
-                          </div>
+                          <p className="mt-1 text-xs text-text-muted">
+                            {employee.employeeCode} · {employee.department}
+                          </p>
                         </div>
-                      </TableCell>
+                      </div>
+                    </TableCell>
 
-                      <TableCell>
-                        {formatPKR(
-                          record.baseSalary,
-                        )}
-                      </TableCell>
+                    <TableCell>{formatPKR(record.baseSalary)}</TableCell>
 
-                      <TableCell>
-                        {formatPKR(
-                          allowances,
-                        )}
-                      </TableCell>
+                    <TableCell>{formatPKR(allowances)}</TableCell>
 
-                      <TableCell>
-                        <strong>
-                          {formatPKR(
-                            totalFixed,
-                          )}
-                        </strong>
-                      </TableCell>
+                    <TableCell>
+                      <strong>{formatPKR(totalFixed)}</strong>
+                    </TableCell>
 
-                      <TableCell>
-                        {
-                          record.bonusTargetPercentage
-                        }
-                        %
-                      </TableCell>
+                    <TableCell>{record.bonusTargetPercentage}%</TableCell>
 
-                      <TableCell>
-                        {formatDate(
-                          record.effectiveDate,
-                        )}
-                      </TableCell>
+                    <TableCell>{formatDate(record.effectiveDate)}</TableCell>
 
-                      <TableCell>
-                        {formatDate(
-                          record.nextReviewDate,
-                        )}
-                      </TableCell>
+                    <TableCell>{formatDate(record.nextReviewDate)}</TableCell>
 
-                      <TableCell>
-                        <Badge
-                          variant={
-                            statusConfig.badgeVariant
-                          }
-                        >
-                          {statusConfig.label}
-                        </Badge>
-                      </TableCell>
+                    <TableCell>
+                      <Badge variant={statusConfig.badgeVariant}>
+                        {statusConfig.label}
+                      </Badge>
+                    </TableCell>
 
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Open compensation for ${employee.name}`}
-                          onClick={(event) => {
-                            event.stopPropagation();
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Open compensation for ${employee.name}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                            setSelectedRecordId(
-                              record.id,
-                            );
-                          }}
-                        >
-                          <MoreHorizontal />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                },
-              )}
+                          setSelectedRecordId(record.id);
+                        }}
+                      >
+                        <MoreHorizontal />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         ) : (
           <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
             <Banknote className="size-8 text-text-muted" />
 
-            <h3 className="mt-4 font-bold">
-              {
-                COMPENSATION_COPY.emptyTitle
-              }
-            </h3>
+            <h3 className="mt-4 font-bold">{COMPENSATION_COPY.emptyTitle}</h3>
 
             <p className="mt-2 text-sm text-text-muted">
-              {
-                COMPENSATION_COPY.emptyDescription
-              }
+              {COMPENSATION_COPY.emptyDescription}
             </p>
           </div>
         )}
       </Card>
 
       <Drawer
-        open={Boolean(
-          selectedRecord,
-        )}
-        onClose={() =>
-          setSelectedRecordId(null)
-        }
+        open={Boolean(selectedRecord)}
+        onClose={() => setSelectedRecordId(null)}
         title="Employee compensation"
         description={
           selectedEmployee
@@ -951,26 +551,17 @@ export function CompensationWorkspace() {
         footer={
           selectedRecord ? (
             <div className="flex flex-wrap justify-end gap-3">
-              {selectedRecord.status ===
-                "pending_review" && (
+              {selectedRecord.status === "pending_review" && (
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    approveRecord(
-                      selectedRecord.id,
-                    )
-                  }
+                  onClick={() => approveRecord(selectedRecord.id)}
                 >
                   <Check />
                   Approve compensation
                 </Button>
               )}
 
-              <Button
-                onClick={() =>
-                  setEditorMode("edit")
-                }
-              >
+              <Button onClick={() => setEditorMode("edit")}>
                 <FilePenLine />
                 Edit compensation
               </Button>
@@ -978,289 +569,192 @@ export function CompensationWorkspace() {
           ) : undefined
         }
       >
-        {selectedRecord &&
-          selectedEmployee && (
-            <div className="space-y-6">
-              <section className="rounded-card border border-border">
-                <div className="flex items-start justify-between gap-4 border-b border-border p-5">
+        {selectedRecord && selectedEmployee && (
+          <div className="space-y-6">
+            <section className="rounded-card border border-border">
+              <div className="flex items-start justify-between gap-4 border-b border-border p-5">
+                <div>
+                  <h3 className="font-bold">{selectedEmployee.name}</h3>
+
+                  <p className="mt-1 text-xs text-text-muted">
+                    {selectedEmployee.designation} · {selectedEmployee.branchName}
+                  </p>
+                </div>
+
+                <Badge
+                  variant={COMPENSATION_STATUS_CONFIG[selectedRecord.status].badgeVariant}
+                >
+                  {COMPENSATION_STATUS_CONFIG[selectedRecord.status].label}
+                </Badge>
+              </div>
+
+              <dl className="grid gap-5 p-5 sm:grid-cols-2">
+                <div>
+                  <dt className="text-xs text-text-muted">Base salary</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {formatPKR(selectedRecord.baseSalary)}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Fixed compensation</dt>
+
+                  <dd className="mt-1 text-sm font-bold text-success">
+                    {formatPKR(getTotalFixedCompensation(selectedRecord))}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Pay frequency</dt>
+
+                  <dd className="mt-1">
+                    <Badge
+                      variant={
+                        PAY_FREQUENCY_CONFIG[selectedRecord.payFrequency].badgeVariant
+                      }
+                    >
+                      {PAY_FREQUENCY_CONFIG[selectedRecord.payFrequency].label}
+                    </Badge>
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Bonus target</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedRecord.bonusTargetPercentage}%
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Effective date</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {formatDate(selectedRecord.effectiveDate)}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Next review</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {formatDate(selectedRecord.nextReviewDate)}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-bold">Fixed allowances</h3>
+
+              <dl className="mt-3 space-y-3">
+                {[
+                  {
+                    label: "Housing allowance",
+                    value: selectedRecord.housingAllowance,
+                  },
+                  {
+                    label: "Transport allowance",
+                    value: selectedRecord.transportAllowance,
+                  },
+                  {
+                    label: "Medical allowance",
+                    value: selectedRecord.medicalAllowance,
+                  },
+                  {
+                    label: "Other allowance",
+                    value: selectedRecord.otherAllowance,
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
+                  >
+                    <dt className="text-sm text-text-muted">{item.label}</dt>
+
+                    <dd className="text-sm font-semibold">{formatPKR(item.value)}</dd>
+                  </div>
+                ))}
+              </dl>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-bold">Latest change</h3>
+
+              <div className="mt-3 rounded-control bg-canvas p-4">
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="size-5 text-primary" />
+
                   <div>
-                    <h3 className="font-bold">
-                      {selectedEmployee.name}
-                    </h3>
+                    <p className="text-sm font-semibold">
+                      {
+                        COMPENSATION_CHANGE_REASON_CONFIG[selectedRecord.lastChangeReason]
+                          .label
+                      }
+                    </p>
 
                     <p className="mt-1 text-xs text-text-muted">
-                      {
-                        selectedEmployee.designation
-                      }{" "}
-                      ·{" "}
-                      {
-                        selectedEmployee.branchName
-                      }
+                      Previous base salary: {formatPKR(selectedRecord.previousBaseSalary)}
                     </p>
                   </div>
-
-                  <Badge
-                    variant={
-                      COMPENSATION_STATUS_CONFIG[
-                        selectedRecord.status
-                      ].badgeVariant
-                    }
-                  >
-                    {
-                      COMPENSATION_STATUS_CONFIG[
-                        selectedRecord.status
-                      ].label
-                    }
-                  </Badge>
                 </div>
+              </div>
+            </section>
 
-                <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Base salary
-                    </dt>
+            <section>
+              <div className="flex items-center gap-2">
+                <History className="size-4 text-text-muted" />
 
-                    <dd className="mt-1 text-sm font-semibold">
-                      {formatPKR(
-                        selectedRecord.baseSalary,
-                      )}
-                    </dd>
-                  </div>
+                <h3 className="text-sm font-bold">Compensation history</h3>
+              </div>
 
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Fixed compensation
-                    </dt>
-
-                    <dd className="mt-1 text-sm font-bold text-success">
-                      {formatPKR(
-                        getTotalFixedCompensation(
-                          selectedRecord,
-                        ),
-                      )}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Pay frequency
-                    </dt>
-
-                    <dd className="mt-1">
-                      <Badge
-                        variant={
-                          PAY_FREQUENCY_CONFIG[
-                            selectedRecord.payFrequency
-                          ].badgeVariant
-                        }
-                      >
-                        {
-                          PAY_FREQUENCY_CONFIG[
-                            selectedRecord.payFrequency
-                          ].label
-                        }
-                      </Badge>
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Bonus target
-                    </dt>
-
-                    <dd className="mt-1 text-sm font-semibold">
-                      {
-                        selectedRecord.bonusTargetPercentage
-                      }
-                      %
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Effective date
-                    </dt>
-
-                    <dd className="mt-1 text-sm font-semibold">
-                      {formatDate(
-                        selectedRecord.effectiveDate,
-                      )}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Next review
-                    </dt>
-
-                    <dd className="mt-1 text-sm font-semibold">
-                      {formatDate(
-                        selectedRecord.nextReviewDate,
-                      )}
-                    </dd>
-                  </div>
-                </dl>
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold">
-                  Fixed allowances
-                </h3>
-
-                <dl className="mt-3 space-y-3">
-                  {[
-                    {
-                      label:
-                        "Housing allowance",
-                      value:
-                        selectedRecord.housingAllowance,
-                    },
-                    {
-                      label:
-                        "Transport allowance",
-                      value:
-                        selectedRecord.transportAllowance,
-                    },
-                    {
-                      label:
-                        "Medical allowance",
-                      value:
-                        selectedRecord.medicalAllowance,
-                    },
-                    {
-                      label:
-                        "Other allowance",
-                      value:
-                        selectedRecord.otherAllowance,
-                    },
-                  ].map((item) => (
+              <div className="mt-3 space-y-3">
+                {selectedHistory.length > 0 ? (
+                  selectedHistory.map((item) => (
                     <div
-                      key={item.label}
-                      className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
+                      key={item.id}
+                      className="rounded-control border border-border p-4"
                     >
-                      <dt className="text-sm text-text-muted">
-                        {item.label}
-                      </dt>
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-sm font-semibold">
+                            {formatPKR(item.previousBaseSalary)} →{" "}
+                            {formatPKR(item.newBaseSalary)}
+                          </p>
 
-                      <dd className="text-sm font-semibold">
-                        {formatPKR(
-                          item.value,
-                        )}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold">
-                  Latest change
-                </h3>
-
-                <div className="mt-3 rounded-control bg-canvas p-4">
-                  <div className="flex items-center gap-3">
-                    <TrendingUp className="size-5 text-primary" />
-
-                    <div>
-                      <p className="text-sm font-semibold">
-                        {
-                          COMPENSATION_CHANGE_REASON_CONFIG[
-                            selectedRecord.lastChangeReason
-                          ].label
-                        }
-                      </p>
-
-                      <p className="mt-1 text-xs text-text-muted">
-                        Previous base salary:{" "}
-                        {formatPKR(
-                          selectedRecord.previousBaseSalary,
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </section>
-
-              <section>
-                <div className="flex items-center gap-2">
-                  <History className="size-4 text-text-muted" />
-
-                  <h3 className="text-sm font-bold">
-                    Compensation history
-                  </h3>
-                </div>
-
-                <div className="mt-3 space-y-3">
-                  {selectedHistory.length >
-                  0 ? (
-                    selectedHistory.map(
-                      (item) => (
-                        <div
-                          key={item.id}
-                          className="rounded-control border border-border p-4"
-                        >
-                          <div className="flex items-start justify-between gap-4">
-                            <div>
-                              <p className="text-sm font-semibold">
-                                {formatPKR(
-                                  item.previousBaseSalary,
-                                )}{" "}
-                                →{" "}
-                                {formatPKR(
-                                  item.newBaseSalary,
-                                )}
-                              </p>
-
-                              <p className="mt-1 text-xs text-text-muted">
-                                {
-                                  COMPENSATION_CHANGE_REASON_CONFIG[
-                                    item.reason
-                                  ].label
-                                }{" "}
-                                ·{" "}
-                                {formatDate(
-                                  item.effectiveDate,
-                                )}
-                              </p>
-                            </div>
-
-                            <Badge variant="neutral">
-                              {
-                                item.approvedBy
-                              }
-                            </Badge>
-                          </div>
+                          <p className="mt-1 text-xs text-text-muted">
+                            {COMPENSATION_CHANGE_REASON_CONFIG[item.reason].label} ·{" "}
+                            {formatDate(item.effectiveDate)}
+                          </p>
                         </div>
-                      ),
-                    )
-                  ) : (
-                    <p className="rounded-control bg-canvas p-4 text-sm text-text-muted">
-                      No previous compensation
-                      changes are available.
-                    </p>
-                  )}
-                </div>
-              </section>
 
-              <section>
-                <h3 className="text-sm font-bold">
-                  Compensation note
-                </h3>
+                        <Badge variant="neutral">{item.approvedBy}</Badge>
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <p className="rounded-control bg-canvas p-4 text-sm text-text-muted">
+                    No previous compensation changes are available.
+                  </p>
+                )}
+              </div>
+            </section>
 
-                <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                  {selectedRecord.note ||
-                    "No compensation note has been added."}
-                </p>
-              </section>
-            </div>
-          )}
+            <section>
+              <h3 className="text-sm font-bold">Compensation note</h3>
+
+              <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
+                {selectedRecord.note || "No compensation note has been added."}
+              </p>
+            </section>
+          </div>
+        )}
       </Drawer>
 
       <Drawer
         open={editorMode !== null}
-        onClose={() =>
-          setEditorMode(null)
-        }
+        onClose={() => setEditorMode(null)}
         title={
           editorMode === "create"
             ? "Add employee compensation"
@@ -1271,29 +765,11 @@ export function CompensationWorkspace() {
       >
         {editorMode && (
           <CompensationForm
-            key={
-              editorMode === "create"
-                ? "new-compensation"
-                : selectedRecord?.id
-            }
-            record={
-              editorMode === "edit"
-                ? selectedRecord ??
-                  undefined
-                : undefined
-            }
-            selectedBranchId={
-              selectedBranch.isAggregate
-                ? "all"
-                : selectedBranch.id
-            }
-            assignedEmployeeIds={records.map(
-              (record) =>
-                record.employeeId,
-            )}
-            onCancel={() =>
-              setEditorMode(null)
-            }
+            key={editorMode === "create" ? "new-compensation" : selectedRecord?.id}
+            record={editorMode === "edit" ? (selectedRecord ?? undefined) : undefined}
+            selectedBranchId={selectedBranch.isAggregate ? "all" : selectedBranch.id}
+            assignedEmployeeIds={records.map((record) => record.employeeId)}
+            onCancel={() => setEditorMode(null)}
             onSave={saveRecord}
           />
         )}

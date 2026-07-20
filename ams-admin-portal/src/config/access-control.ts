@@ -54,92 +54,79 @@ export const PERMISSION_MODULES = [
   {
     id: "overview",
     label: "Overview",
-    description:
-      "Dashboard metrics and organization summaries.",
+    description: "Dashboard metrics and organization summaries.",
     icon: LayoutDashboard,
   },
   {
     id: "people",
     label: "People",
-    description:
-      "Employees, onboarding and organization structure.",
+    description: "Employees, onboarding and organization structure.",
     icon: Users,
   },
   {
     id: "attendance",
     label: "Time & Attendance",
-    description:
-      "Attendance, schedules, shifts and corrections.",
+    description: "Attendance, schedules, shifts and corrections.",
     icon: CalendarDays,
   },
   {
     id: "leave",
     label: "Leave",
-    description:
-      "Leave requests, balances and policies.",
+    description: "Leave requests, balances and policies.",
     icon: BookOpenCheck,
   },
   {
     id: "payroll",
     label: "Payroll",
-    description:
-      "Payroll runs, salaries and adjustments.",
+    description: "Payroll runs, salaries and adjustments.",
     icon: CircleDollarSign,
   },
   {
     id: "invoices",
     label: "Invoices",
-    description:
-      "Invoice generation, payments and records.",
+    description: "Invoice generation, payments and records.",
     icon: ReceiptText,
   },
   {
     id: "performance",
     label: "Performance",
-    description:
-      "Reviews, goals and employee bonuses.",
+    description: "Reviews, goals and employee bonuses.",
     icon: Star,
   },
   {
     id: "training",
     label: "Training",
-    description:
-      "Training records and job descriptions.",
+    description: "Training records and job descriptions.",
     icon: GraduationCap,
   },
   {
     id: "documents",
     label: "Documents",
-    description:
-      "Letters, policies and document templates.",
+    description: "Letters, policies and document templates.",
     icon: FileText,
   },
   {
     id: "support",
     label: "Support",
-    description:
-      "Employee and organization support tickets.",
+    description: "Employee and organization support tickets.",
     icon: Headphones,
   },
   {
     id: "reports",
     label: "Reports",
-    description:
-      "Organization reports and data exports.",
+    description: "Organization reports and data exports.",
     icon: BarChart3,
   },
   {
     id: "branches",
     label: "Branches",
-    description:
-      "Branch records and organization hierarchy.",
+    description: "Branch records and organization hierarchy.",
     icon: Building2,
   },
   {
     id: "settings",
     label: "Settings",
-    description:
-      "Organization configuration and integrations.",
+    description: "Organization configuration and integrations.",
     icon: Settings,
   },
 ] as const;
@@ -148,9 +135,7 @@ export const ROLE_STATUS_CONFIG: Record<
   RoleStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "neutral";
+    badgeVariant: "success" | "neutral";
   }
 > = {
   active: {
@@ -167,10 +152,7 @@ export const PORTAL_ACCESS_STATUS_CONFIG: Record<
   PortalAccessStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "danger";
+    badgeVariant: "success" | "warning" | "danger";
   }
 > = {
   active: {
@@ -193,15 +175,11 @@ export const ACCESS_CONTROL_COPY = {
   description:
     "Control employee access through reusable roles, module permissions and branch-level restrictions.",
   createRole: "Create custom role",
-  searchUsers:
-    "Search employee, email or role",
+  searchUsers: "Search employee, email or role",
 } as const;
 
 export function createEmptyPermissions() {
   return Object.fromEntries(
-    PERMISSION_MODULES.map((module) => [
-      module.id,
-      [],
-    ]),
+    PERMISSION_MODULES.map((module) => [module.id, []]),
   ) as Record<string, PermissionAction[]>;
 }

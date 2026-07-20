@@ -104,14 +104,12 @@ export const REPORT_COPY = {
       "Generate, schedule and govern operational reports across people, payroll, attendance and workforce modules.",
     generateAction: "Generate report",
     chartTitle: "Report generation",
-    chartDescription:
-      "Manual and scheduled report activity during the current year.",
+    chartDescription: "Manual and scheduled report activity during the current year.",
     popularTitle: "Popular reports",
     popularDescription:
       "Frequently generated reports in the selected organization scope.",
     recentTitle: "Recent exports",
-    recentDescription:
-      "Latest completed and in-progress report exports.",
+    recentDescription: "Latest completed and in-progress report exports.",
   },
   library: {
     eyebrow: "Organization Intelligence",
@@ -120,16 +118,13 @@ export const REPORT_COPY = {
       "Manage reusable report definitions, available formats, included fields and default filters.",
     createAction: "Add report",
     registerTitle: "Report definition register",
-    registerDescription:
-      "Organization reports and branch-specific report definitions.",
-    searchPlaceholder:
-      "Search report, code, category, field or filter",
+    registerDescription: "Organization reports and branch-specific report definitions.",
+    searchPlaceholder: "Search report, code, category, field or filter",
     allCategories: "All report categories",
     allStatuses: "All report statuses",
     allScopes: "Organization and branch",
     emptyTitle: "No reports found",
-    emptyDescription:
-      "Change the filters or add a report definition.",
+    emptyDescription: "Change the filters or add a report definition.",
   },
   scheduled: {
     eyebrow: "Organization Intelligence",
@@ -138,15 +133,12 @@ export const REPORT_COPY = {
       "Automate recurring report generation and controlled delivery to internal recipients.",
     createAction: "Add schedule",
     registerTitle: "Scheduled report register",
-    registerDescription:
-      "Active, paused and ended report-delivery schedules.",
-    searchPlaceholder:
-      "Search schedule, report, branch or recipient",
+    registerDescription: "Active, paused and ended report-delivery schedules.",
+    searchPlaceholder: "Search schedule, report, branch or recipient",
     allFrequencies: "All frequencies",
     allStatuses: "All schedule statuses",
     emptyTitle: "No scheduled reports found",
-    emptyDescription:
-      "Change the filters or add a report schedule.",
+    emptyDescription: "Change the filters or add a report schedule.",
   },
   exports: {
     eyebrow: "Organization Intelligence",
@@ -157,13 +149,11 @@ export const REPORT_COPY = {
     registerTitle: "Export history",
     registerDescription:
       "Manual and scheduled report files within the selected organization scope.",
-    searchPlaceholder:
-      "Search report, requester, format or status",
+    searchPlaceholder: "Search report, requester, format or status",
     allFormats: "All formats",
     allStatuses: "All export statuses",
     emptyTitle: "No report exports found",
-    emptyDescription:
-      "Change the filters or generate a report.",
+    emptyDescription: "Change the filters or generate a report.",
   },
   settings: {
     eyebrow: "Organization Intelligence",
@@ -172,18 +162,15 @@ export const REPORT_COPY = {
       "Configure export limits, retention, sensitive-data controls and branch-specific reporting policies.",
     createAction: "Add settings",
     registerTitle: "Report settings register",
-    registerDescription:
-      "Organization defaults and branch-specific reporting controls.",
+    registerDescription: "Organization defaults and branch-specific reporting controls.",
     effectiveTitle: "Effective report settings",
     effectiveDescription:
       "Rules currently applied within the selected organization scope.",
-    searchPlaceholder:
-      "Search settings, branch or export policy",
+    searchPlaceholder: "Search settings, branch or export policy",
     allStatuses: "All settings statuses",
     allScopes: "Organization and branch",
     emptyTitle: "No report settings found",
-    emptyDescription:
-      "Change the filters or add report settings.",
+    emptyDescription: "Change the filters or add report settings.",
   },
 } as const;
 
@@ -196,4 +183,3 @@ export const REPORT_SETTINGS_CONTROLS = [
   { key: "notifyOnCompletion", label: "Completion notifications" },
   { key: "includeOrganizationBranding", label: "Organization branding" },
 ] as const;
-

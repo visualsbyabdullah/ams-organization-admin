@@ -11,28 +11,17 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
-import type {
-  DocumentTrendPoint,
-} from "@/types/document";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
+import type { DocumentTrendPoint } from "@/types/document";
 
 type DocumentActivityChartProps = {
   data: DocumentTrendPoint[];
 };
 
-export function DocumentActivityChart({
-  data,
-}: DocumentActivityChartProps) {
+export function DocumentActivityChart({ data }: DocumentActivityChartProps) {
   return (
     <div className="h-72 w-full [&_*:focus]:outline-none [&_svg]:outline-none">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart
           accessibilityLayer={false}
           data={data}
@@ -65,11 +54,7 @@ export function DocumentActivityChart({
             allowDecimals={false}
           />
 
-          <Tooltip
-            contentStyle={
-              CHART_TOOLTIP_STYLE
-            }
-          />
+          <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
 
           <Legend
             iconType="circle"
@@ -83,27 +68,21 @@ export function DocumentActivityChart({
           <Bar
             dataKey="uploaded"
             name="Uploaded"
-            fill={
-              CHART_COLORS.primary
-            }
+            fill={CHART_COLORS.primary}
             radius={[4, 4, 0, 0]}
           />
 
           <Bar
             dataKey="verified"
             name="Verified"
-            fill={
-              CHART_COLORS.present
-            }
+            fill={CHART_COLORS.present}
             radius={[4, 4, 0, 0]}
           />
 
           <Bar
             dataKey="expired"
             name="Expired"
-            fill={
-              CHART_COLORS.absent
-            }
+            fill={CHART_COLORS.absent}
             radius={[4, 4, 0, 0]}
           />
         </BarChart>

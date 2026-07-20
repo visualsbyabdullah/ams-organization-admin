@@ -493,8 +493,7 @@ export const REPORT_EXPORTS: ReportExport[] = [
     status: "failed",
     createdAt: "2026-07-15T15:20:00+05:00",
     recordCount: 41,
-    errorMessage:
-      "The export exceeded the configured PDF rendering timeout.",
+    errorMessage: "The export exceeded the configured PDF rendering timeout.",
   },
   {
     id: "report-export-008",
@@ -528,8 +527,7 @@ export const REPORT_SETTINGS: ReportSettings[] = [
     includeOrganizationBranding: true,
     updatedAt: "2026-07-14",
     updatedBy: "Maaz",
-    note:
-      "Default reporting controls applied when no active branch override exists.",
+    note: "Default reporting controls applied when no active branch override exists.",
   },
   {
     id: "report-settings-002",
@@ -550,8 +548,7 @@ export const REPORT_SETTINGS: ReportSettings[] = [
     includeOrganizationBranding: true,
     updatedAt: "2026-07-16",
     updatedBy: "Maaz",
-    note:
-      "Extended retention and export limits for Islamabad reporting operations.",
+    note: "Extended retention and export limits for Islamabad reporting operations.",
   },
   {
     id: "report-settings-003",
@@ -572,8 +569,7 @@ export const REPORT_SETTINGS: ReportSettings[] = [
     includeOrganizationBranding: true,
     updatedAt: "2026-07-15",
     updatedBy: "Ayesha Khan",
-    note:
-      "Draft branch reporting override awaiting administrator approval.",
+    note: "Draft branch reporting override awaiting administrator approval.",
   },
   {
     id: "report-settings-004",
@@ -594,15 +590,11 @@ export const REPORT_SETTINGS: ReportSettings[] = [
     includeOrganizationBranding: true,
     updatedAt: "2026-07-12",
     updatedBy: "Maaz",
-    note:
-      "Payroll exports remain disabled for Karachi branch administrators.",
+    note: "Payroll exports remain disabled for Karachi branch administrators.",
   },
 ];
 
-export const REPORT_GENERATION_TRENDS: Record<
-  string,
-  ReportGenerationTrendPoint[]
-> = {
+export const REPORT_GENERATION_TRENDS: Record<string, ReportGenerationTrendPoint[]> = {
   all: [
     { month: "Jan", generated: 82, scheduled: 24 },
     { month: "Feb", generated: 91, scheduled: 27 },

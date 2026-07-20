@@ -7,10 +7,7 @@ import {
   UserRoundCog,
 } from "lucide-react";
 
-import type {
-  EmployeeChangeStatus,
-  EmployeeChangeType,
-} from "@/types/employee-change";
+import type { EmployeeChangeStatus, EmployeeChangeType } from "@/types/employee-change";
 
 export const EMPLOYEE_CHANGE_TYPE_CONFIG: Record<
   EmployeeChangeType,
@@ -53,12 +50,7 @@ export const EMPLOYEE_CHANGE_STATUS_CONFIG: Record<
   EmployeeChangeStatus,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "success"
-      | "warning"
-      | "danger"
-      | "info";
+    badgeVariant: "neutral" | "success" | "warning" | "danger" | "info";
   }
 > = {
   draft: {
@@ -105,11 +97,9 @@ export const APPROVAL_STATUS_CONFIG = {
 export const EMPLOYEE_CHANGES_COPY = {
   eyebrow: "People",
   title: "Employee changes",
-  description:
-    "Manage transfers, promotions, reporting changes and employment updates.",
+  description: "Manage transfers, promotions, reporting changes and employment updates.",
   createAction: "New change request",
-  searchPlaceholder:
-    "Search employee, change type or requester",
+  searchPlaceholder: "Search employee, change type or requester",
   allTypes: "All change types",
   allStatuses: "All statuses",
 } as const;

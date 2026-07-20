@@ -18,10 +18,7 @@ export const GOVERNANCE_SECTIONS: {
   { id: "policy", label: "Policy" },
 ];
 
-export const GOVERNANCE_ROLE_CONFIG: Record<
-  GovernanceRole,
-  { label: string }
-> = {
+export const GOVERNANCE_ROLE_CONFIG: Record<GovernanceRole, { label: string }> = {
   line_manager: { label: "Line Manager" },
   hr_admin: { label: "HR Admin" },
   branch_admin: { label: "Branch Admin" },
@@ -40,7 +37,8 @@ export const GOVERNANCE_MODULE_CONFIG: Record<
   people: {
     label: "People",
     mode: "recoverable",
-    description: "Employee records are hidden after approval and recoverable for 90 days.",
+    description:
+      "Employee records are hidden after approval and recoverable for 90 days.",
   },
   attendance: {
     label: "Attendance",

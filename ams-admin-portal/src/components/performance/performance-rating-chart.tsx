@@ -10,11 +10,7 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 
 type RatingPoint = {
   rating: string;
@@ -25,9 +21,7 @@ type PerformanceRatingChartProps = {
   data: RatingPoint[];
 };
 
-export function PerformanceRatingChart({
-  data,
-}: PerformanceRatingChartProps) {
+export function PerformanceRatingChart({ data }: PerformanceRatingChartProps) {
   return (
     <div className="h-72 w-full [&_*:focus]:outline-none [&_svg]:outline-none">
       <ResponsiveContainer width="100%" height="100%">

@@ -4,8 +4,7 @@
   PayrollRunStatus,
 } from "@/types/payroll";
 
-export const PAYROLL_REFERENCE_PERIOD =
-  "2026-07";
+export const PAYROLL_REFERENCE_PERIOD = "2026-07";
 
 export const PAYROLL_TABS = [
   {
@@ -38,11 +37,7 @@ export const PAYROLL_RUN_STATUS_CONFIG: Record<
   PayrollRunStatus,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "info"
-      | "warning"
-      | "success";
+    badgeVariant: "neutral" | "info" | "warning" | "success";
   }
 > = {
   draft: {
@@ -71,11 +66,7 @@ export const PAYROLL_EMPLOYEE_STATUS_CONFIG: Record<
   PayrollEmployeeStatus,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "warning"
-      | "success"
-      | "danger";
+    badgeVariant: "neutral" | "warning" | "success" | "danger";
   }
 > = {
   draft: {
@@ -104,10 +95,7 @@ export const PAYROLL_PAYMENT_METHOD_CONFIG: Record<
   PayrollPaymentMethod,
   {
     label: string;
-    badgeVariant:
-      | "info"
-      | "neutral"
-      | "warning";
+    badgeVariant: "info" | "neutral" | "warning";
   }
 > = {
   bank_transfer: {
@@ -133,21 +121,17 @@ export const PAYROLL_COPY = {
   export: "Export report",
   currentPeriod: "July 2026 payroll",
   trendTitle: "Payroll cost trend",
-  trendDescription:
-    "Gross payroll, deductions and net payments during the current year.",
+  trendDescription: "Gross payroll, deductions and net payments during the current year.",
   breakdownTitle: "Current cost breakdown",
   breakdownDescription:
     "Distribution of payroll cost components for the selected branch.",
   attentionTitle: "Requires attention",
-  attentionDescription:
-    "Employee payroll records awaiting review or currently on hold.",
+  attentionDescription: "Employee payroll records awaiting review or currently on hold.",
   runsTitle: "Recent payroll runs",
-  runsDescription:
-    "Payroll processing history within the selected organization scope.",
+  runsDescription: "Payroll processing history within the selected organization scope.",
   employeeTitle: "Employee payroll preview",
   employeeDescription:
     "Review employee earnings, deductions and payment status for July 2026.",
-  searchPlaceholder:
-    "Search employee, ID, department or designation",
+  searchPlaceholder: "Search employee, ID, department or designation",
   allStatuses: "All payment statuses",
 } as const;

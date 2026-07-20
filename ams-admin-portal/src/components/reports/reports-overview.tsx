@@ -16,10 +16,7 @@ import { ChartCard } from "@/components/dashboard/chart-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { ReportGenerationChart } from "@/components/reports/report-generation-chart";
 import { ReportTabs } from "@/components/reports/report-tabs";
-import {
-  DataTable,
-  type DataTableColumn,
-} from "@/components/shared/data-table";
+import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -84,9 +81,7 @@ export function ReportsOverview() {
         schedule.branchId === selectedBranch.id),
   );
 
-  const completedExports = scopedExports.filter(
-    (item) => item.status === "completed",
-  );
+  const completedExports = scopedExports.filter((item) => item.status === "completed");
   const processingIssues = scopedExports.filter(
     (item) =>
       item.status === "queued" ||
@@ -109,13 +104,10 @@ export function ReportsOverview() {
   const selectedReport =
     REPORT_DEFINITIONS.find((report) => report.id === selectedReportId) ?? null;
 
-  const selectedExport =
-    exports.find((item) => item.id === selectedExportId) ?? null;
+  const selectedExport = exports.find((item) => item.id === selectedExportId) ?? null;
 
   const selectedExportReport = selectedExport
-    ? REPORT_DEFINITIONS.find(
-        (report) => report.id === selectedExport.reportId,
-      )
+    ? REPORT_DEFINITIONS.find((report) => report.id === selectedExport.reportId)
     : undefined;
 
   const metrics = [
@@ -244,9 +236,7 @@ export function ReportsOverview() {
         title={REPORT_COPY.overview.title}
         description={REPORT_COPY.overview.description}
         actions={
-          <Button
-            onClick={() => setSelectedReportId(scopedReports[0]?.id ?? null)}
-          >
+          <Button onClick={() => setSelectedReportId(scopedReports[0]?.id ?? null)}>
             <Play />
             {REPORT_COPY.overview.generateAction}
           </Button>
@@ -270,8 +260,7 @@ export function ReportsOverview() {
         >
           <ReportGenerationChart
             data={
-              REPORT_GENERATION_TRENDS[selectedBranchId] ??
-              REPORT_GENERATION_TRENDS.all
+              REPORT_GENERATION_TRENDS[selectedBranchId] ?? REPORT_GENERATION_TRENDS.all
             }
           />
         </ChartCard>
@@ -283,9 +272,7 @@ export function ReportsOverview() {
             </span>
 
             <div>
-              <h2 className="text-lg font-bold">
-                {REPORT_COPY.overview.popularTitle}
-              </h2>
+              <h2 className="text-lg font-bold">{REPORT_COPY.overview.popularTitle}</h2>
               <p className="mt-1 text-sm text-text-muted">
                 {REPORT_COPY.overview.popularDescription}
               </p>
@@ -306,11 +293,7 @@ export function ReportsOverview() {
                     <p className="mt-1 text-xs text-text-muted">{report.code}</p>
                   </div>
 
-                  <Badge
-                    variant={
-                      REPORT_CATEGORY_CONFIG[report.category].badgeVariant
-                    }
-                  >
+                  <Badge variant={REPORT_CATEGORY_CONFIG[report.category].badgeVariant}>
                     {REPORT_CATEGORY_CONFIG[report.category].label}
                   </Badge>
                 </div>
@@ -326,9 +309,7 @@ export function ReportsOverview() {
 
       <Card className="mt-6 overflow-hidden">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {REPORT_COPY.overview.recentTitle}
-          </h2>
+          <h2 className="text-lg font-bold">{REPORT_COPY.overview.recentTitle}</h2>
           <p className="mt-1 text-sm text-text-muted">
             {REPORT_COPY.overview.recentDescription}
           </p>
@@ -367,9 +348,7 @@ export function ReportsOverview() {
         {selectedReport && (
           <div className="space-y-6">
             <section className="rounded-card border border-border p-5">
-              <p className="text-xs font-semibold text-primary">
-                {selectedReport.code}
-              </p>
+              <p className="text-xs font-semibold text-primary">{selectedReport.code}</p>
               <h3 className="mt-2 font-bold">{selectedReport.name}</h3>
               <p className="mt-2 text-sm leading-6 text-text-muted">
                 {selectedReport.description}
@@ -397,26 +376,18 @@ export function ReportsOverview() {
                   </dd>
                 </div>
                 <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">
-                    Estimated records
-                  </dt>
+                  <dt className="text-xs text-text-muted">Estimated records</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedReport.recordEstimate.toLocaleString("en-PK")}
                   </dd>
                 </div>
                 <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">
-                    Organization scope
-                  </dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedBranch.name}
-                  </dd>
+                  <dt className="text-xs text-text-muted">Organization scope</dt>
+                  <dd className="mt-1 text-sm font-semibold">{selectedBranch.name}</dd>
                 </div>
                 <div className="rounded-control bg-canvas p-4">
                   <dt className="text-xs text-text-muted">Requested by</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {CURRENT_ADMIN.name}
-                  </dd>
+                  <dd className="mt-1 text-sm font-semibold">{CURRENT_ADMIN.name}</dd>
                 </div>
               </dl>
             </section>
@@ -454,15 +425,12 @@ export function ReportsOverview() {
                   <p className="text-xs font-semibold text-primary">
                     {selectedExportReport.code}
                   </p>
-                  <h3 className="mt-2 font-bold">
-                    {selectedExportReport.name}
-                  </h3>
+                  <h3 className="mt-2 font-bold">{selectedExportReport.name}</h3>
                 </div>
 
                 <Badge
                   variant={
-                    REPORT_EXPORT_STATUS_CONFIG[selectedExport.status]
-                      .badgeVariant
+                    REPORT_EXPORT_STATUS_CONFIG[selectedExport.status].badgeVariant
                   }
                 >
                   {REPORT_EXPORT_STATUS_CONFIG[selectedExport.status].label}

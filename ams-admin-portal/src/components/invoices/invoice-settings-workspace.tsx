@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  useMemo,
-  useState,
-} from "react";
+import { useMemo, useState } from "react";
 import {
   Archive,
   Building2,
@@ -36,48 +33,27 @@ import {
 } from "@/config/invoices";
 import { useBranchScope } from "@/context/branch-scope-context";
 import { CURRENT_ADMIN } from "@/data/current-admin";
-import {
-  INVOICE_SETTINGS,
-} from "@/data/invoices";
+import { INVOICE_SETTINGS } from "@/data/invoices";
 import { formatDate } from "@/lib/date";
-import {
-  getEffectiveInvoiceSettings,
-} from "@/lib/invoices";
-import type {
-  InvoiceSettings,
-  InvoiceSettingsStatus,
-} from "@/types/invoice";
+import { getEffectiveInvoiceSettings } from "@/lib/invoices";
+import type { InvoiceSettings, InvoiceSettingsStatus } from "@/types/invoice";
 
-type EditorMode =
-  | "create"
-  | "edit"
-  | null;
+type EditorMode = "create" | "edit" | null;
 
 export function InvoiceSettingsWorkspace() {
-  const {
-    selectedBranch,
-    selectedBranchId,
-  } = useBranchScope();
+  const { selectedBranch, selectedBranchId } = useBranchScope();
 
-  const [settings, setSettings] =
-    useState<InvoiceSettings[]>(
-      INVOICE_SETTINGS,
-    );
+  const [settings, setSettings] = useState<InvoiceSettings[]>(INVOICE_SETTINGS);
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [statusFilter, setStatusFilter] =
-    useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  const [scopeFilter, setScopeFilter] =
-    useState("all");
+  const [scopeFilter, setScopeFilter] = useState("all");
 
-  const [selectedSettingsId, setSelectedSettingsId] =
-    useState<string | null>(null);
+  const [selectedSettingsId, setSelectedSettingsId] = useState<string | null>(null);
 
-  const [editorMode, setEditorMode] =
-    useState<EditorMode>(null);
+  const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
   const scopedSettings = useMemo(
     () =>
@@ -91,9 +67,7 @@ export function InvoiceSettingsWorkspace() {
   );
 
   const visibleSettings = useMemo(() => {
-    const query = searchQuery
-      .trim()
-      .toLowerCase();
+    const query = searchQuery.trim().toLowerCase();
 
     return scopedSettings.filter((item) => {
       const searchableValue = [
@@ -106,51 +80,26 @@ export function InvoiceSettingsWorkspace() {
         .join(" ")
         .toLowerCase();
 
-      const matchesStatus =
-        statusFilter === "all" ||
-        item.status === statusFilter;
+      const matchesStatus = statusFilter === "all" || item.status === statusFilter;
 
-      const matchesScope =
-        scopeFilter === "all" ||
-        item.scope === scopeFilter;
+      const matchesScope = scopeFilter === "all" || item.scope === scopeFilter;
 
-      return (
-        searchableValue.includes(query) &&
-        matchesStatus &&
-        matchesScope
-      );
+      return searchableValue.includes(query) && matchesStatus && matchesScope;
     });
-  }, [
-    scopedSettings,
-    scopeFilter,
-    searchQuery,
-    statusFilter,
-  ]);
+  }, [scopedSettings, scopeFilter, searchQuery, statusFilter]);
 
   const selectedSettings =
-    settings.find(
-      (item) => item.id === selectedSettingsId,
-    ) ?? null;
+    settings.find((item) => item.id === selectedSettingsId) ?? null;
 
-  const effectiveSettings =
-    getEffectiveInvoiceSettings(
-      settings,
-      selectedBranchId,
-    );
+  const effectiveSettings = getEffectiveInvoiceSettings(settings, selectedBranchId);
 
-  const activeSettings = scopedSettings.filter(
-    (item) => item.status === "active",
-  );
+  const activeSettings = scopedSettings.filter((item) => item.status === "active");
 
-  const branchOverrides = scopedSettings.filter(
-    (item) => item.scope === "branch",
-  );
+  const branchOverrides = scopedSettings.filter((item) => item.scope === "branch");
 
   const automatedProfiles = scopedSettings.filter(
     (item) =>
-      item.status === "active" &&
-      (item.autoSendInvoices ||
-        item.sendDueReminders),
+      item.status === "active" && (item.autoSendInvoices || item.sendDueReminders),
   );
 
   const metrics = [
@@ -187,25 +136,18 @@ export function InvoiceSettingsWorkspace() {
   const columns = useMemo(
     () =>
       createInvoiceSettingsColumns({
-        onOpen: (item) =>
-          setSelectedSettingsId(item.id),
+        onOpen: (item) => setSelectedSettingsId(item.id),
       }),
     [],
   );
 
-  function saveSettings(
-    nextSettings: InvoiceSettings,
-  ) {
+  function saveSettings(nextSettings: InvoiceSettings) {
     setSettings((currentSettings) => {
-      const exists = currentSettings.some(
-        (item) => item.id === nextSettings.id,
-      );
+      const exists = currentSettings.some((item) => item.id === nextSettings.id);
 
       return exists
         ? currentSettings.map((item) =>
-            item.id === nextSettings.id
-              ? nextSettings
-              : item,
+            item.id === nextSettings.id ? nextSettings : item,
           )
         : [nextSettings, ...currentSettings];
     });
@@ -214,19 +156,14 @@ export function InvoiceSettingsWorkspace() {
     setSelectedSettingsId(nextSettings.id);
   }
 
-  function updateStatus(
-    settingsId: string,
-    status: InvoiceSettingsStatus,
-  ) {
+  function updateStatus(settingsId: string, status: InvoiceSettingsStatus) {
     setSettings((currentSettings) =>
       currentSettings.map((item) =>
         item.id === settingsId
           ? {
               ...item,
               status,
-              updatedAt: new Date()
-                .toISOString()
-                .slice(0, 10),
+              updatedAt: new Date().toISOString().slice(0, 10),
               updatedBy: CURRENT_ADMIN.name,
             }
           : item,
@@ -234,24 +171,17 @@ export function InvoiceSettingsWorkspace() {
     );
   }
 
-  function duplicateSettings(
-    item: InvoiceSettings,
-  ) {
+  function duplicateSettings(item: InvoiceSettings) {
     const duplicate: InvoiceSettings = {
       ...item,
       id: crypto.randomUUID(),
       name: `${item.name} Copy`,
       status: "draft",
-      updatedAt: new Date()
-        .toISOString()
-        .slice(0, 10),
+      updatedAt: new Date().toISOString().slice(0, 10),
       updatedBy: CURRENT_ADMIN.name,
     };
 
-    setSettings((currentSettings) => [
-      duplicate,
-      ...currentSettings,
-    ]);
+    setSettings((currentSettings) => [duplicate, ...currentSettings]);
 
     setSelectedSettingsId(duplicate.id);
   }
@@ -261,9 +191,7 @@ export function InvoiceSettingsWorkspace() {
       <PageHeader
         eyebrow={INVOICE_COPY.common.eyebrow}
         title={INVOICE_COPY.settings.title}
-        description={
-          INVOICE_COPY.settings.description
-        }
+        description={INVOICE_COPY.settings.description}
         actions={
           <Button
             onClick={() => {
@@ -272,10 +200,7 @@ export function InvoiceSettingsWorkspace() {
             }}
           >
             <Plus />
-            {
-              INVOICE_COPY.settings
-                .createAction
-            }
+            {INVOICE_COPY.settings.createAction}
           </Button>
         }
       />
@@ -286,28 +211,17 @@ export function InvoiceSettingsWorkspace() {
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <Card className="order-1 overflow-hidden">
           <div className="border-b border-border p-5">
-            <h2 className="text-lg font-bold">
-              {
-                INVOICE_COPY.settings
-                  .registerTitle
-              }
-            </h2>
+            <h2 className="text-lg font-bold">{INVOICE_COPY.settings.registerTitle}</h2>
 
             <p className="mt-1 text-sm text-text-muted">
-              {
-                INVOICE_COPY.settings
-                  .registerDescription
-              }
+              {INVOICE_COPY.settings.registerDescription}
             </p>
 
             <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1fr)_14rem_14rem]">
@@ -316,41 +230,20 @@ export function InvoiceSettingsWorkspace() {
 
                 <Input
                   value={searchQuery}
-                  onChange={(event) =>
-                    setSearchQuery(
-                      event.target.value,
-                    )
-                  }
-                  placeholder={
-                    INVOICE_COPY.settings
-                      .searchPlaceholder
-                  }
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder={INVOICE_COPY.settings.searchPlaceholder}
                   className="pl-9"
                 />
               </div>
 
               <Select
                 value={scopeFilter}
-                onChange={(event) =>
-                  setScopeFilter(
-                    event.target.value,
-                  )
-                }
+                onChange={(event) => setScopeFilter(event.target.value)}
               >
-                <option value="all">
-                  {
-                    INVOICE_COPY.settings
-                      .allScopes
-                  }
-                </option>
+                <option value="all">{INVOICE_COPY.settings.allScopes}</option>
 
-                {Object.entries(
-                  INVOICE_SETTINGS_SCOPE_CONFIG,
-                ).map(([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
+                {Object.entries(INVOICE_SETTINGS_SCOPE_CONFIG).map(([value, config]) => (
+                  <option key={value} value={value}>
                     {config.label}
                   </option>
                 ))}
@@ -358,26 +251,12 @@ export function InvoiceSettingsWorkspace() {
 
               <Select
                 value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(
-                    event.target.value,
-                  )
-                }
+                onChange={(event) => setStatusFilter(event.target.value)}
               >
-                <option value="all">
-                  {
-                    INVOICE_COPY.settings
-                      .allStatuses
-                  }
-                </option>
+                <option value="all">{INVOICE_COPY.settings.allStatuses}</option>
 
-                {Object.entries(
-                  INVOICE_SETTINGS_STATUS_CONFIG,
-                ).map(([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
+                {Object.entries(INVOICE_SETTINGS_STATUS_CONFIG).map(([value, config]) => (
+                  <option key={value} value={value}>
                     {config.label}
                   </option>
                 ))}
@@ -389,25 +268,15 @@ export function InvoiceSettingsWorkspace() {
             rows={visibleSettings}
             columns={columns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) =>
-              setSelectedSettingsId(item.id)
-            }
+            onRowClick={(item) => setSelectedSettingsId(item.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <Settings2 className="size-8 text-text-muted" />
 
-                <h3 className="mt-4 font-bold">
-                  {
-                    INVOICE_COPY.settings
-                      .emptyTitle
-                  }
-                </h3>
+                <h3 className="mt-4 font-bold">{INVOICE_COPY.settings.emptyTitle}</h3>
 
                 <p className="mt-2 text-sm text-text-muted">
-                  {
-                    INVOICE_COPY.settings
-                      .emptyDescription
-                  }
+                  {INVOICE_COPY.settings.emptyDescription}
                 </p>
               </div>
             }
@@ -422,17 +291,11 @@ export function InvoiceSettingsWorkspace() {
 
             <div>
               <h2 className="text-lg font-bold">
-                {
-                  INVOICE_COPY.settings
-                    .effectiveTitle
-                }
+                {INVOICE_COPY.settings.effectiveTitle}
               </h2>
 
               <p className="mt-1 text-sm text-text-muted">
-                {
-                  INVOICE_COPY.settings
-                    .effectiveDescription
-                }
+                {INVOICE_COPY.settings.effectiveDescription}
               </p>
             </div>
           </div>
@@ -440,77 +303,54 @@ export function InvoiceSettingsWorkspace() {
           {effectiveSettings ? (
             <div className="mt-5 space-y-3">
               <div className="rounded-control border border-border p-4">
-                <p className="text-sm font-bold">
-                  {effectiveSettings.name}
-                </p>
+                <p className="text-sm font-bold">{effectiveSettings.name}</p>
 
                 <p className="mt-1 text-xs text-text-muted">
-                  {effectiveSettings.scope ===
-                  "branch"
+                  {effectiveSettings.scope === "branch"
                     ? "Active branch override"
                     : "Organization default"}
                 </p>
               </div>
 
               <div className="rounded-control bg-canvas p-4">
-                <p className="text-xs text-text-muted">
-                  Invoice number preview
-                </p>
+                <p className="text-xs text-text-muted">Invoice number preview</p>
 
                 <p className="mt-1 text-lg font-bold">
                   {effectiveSettings.invoicePrefix}-
-                  {String(
-                    effectiveSettings.nextSequence,
-                  ).padStart(5, "0")}
+                  {String(effectiveSettings.nextSequence).padStart(5, "0")}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-control bg-canvas p-4">
-                  <p className="text-xs text-text-muted">
-                    Payment terms
-                  </p>
+                  <p className="text-xs text-text-muted">Payment terms</p>
 
                   <p className="mt-1 text-sm font-bold">
-                    {
-                      effectiveSettings.paymentTermDays
-                    } days
+                    {effectiveSettings.paymentTermDays} days
                   </p>
                 </div>
 
                 <div className="rounded-control bg-canvas p-4">
-                  <p className="text-xs text-text-muted">
-                    Tax rate
-                  </p>
+                  <p className="text-xs text-text-muted">Tax rate</p>
 
                   <p className="mt-1 text-sm font-bold">
-                    {
-                      effectiveSettings.defaultTaxRate
-                    }%
+                    {effectiveSettings.defaultTaxRate}%
                   </p>
                 </div>
 
                 <div className="rounded-control bg-canvas p-4">
-                  <p className="text-xs text-text-muted">
-                    Partial payments
-                  </p>
+                  <p className="text-xs text-text-muted">Partial payments</p>
 
                   <p className="mt-1 text-sm font-bold">
-                    {effectiveSettings.allowPartialPayments
-                      ? "Allowed"
-                      : "Disabled"}
+                    {effectiveSettings.allowPartialPayments ? "Allowed" : "Disabled"}
                   </p>
                 </div>
 
                 <div className="rounded-control bg-canvas p-4">
-                  <p className="text-xs text-text-muted">
-                    Reminders
-                  </p>
+                  <p className="text-xs text-text-muted">Reminders</p>
 
                   <p className="mt-1 text-sm font-bold">
-                    {effectiveSettings.sendDueReminders
-                      ? "Enabled"
-                      : "Disabled"}
+                    {effectiveSettings.sendDueReminders ? "Enabled" : "Disabled"}
                   </p>
                 </div>
               </div>
@@ -525,9 +365,7 @@ export function InvoiceSettingsWorkspace() {
 
       <Drawer
         open={Boolean(selectedSettings)}
-        onClose={() =>
-          setSelectedSettingsId(null)
-        }
+        onClose={() => setSelectedSettingsId(null)}
         title="Invoice settings"
         description={selectedSettings?.name}
         footer={
@@ -535,26 +373,16 @@ export function InvoiceSettingsWorkspace() {
             <div className="flex flex-wrap justify-end gap-3">
               <Button
                 variant="outline"
-                onClick={() =>
-                  duplicateSettings(
-                    selectedSettings,
-                  )
-                }
+                onClick={() => duplicateSettings(selectedSettings)}
               >
                 <Copy />
                 {INVOICE_COPY.actions.duplicate}
               </Button>
 
-              {selectedSettings.status ===
-                "active" ? (
+              {selectedSettings.status === "active" ? (
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    updateStatus(
-                      selectedSettings.id,
-                      "archived",
-                    )
-                  }
+                  onClick={() => updateStatus(selectedSettings.id, "archived")}
                 >
                   <Archive />
                   {INVOICE_COPY.actions.archive}
@@ -562,23 +390,14 @@ export function InvoiceSettingsWorkspace() {
               ) : (
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    updateStatus(
-                      selectedSettings.id,
-                      "active",
-                    )
-                  }
+                  onClick={() => updateStatus(selectedSettings.id, "active")}
                 >
                   <CheckCircle2 />
                   {INVOICE_COPY.actions.activate}
                 </Button>
               )}
 
-              <Button
-                onClick={() =>
-                  setEditorMode("edit")
-                }
-              >
+              <Button onClick={() => setEditorMode("edit")}>
                 <FilePenLine />
                 {INVOICE_COPY.actions.edit}
               </Button>
@@ -591,64 +410,42 @@ export function InvoiceSettingsWorkspace() {
             <section className="rounded-card border border-border">
               <div className="flex items-start justify-between gap-4 border-b border-border p-5">
                 <div>
-                  <h3 className="font-bold">
-                    {selectedSettings.name}
-                  </h3>
+                  <h3 className="font-bold">{selectedSettings.name}</h3>
 
                   <p className="mt-1 text-xs text-text-muted">
-                    Updated by {
-                      selectedSettings.updatedBy
-                    } on {formatDate(
-                      selectedSettings.updatedAt,
-                    )}
+                    Updated by {selectedSettings.updatedBy} on{" "}
+                    {formatDate(selectedSettings.updatedAt)}
                   </p>
                 </div>
 
                 <Badge
                   variant={
-                    INVOICE_SETTINGS_STATUS_CONFIG[
-                      selectedSettings.status
-                    ].badgeVariant
+                    INVOICE_SETTINGS_STATUS_CONFIG[selectedSettings.status].badgeVariant
                   }
                 >
-                  {
-                    INVOICE_SETTINGS_STATUS_CONFIG[
-                      selectedSettings.status
-                    ].label
-                  }
+                  {INVOICE_SETTINGS_STATUS_CONFIG[selectedSettings.status].label}
                 </Badge>
               </div>
 
               <dl className="grid gap-5 p-5 sm:grid-cols-2">
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Scope
-                  </dt>
+                  <dt className="text-xs text-text-muted">Scope</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {
-                      INVOICE_SETTINGS_SCOPE_CONFIG[
-                        selectedSettings.scope
-                      ].label
-                    }
+                    {INVOICE_SETTINGS_SCOPE_CONFIG[selectedSettings.scope].label}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Branch
-                  </dt>
+                  <dt className="text-xs text-text-muted">Branch</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.branchName ??
-                      "All organization branches"}
+                    {selectedSettings.branchName ?? "All organization branches"}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Invoice prefix
-                  </dt>
+                  <dt className="text-xs text-text-muted">Invoice prefix</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSettings.invoicePrefix}
@@ -656,9 +453,7 @@ export function InvoiceSettingsWorkspace() {
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Next sequence
-                  </dt>
+                  <dt className="text-xs text-text-muted">Next sequence</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSettings.nextSequence}
@@ -666,77 +461,53 @@ export function InvoiceSettingsWorkspace() {
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Payment terms
-                  </dt>
+                  <dt className="text-xs text-text-muted">Payment terms</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {
-                      selectedSettings.paymentTermDays
-                    } days
+                    {selectedSettings.paymentTermDays} days
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Default tax
-                  </dt>
+                  <dt className="text-xs text-text-muted">Default tax</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {
-                      selectedSettings.defaultTaxRate
-                    }%
+                    {selectedSettings.defaultTaxRate}%
                   </dd>
                 </div>
               </dl>
             </section>
 
             <section>
-              <h3 className="text-sm font-bold">
-                Billing controls
-              </h3>
+              <h3 className="text-sm font-bold">Billing controls</h3>
 
               <div className="mt-3 space-y-3">
                 {[
                   {
                     label: "Partial payments",
-                    enabled:
-                      selectedSettings.allowPartialPayments,
+                    enabled: selectedSettings.allowPartialPayments,
                   },
                   {
                     label: "Automatic delivery",
-                    enabled:
-                      selectedSettings.autoSendInvoices,
+                    enabled: selectedSettings.autoSendInvoices,
                   },
                   {
                     label: "Automatic overdue status",
-                    enabled:
-                      selectedSettings.autoMarkOverdue,
+                    enabled: selectedSettings.autoMarkOverdue,
                   },
                   {
                     label: "Payment reminders",
-                    enabled:
-                      selectedSettings.sendDueReminders,
+                    enabled: selectedSettings.sendDueReminders,
                   },
                 ].map((control) => (
                   <div
                     key={control.label}
                     className="flex items-center justify-between rounded-control border border-border p-4"
                   >
-                    <span className="text-sm font-semibold">
-                      {control.label}
-                    </span>
+                    <span className="text-sm font-semibold">{control.label}</span>
 
-                    <Badge
-                      variant={
-                        control.enabled
-                          ? "success"
-                          : "neutral"
-                      }
-                    >
-                      {control.enabled
-                        ? "Enabled"
-                        : "Disabled"}
+                    <Badge variant={control.enabled ? "success" : "neutral"}>
+                      {control.enabled ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
                 ))}
@@ -744,9 +515,7 @@ export function InvoiceSettingsWorkspace() {
             </section>
 
             <section>
-              <h3 className="text-sm font-bold">
-                Default invoice note
-              </h3>
+              <h3 className="text-sm font-bold">Default invoice note</h3>
 
               <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
                 {selectedSettings.defaultNote ||
@@ -760,29 +529,15 @@ export function InvoiceSettingsWorkspace() {
       <Drawer
         open={editorMode !== null}
         onClose={() => setEditorMode(null)}
-        title={
-          editorMode === "create"
-            ? "Add invoice settings"
-            : "Edit invoice settings"
-        }
+        title={editorMode === "create" ? "Add invoice settings" : "Edit invoice settings"}
         description="Configure numbering, payment terms, tax and collection automation."
       >
         {editorMode && (
           <InvoiceSettingsForm
-            key={
-              editorMode === "create"
-                ? "new-invoice-settings"
-                : selectedSettings?.id
-            }
-            settings={
-              editorMode === "edit"
-                ? selectedSettings ?? undefined
-                : undefined
-            }
+            key={editorMode === "create" ? "new-invoice-settings" : selectedSettings?.id}
+            settings={editorMode === "edit" ? (selectedSettings ?? undefined) : undefined}
             selectedBranchId={selectedBranchId}
-            onCancel={() =>
-              setEditorMode(null)
-            }
+            onCancel={() => setEditorMode(null)}
             onSave={saveSettings}
           />
         )}

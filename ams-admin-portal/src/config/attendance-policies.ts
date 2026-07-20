@@ -7,10 +7,7 @@ export const ATTENDANCE_POLICY_STATUS_CONFIG: Record<
   AttendancePolicyStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "neutral";
+    badgeVariant: "success" | "warning" | "neutral";
   }
 > = {
   active: {
@@ -31,9 +28,7 @@ export const ATTENDANCE_POLICY_SCOPE_CONFIG: Record<
   AttendancePolicyScope,
   {
     label: string;
-    badgeVariant:
-      | "info"
-      | "neutral";
+    badgeVariant: "info" | "neutral";
   }
 > = {
   all_branches: {
@@ -70,16 +65,14 @@ export const ATTENDANCE_POLICY_COPY = {
   description:
     "Configure organization attendance rules, correction windows and branch-specific workforce requirements.",
   createAction: "Create policy",
-  searchPlaceholder:
-    "Search policy name, description or branch",
+  searchPlaceholder: "Search policy name, description or branch",
   allStatuses: "All policy statuses",
   allScopes: "All policy scopes",
   policiesTitle: "Organization policies",
   policiesDescription:
     "Attendance policies currently configured for the selected organization scope.",
   emptyTitle: "No policies found",
-  emptyDescription:
-    "Change the filters or create a new attendance policy.",
+  emptyDescription: "Change the filters or create a new attendance policy.",
 } as const;
 
 export function getPolicyEmployeeCount(
@@ -88,19 +81,12 @@ export function getPolicyEmployeeCount(
 ) {
   if (scope === "all_branches") {
     return ATTENDANCE_POLICY_BRANCH_OPTIONS.reduce(
-      (total, branch) =>
-        total + branch.employeeCount,
+      (total, branch) => total + branch.employeeCount,
       0,
     );
   }
 
-  return ATTENDANCE_POLICY_BRANCH_OPTIONS
-    .filter((branch) =>
-      branchIds.includes(branch.id),
-    )
-    .reduce(
-      (total, branch) =>
-        total + branch.employeeCount,
-      0,
-    );
+  return ATTENDANCE_POLICY_BRANCH_OPTIONS.filter((branch) =>
+    branchIds.includes(branch.id),
+  ).reduce((total, branch) => total + branch.employeeCount, 0);
 }

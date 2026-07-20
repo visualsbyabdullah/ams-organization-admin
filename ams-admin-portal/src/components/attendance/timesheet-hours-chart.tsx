@@ -11,28 +11,17 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
-import type {
-  TimesheetChartPoint,
-} from "@/types/timesheet";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
+import type { TimesheetChartPoint } from "@/types/timesheet";
 
 type TimesheetHoursChartProps = {
   data: TimesheetChartPoint[];
 };
 
-export function TimesheetHoursChart({
-  data,
-}: TimesheetHoursChartProps) {
+export function TimesheetHoursChart({ data }: TimesheetHoursChartProps) {
   return (
     <div className="h-72 w-full">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
           margin={{
@@ -60,18 +49,12 @@ export function TimesheetHoursChart({
             axisLine={false}
             tickLine={false}
             tick={CHART_AXIS_STYLE}
-            tickFormatter={(value) =>
-              `${value}h`
-            }
+            tickFormatter={(value) => `${value}h`}
           />
 
           <Tooltip
-            contentStyle={
-              CHART_TOOLTIP_STYLE
-            }
-            formatter={(value) => [
-              `${value}h`,
-            ]}
+            contentStyle={CHART_TOOLTIP_STYLE}
+            formatter={(value) => [`${value}h`]}
             cursor={{
               fill: "var(--ams-surface-muted)",
             }}
@@ -90,9 +73,7 @@ export function TimesheetHoursChart({
             dataKey="regularHours"
             name="Regular hours"
             stackId="hours"
-            fill={
-              CHART_COLORS.primary
-            }
+            fill={CHART_COLORS.primary}
             radius={[0, 0, 5, 5]}
             maxBarSize={52}
           />

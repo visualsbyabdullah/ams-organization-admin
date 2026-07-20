@@ -1,6 +1,4 @@
-﻿import type {
-  LeaveType,
-} from "@/types/leave";
+﻿import type { LeaveType } from "@/types/leave";
 
 export const LEAVE_CALENDAR_COPY = {
   eyebrow: "Leave Management",
@@ -37,33 +35,27 @@ export const LEAVE_CALENDAR_TYPE_TONES: Record<
   }
 > = {
   annual: {
-    containerClassName:
-      "bg-info-muted text-info",
+    containerClassName: "bg-info-muted text-info",
     dotClassName: "bg-info",
   },
   casual: {
-    containerClassName:
-      "bg-warning-muted text-warning",
+    containerClassName: "bg-warning-muted text-warning",
     dotClassName: "bg-warning",
   },
   sick: {
-    containerClassName:
-      "bg-danger-muted text-danger",
+    containerClassName: "bg-danger-muted text-danger",
     dotClassName: "bg-danger",
   },
   unpaid: {
-    containerClassName:
-      "bg-surface-muted text-text-muted",
+    containerClassName: "bg-surface-muted text-text-muted",
     dotClassName: "bg-text-muted",
   },
   maternity: {
-    containerClassName:
-      "bg-success-muted text-success",
+    containerClassName: "bg-success-muted text-success",
     dotClassName: "bg-success",
   },
   paternity: {
-    containerClassName:
-      "bg-success-muted text-success",
+    containerClassName: "bg-success-muted text-success",
     dotClassName: "bg-success",
   },
 };

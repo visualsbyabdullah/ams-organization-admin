@@ -8,10 +8,7 @@ export const COMPENSATION_STATUS_CONFIG: Record<
   CompensationStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "neutral";
+    badgeVariant: "success" | "warning" | "neutral";
   }
 > = {
   active: {
@@ -32,9 +29,7 @@ export const PAY_FREQUENCY_CONFIG: Record<
   PayFrequency,
   {
     label: string;
-    badgeVariant:
-      | "info"
-      | "neutral";
+    badgeVariant: "info" | "neutral";
   }
 > = {
   monthly: {
@@ -81,22 +76,18 @@ export const COMPENSATION_COPY = {
   exportAction: "Export compensation",
   addAction: "Add compensation",
   chartTitle: "Department compensation",
-  chartDescription:
-    "Average base salary and total fixed compensation by department.",
+  chartDescription: "Average base salary and total fixed compensation by department.",
   attentionTitle: "Upcoming reviews",
   attentionDescription:
     "Compensation records requiring review within the next ninety days.",
   tableTitle: "Compensation directory",
   tableDescription:
     "Current employee salary and allowance structures within the selected organization scope.",
-  searchPlaceholder:
-    "Search employee, ID, department or designation",
+  searchPlaceholder: "Search employee, ID, department or designation",
   allStatuses: "All statuses",
   allFrequencies: "All pay frequencies",
   emptyTitle: "No compensation records found",
-  emptyDescription:
-    "Change the filters or add an employee compensation record.",
+  emptyDescription: "Change the filters or add an employee compensation record.",
 } as const;
 
-export const COMPENSATION_REFERENCE_DATE =
-  "2026-07-16";
+export const COMPENSATION_REFERENCE_DATE = "2026-07-16";

@@ -1,52 +1,29 @@
-﻿import type {
-  TimesheetDay,
-} from "@/types/timesheet";
+﻿import type { TimesheetDay } from "@/types/timesheet";
 
-export function formatMinutesAsHours(
-  minutes: number,
-) {
+export function formatMinutesAsHours(minutes: number) {
   if (minutes <= 0) {
     return "0h";
   }
 
-  const hours = Math.floor(
-    minutes / 60,
-  );
+  const hours = Math.floor(minutes / 60);
 
-  const remainingMinutes =
-    minutes % 60;
+  const remainingMinutes = minutes % 60;
 
-  return remainingMinutes > 0
-    ? `${hours}h ${remainingMinutes}m`
-    : `${hours}h`;
+  return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
 }
 
-export function getTimesheetTotals(
-  days: TimesheetDay[],
-) {
+export function getTimesheetTotals(days: TimesheetDay[]) {
   return days.reduce(
     (totals, day) => ({
-      regularMinutes:
-        totals.regularMinutes +
-        day.regularMinutes,
+      regularMinutes: totals.regularMinutes + day.regularMinutes,
 
-      overtimeMinutes:
-        totals.overtimeMinutes +
-        day.overtimeMinutes,
+      overtimeMinutes: totals.overtimeMinutes + day.overtimeMinutes,
 
-      breakMinutes:
-        totals.breakMinutes +
-        day.breakMinutes,
+      breakMinutes: totals.breakMinutes + day.breakMinutes,
 
-      leaveMinutes:
-        totals.leaveMinutes +
-        day.leaveMinutes,
+      leaveMinutes: totals.leaveMinutes + day.leaveMinutes,
 
-      missingEntries:
-        totals.missingEntries +
-        (day.status === "missing"
-          ? 1
-          : 0),
+      missingEntries: totals.missingEntries + (day.status === "missing" ? 1 : 0),
     }),
     {
       regularMinutes: 0,
@@ -58,10 +35,6 @@ export function getTimesheetTotals(
   );
 }
 
-export function minutesToDecimalHours(
-  minutes: number,
-) {
-  return Number(
-    (minutes / 60).toFixed(1),
-  );
+export function minutesToDecimalHours(minutes: number) {
+  return Number((minutes / 60).toFixed(1));
 }

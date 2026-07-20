@@ -1,26 +1,12 @@
-﻿import type {
-  LeaveType,
-} from "@/types/leave";
+﻿import type { LeaveType } from "@/types/leave";
 
-export type LeavePolicyStatus =
-  | "active"
-  | "draft"
-  | "archived";
+export type LeavePolicyStatus = "active" | "draft" | "archived";
 
-export type LeavePolicyScope =
-  | "all_branches"
-  | "selected_branches";
+export type LeavePolicyScope = "all_branches" | "selected_branches";
 
-export type LeaveAccrualMethod =
-  | "annual"
-  | "monthly"
-  | "manual";
+export type LeaveAccrualMethod = "annual" | "monthly" | "manual";
 
-export type LeaveApprovalMode =
-  | "manager"
-  | "hr"
-  | "manager_and_hr"
-  | "automatic";
+export type LeaveApprovalMode = "manager" | "hr" | "manager_and_hr" | "automatic";
 
 export type LeavePolicy = {
   id: string;

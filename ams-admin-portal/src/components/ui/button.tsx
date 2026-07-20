@@ -1,8 +1,5 @@
 import * as React from "react";
-import {
-  cva,
-  type VariantProps,
-} from "class-variance-authority";
+import { cva, type VariantProps } from "class-variance-authority";
 
 import { cn } from "@/lib/utils";
 
@@ -19,16 +16,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary:
-          "bg-primary text-primary-foreground hover:bg-primary-hover",
-        secondary:
-          "bg-surface-muted text-text hover:bg-border",
-        outline:
-          "border border-border bg-surface text-text hover:bg-surface-muted",
-        ghost:
-          "text-text-muted hover:bg-surface-muted hover:text-text",
-        danger:
-          "bg-danger text-white hover:opacity-90",
+        primary: "bg-primary text-primary-foreground hover:bg-primary-hover",
+        secondary: "bg-surface-muted text-text hover:bg-border",
+        outline: "border border-border bg-surface text-text hover:bg-surface-muted",
+        ghost: "text-text-muted hover:bg-surface-muted hover:text-text",
+        danger: "bg-danger text-white hover:opacity-90",
       },
       size: {
         sm: [
@@ -46,10 +38,7 @@ const buttonVariants = cva(
           "px-[var(--ams-button-padding-lg)]",
           "text-base [&_svg]:size-[1.125rem]",
         ],
-        icon: [
-          "size-[var(--ams-control-height-md)]",
-          "p-0 [&_svg]:size-[1.125rem]",
-        ],
+        icon: ["size-[var(--ams-control-height-md)]", "p-0 [&_svg]:size-[1.125rem]"],
       },
     },
     defaultVariants: {
@@ -59,24 +48,11 @@ const buttonVariants = cva(
   },
 );
 
-export type ButtonProps =
-  React.ButtonHTMLAttributes<HTMLButtonElement> &
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   VariantProps<typeof buttonVariants>;
 
-export const Button = React.forwardRef<
-  HTMLButtonElement,
-  ButtonProps
->(
-  (
-    {
-      className,
-      variant,
-      size,
-      type = "button",
-      ...props
-    },
-    ref,
-  ) => (
+export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant, size, type = "button", ...props }, ref) => (
     <button
       ref={ref}
       type={type}

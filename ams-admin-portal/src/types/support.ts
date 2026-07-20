@@ -5,8 +5,7 @@ export type SupportTicketPriority = "low" | "medium" | "high" | "urgent";
 
 export type SupportTicketChannel = "portal" | "email" | "phone" | "walk_in";
 
-export type SupportSlaState =
-  "on_track" | "at_risk" | "overdue" | "met" | "missed";
+export type SupportSlaState = "on_track" | "at_risk" | "overdue" | "met" | "missed";
 
 export type SupportScope = "organization" | "branch";
 
@@ -14,8 +13,7 @@ export type SupportCategoryStatus = "active" | "inactive" | "archived";
 
 export type SupportArticleStatus = "draft" | "published" | "archived";
 
-export type SupportArticleVisibility =
-  "employees" | "managers" | "administrators";
+export type SupportArticleVisibility = "employees" | "managers" | "administrators";
 
 export type SupportSettingsStatus = "active" | "draft" | "archived";
 

@@ -11,10 +11,7 @@ export const PAYROLL_SETTINGS_STATUS_CONFIG: Record<
   PayrollSettingsStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "neutral";
+    badgeVariant: "success" | "warning" | "neutral";
   }
 > = {
   active: {
@@ -35,9 +32,7 @@ export const PAYROLL_SETTINGS_SCOPE_CONFIG: Record<
   PayrollSettingsScope,
   {
     label: string;
-    badgeVariant:
-      | "info"
-      | "neutral";
+    badgeVariant: "info" | "neutral";
   }
 > = {
   organization: {
@@ -59,18 +54,15 @@ export const PAYROLL_SCHEDULE_CONFIG: Record<
 > = {
   monthly: {
     label: "Monthly",
-    description:
-      "One payroll cycle is processed every calendar month.",
+    description: "One payroll cycle is processed every calendar month.",
   },
   biweekly: {
     label: "Biweekly",
-    description:
-      "Payroll is processed once every two weeks.",
+    description: "Payroll is processed once every two weeks.",
   },
   weekly: {
     label: "Weekly",
-    description:
-      "Payroll is processed every week.",
+    description: "Payroll is processed every week.",
   },
 };
 
@@ -83,18 +75,15 @@ export const PAYROLL_PAY_DATE_RULE_CONFIG: Record<
 > = {
   month_end: {
     label: "Calendar month end",
-    description:
-      "Employees are paid on the final calendar day of the month.",
+    description: "Employees are paid on the final calendar day of the month.",
   },
   fixed_day: {
     label: "Fixed day",
-    description:
-      "Employees are paid on the configured day of each payroll period.",
+    description: "Employees are paid on the configured day of each payroll period.",
   },
   last_working_day: {
     label: "Last working day",
-    description:
-      "Employees are paid on the final working day before month end.",
+    description: "Employees are paid on the final working day before month end.",
   },
 };
 
@@ -148,13 +137,10 @@ export const PAYROLL_SETTINGS_COPY = {
   settingsDescription:
     "Organization defaults and branch-specific overrides currently available in payroll.",
   effectiveTitle: "Effective configuration",
-  effectiveDescription:
-    "Rules currently applied to the selected organization scope.",
-  searchPlaceholder:
-    "Search configuration, branch or payroll schedule",
+  effectiveDescription: "Rules currently applied to the selected organization scope.",
+  searchPlaceholder: "Search configuration, branch or payroll schedule",
   allStatuses: "All statuses",
   allScopes: "Organization and branch",
   emptyTitle: "No payroll configurations found",
-  emptyDescription:
-    "Change the filters or add a new payroll configuration.",
+  emptyDescription: "Change the filters or add a new payroll configuration.",
 } as const;

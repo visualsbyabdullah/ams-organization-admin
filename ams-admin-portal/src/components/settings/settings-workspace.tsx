@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  type FormEvent,
-  useMemo,
-  useState,
-} from "react";
+import { type FormEvent, useMemo, useState } from "react";
 import {
   Bell,
   Building2,
@@ -19,45 +15,19 @@ import {
   Unplug,
 } from "lucide-react";
 
-import {
-  MetricCard,
-} from "@/components/dashboard/metric-card";
-import type {
-  DataTableColumn,
-} from "@/components/shared/data-table";
-import {
-  DataTable,
-} from "@/components/shared/data-table";
-import {
-  PageHeader,
-} from "@/components/shared/page-header";
-import {
-  Badge,
-} from "@/components/ui/badge";
-import {
-  Button,
-} from "@/components/ui/button";
-import {
-  Card,
-} from "@/components/ui/card";
-import {
-  Drawer,
-} from "@/components/ui/drawer";
-import {
-  Input,
-} from "@/components/ui/input";
-import {
-  Select,
-} from "@/components/ui/select";
-import {
-  Switch,
-} from "@/components/ui/switch";
-import {
-  Textarea,
-} from "@/components/ui/textarea";
-import {
-  FormField,
-} from "@/components/forms/form-field";
+import { MetricCard } from "@/components/dashboard/metric-card";
+import type { DataTableColumn } from "@/components/shared/data-table";
+import { DataTable } from "@/components/shared/data-table";
+import { PageHeader } from "@/components/shared/page-header";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Drawer } from "@/components/ui/drawer";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+import { FormField } from "@/components/forms/form-field";
 import {
   INTEGRATION_STATUS_CONFIG,
   INTEGRATION_TYPE_CONFIG,
@@ -68,15 +38,9 @@ import {
   SETTINGS_SECTIONS,
   SETTINGS_STATUS_CONFIG,
 } from "@/config/settings";
-import {
-  useBranchScope,
-} from "@/context/branch-scope-context";
-import {
-  BRANCH_OPTIONS,
-} from "@/data/branches";
-import {
-  CURRENT_ADMIN,
-} from "@/data/current-admin";
+import { useBranchScope } from "@/context/branch-scope-context";
+import { BRANCH_OPTIONS } from "@/data/branches";
+import { CURRENT_ADMIN } from "@/data/current-admin";
 import {
   SETTINGS_AUDIT_LOG,
   SETTINGS_INTEGRATIONS,
@@ -103,214 +67,125 @@ import type {
   SettingsValue,
 } from "@/types/settings";
 
-type EditorMode =
-  | "profile"
-  | "integration"
-  | null;
+type EditorMode = "profile" | "integration" | null;
 
 export function SettingsWorkspace() {
-  const {
-    selectedBranch,
-    selectedBranchId,
-  } = useBranchScope();
+  const { selectedBranch, selectedBranchId } = useBranchScope();
 
-  const [section, setSection] =
-    useState<SettingsSection>(
-      "overview",
-    );
-  const [profiles, setProfiles] =
-    useState(SETTINGS_PROFILES);
-  const [integrations, setIntegrations] =
-    useState(
-      SETTINGS_INTEGRATIONS,
-    );
-  const [query, setQuery] =
-    useState("");
-  const [statusFilter, setStatusFilter] =
-    useState("all");
-  const [selectedProfileId, setSelectedProfileId] =
-    useState<string | null>(null);
-  const [selectedIntegrationId, setSelectedIntegrationId] =
-    useState<string | null>(null);
-  const [selectedAuditId, setSelectedAuditId] =
-    useState<string | null>(null);
-  const [editorMode, setEditorMode] =
-    useState<EditorMode>(null);
-  const [createCategory, setCreateCategory] =
-    useState<SettingsCategory>(
-      "organization",
-    );
+  const [section, setSection] = useState<SettingsSection>("overview");
+  const [profiles, setProfiles] = useState(SETTINGS_PROFILES);
+  const [integrations, setIntegrations] = useState(SETTINGS_INTEGRATIONS);
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
+  const [selectedIntegrationId, setSelectedIntegrationId] = useState<string | null>(null);
+  const [selectedAuditId, setSelectedAuditId] = useState<string | null>(null);
+  const [editorMode, setEditorMode] = useState<EditorMode>(null);
+  const [createCategory, setCreateCategory] = useState<SettingsCategory>("organization");
 
-  const sectionCopy =
-    SETTINGS_SECTION_COPY[section];
+  const sectionCopy = SETTINGS_SECTION_COPY[section];
 
   const currentCategory =
-    section === "organization" ||
-    section === "security" ||
-    section === "notifications"
+    section === "organization" || section === "security" || section === "notifications"
       ? section
       : null;
 
   const scopedProfiles = useMemo(
     () =>
-      profiles.filter((profile) =>
-        settingsRecordIsInScope(
-          profile,
-          selectedBranchId,
-        ),
-      ),
+      profiles.filter((profile) => settingsRecordIsInScope(profile, selectedBranchId)),
     [profiles, selectedBranchId],
   );
 
   const scopedIntegrations = useMemo(
     () =>
-      integrations.filter(
-        (integration) =>
-          settingsRecordIsInScope(
-            integration,
-            selectedBranchId,
-          ),
+      integrations.filter((integration) =>
+        settingsRecordIsInScope(integration, selectedBranchId),
       ),
     [integrations, selectedBranchId],
   );
 
   const scopedAudit = useMemo(
     () =>
-      SETTINGS_AUDIT_LOG.filter(
-        (entry) =>
-          settingsRecordIsInScope(
-            entry,
-            selectedBranchId,
-          ),
+      SETTINGS_AUDIT_LOG.filter((entry) =>
+        settingsRecordIsInScope(entry, selectedBranchId),
       ),
     [selectedBranchId],
   );
 
   const filteredProfiles = useMemo(() => {
-    const search = query
-      .trim()
-      .toLowerCase();
+    const search = query.trim().toLowerCase();
 
     return scopedProfiles.filter(
       (profile) =>
-        (!currentCategory ||
-          profile.category ===
-            currentCategory) &&
+        (!currentCategory || profile.category === currentCategory) &&
+        [profile.name, profile.branchName, profile.updatedBy, profile.note]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase()
+          .includes(search) &&
+        (statusFilter === "all" || profile.status === statusFilter),
+    );
+  }, [currentCategory, query, scopedProfiles, statusFilter]);
+
+  const filteredIntegrations = useMemo(() => {
+    const search = query.trim().toLowerCase();
+
+    return scopedIntegrations.filter(
+      (integration) =>
         [
-          profile.name,
-          profile.branchName,
-          profile.updatedBy,
-          profile.note,
+          integration.name,
+          integration.provider,
+          integration.branchName,
+          integration.endpointLabel,
         ]
           .filter(Boolean)
           .join(" ")
           .toLowerCase()
           .includes(search) &&
-        (statusFilter === "all" ||
-          profile.status ===
-            statusFilter),
+        (statusFilter === "all" || integration.status === statusFilter),
     );
-  }, [
-    currentCategory,
-    query,
-    scopedProfiles,
-    statusFilter,
-  ]);
-
-  const filteredIntegrations =
-    useMemo(() => {
-      const search = query
-        .trim()
-        .toLowerCase();
-
-      return scopedIntegrations.filter(
-        (integration) =>
-          [
-            integration.name,
-            integration.provider,
-            integration.branchName,
-            integration.endpointLabel,
-          ]
-            .filter(Boolean)
-            .join(" ")
-            .toLowerCase()
-            .includes(search) &&
-          (statusFilter === "all" ||
-            integration.status ===
-              statusFilter),
-      );
-    }, [
-      query,
-      scopedIntegrations,
-      statusFilter,
-    ]);
+  }, [query, scopedIntegrations, statusFilter]);
 
   const filteredAudit = useMemo(() => {
-    const search = query
-      .trim()
-      .toLowerCase();
+    const search = query.trim().toLowerCase();
 
-    return scopedAudit.filter(
-      (entry) =>
-        [
-          entry.entityName,
-          entry.actorName,
-          entry.branchName,
-          entry.summary,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase()
-          .includes(search),
+    return scopedAudit.filter((entry) =>
+      [entry.entityName, entry.actorName, entry.branchName, entry.summary]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(search),
     );
   }, [query, scopedAudit]);
 
   const selectedProfile =
-    profiles.find(
-      (profile) =>
-        profile.id ===
-        selectedProfileId,
-    ) ?? null;
+    profiles.find((profile) => profile.id === selectedProfileId) ?? null;
   const selectedIntegration =
-    integrations.find(
-      (integration) =>
-        integration.id ===
-        selectedIntegrationId,
-    ) ?? null;
+    integrations.find((integration) => integration.id === selectedIntegrationId) ?? null;
   const selectedAudit =
-    SETTINGS_AUDIT_LOG.find(
-      (entry) =>
-        entry.id === selectedAuditId,
-    ) ?? null;
+    SETTINGS_AUDIT_LOG.find((entry) => entry.id === selectedAuditId) ?? null;
 
-  const effectiveOrganization =
-    resolveEffectiveProfile(
-      profiles,
-      "organization",
-      selectedBranchId,
-    );
-  const effectiveSecurity =
-    resolveEffectiveProfile(
-      profiles,
-      "security",
-      selectedBranchId,
-    );
-  const effectiveNotifications =
-    resolveEffectiveProfile(
-      profiles,
-      "notifications",
-      selectedBranchId,
-    );
+  const effectiveOrganization = resolveEffectiveProfile(
+    profiles,
+    "organization",
+    selectedBranchId,
+  );
+  const effectiveSecurity = resolveEffectiveProfile(
+    profiles,
+    "security",
+    selectedBranchId,
+  );
+  const effectiveNotifications = resolveEffectiveProfile(
+    profiles,
+    "notifications",
+    selectedBranchId,
+  );
 
   const metrics = [
     {
       label: "Active profiles",
       value: String(
-        scopedProfiles.filter(
-          (profile) =>
-            profile.status ===
-            "active",
-        ).length,
+        scopedProfiles.filter((profile) => profile.status === "active").length,
       ),
       detail: selectedBranch.name,
       icon: CheckCircle2,
@@ -319,10 +194,7 @@ export function SettingsWorkspace() {
     {
       label: "Branch overrides",
       value: String(
-        scopedProfiles.filter(
-          (profile) =>
-            profile.scope === "branch",
-        ).length,
+        scopedProfiles.filter((profile) => profile.scope === "branch").length,
       ),
       detail: "Custom branch settings",
       icon: Building2,
@@ -331,11 +203,8 @@ export function SettingsWorkspace() {
     {
       label: "Connected integrations",
       value: String(
-        scopedIntegrations.filter(
-          (integration) =>
-            integration.status ===
-            "connected",
-        ).length,
+        scopedIntegrations.filter((integration) => integration.status === "connected")
+          .length,
       ),
       detail: `${scopedIntegrations.length} configured`,
       icon: Settings2,
@@ -343,9 +212,7 @@ export function SettingsWorkspace() {
     },
     {
       label: "Audit records",
-      value: String(
-        scopedAudit.length,
-      ),
+      value: String(scopedAudit.length),
       detail: "Current activity history",
       icon: ClipboardList,
       tone: "info" as const,
@@ -358,12 +225,9 @@ export function SettingsWorkspace() {
       header: "Settings profile",
       cell: (profile) => (
         <div>
-          <p className="font-semibold">
-            {profile.name}
-          </p>
+          <p className="font-semibold">{profile.name}</p>
           <p className="mt-1 text-xs text-text-muted">
-            {profile.branchName ??
-              "All organization branches"}
+            {profile.branchName ?? "All organization branches"}
           </p>
         </div>
       ),
@@ -372,18 +236,8 @@ export function SettingsWorkspace() {
       id: "scope",
       header: "Scope",
       cell: (profile) => (
-        <Badge
-          variant={
-            SETTINGS_SCOPE_CONFIG[
-              profile.scope
-            ].badgeVariant
-          }
-        >
-          {
-            SETTINGS_SCOPE_CONFIG[
-              profile.scope
-            ].label
-          }
+        <Badge variant={SETTINGS_SCOPE_CONFIG[profile.scope].badgeVariant}>
+          {SETTINGS_SCOPE_CONFIG[profile.scope].label}
         </Badge>
       ),
     },
@@ -391,38 +245,22 @@ export function SettingsWorkspace() {
       id: "summary",
       header: "Effective value",
       cell: (profile) => {
-        const summary =
-          getProfileSummary(
-            profile,
-          )[0];
+        const summary = getProfileSummary(profile)[0];
 
-        return summary
-          ? `${summary.label}: ${summary.value}`
-          : "Not configured";
+        return summary ? `${summary.label}: ${summary.value}` : "Not configured";
       },
     },
     {
       id: "updatedBy",
       header: "Updated by",
-      cell: (profile) =>
-        profile.updatedBy,
+      cell: (profile) => profile.updatedBy,
     },
     {
       id: "status",
       header: "Status",
       cell: (profile) => (
-        <Badge
-          variant={
-            SETTINGS_STATUS_CONFIG[
-              profile.status
-            ].badgeVariant
-          }
-        >
-          {
-            SETTINGS_STATUS_CONFIG[
-              profile.status
-            ].label
-          }
+        <Badge variant={SETTINGS_STATUS_CONFIG[profile.status].badgeVariant}>
+          {SETTINGS_STATUS_CONFIG[profile.status].label}
         </Badge>
       ),
     },
@@ -437,9 +275,7 @@ export function SettingsWorkspace() {
           aria-label={`Open actions for ${profile.name}`}
           onClick={(event) => {
             event.stopPropagation();
-            setSelectedProfileId(
-              profile.id,
-            );
+            setSelectedProfileId(profile.id);
           }}
         >
           <MoreHorizontal />
@@ -454,13 +290,10 @@ export function SettingsWorkspace() {
       header: "Integration",
       cell: (integration) => (
         <div>
-          <p className="font-semibold">
-            {integration.name}
-          </p>
+          <p className="font-semibold">{integration.name}</p>
           <p className="mt-1 text-xs text-text-muted">
             {integration.provider} ·{" "}
-            {integration.branchName ??
-              "All organization branches"}
+            {integration.branchName ?? "All organization branches"}
           </p>
         </div>
       ),
@@ -469,53 +302,28 @@ export function SettingsWorkspace() {
       id: "type",
       header: "Type",
       cell: (integration) => (
-        <Badge
-          variant={
-            INTEGRATION_TYPE_CONFIG[
-              integration.type
-            ].badgeVariant
-          }
-        >
-          {
-            INTEGRATION_TYPE_CONFIG[
-              integration.type
-            ].label
-          }
+        <Badge variant={INTEGRATION_TYPE_CONFIG[integration.type].badgeVariant}>
+          {INTEGRATION_TYPE_CONFIG[integration.type].label}
         </Badge>
       ),
     },
     {
       id: "sync",
       header: "Sync",
-      cell: (integration) =>
-        integration.syncFrequency,
+      cell: (integration) => integration.syncFrequency,
     },
     {
       id: "lastSync",
       header: "Last sync",
       cell: (integration) =>
-        integration.lastSyncAt
-          ? formatSettingsDateTime(
-              integration.lastSyncAt,
-            )
-          : "Never",
+        integration.lastSyncAt ? formatSettingsDateTime(integration.lastSyncAt) : "Never",
     },
     {
       id: "status",
       header: "Status",
       cell: (integration) => (
-        <Badge
-          variant={
-            INTEGRATION_STATUS_CONFIG[
-              integration.status
-            ].badgeVariant
-          }
-        >
-          {
-            INTEGRATION_STATUS_CONFIG[
-              integration.status
-            ].label
-          }
+        <Badge variant={INTEGRATION_STATUS_CONFIG[integration.status].badgeVariant}>
+          {INTEGRATION_STATUS_CONFIG[integration.status].label}
         </Badge>
       ),
     },
@@ -530,9 +338,7 @@ export function SettingsWorkspace() {
           aria-label={`Open actions for ${integration.name}`}
           onClick={(event) => {
             event.stopPropagation();
-            setSelectedIntegrationId(
-              integration.id,
-            );
+            setSelectedIntegrationId(integration.id);
           }}
         >
           <MoreHorizontal />
@@ -547,12 +353,8 @@ export function SettingsWorkspace() {
       header: "Activity",
       cell: (entry) => (
         <div>
-          <p className="font-semibold">
-            {entry.entityName}
-          </p>
-          <p className="mt-1 text-xs text-text-muted capitalize">
-            {entry.category}
-          </p>
+          <p className="font-semibold">{entry.entityName}</p>
+          <p className="mt-1 text-xs text-text-muted capitalize">{entry.category}</p>
         </div>
       ),
     },
@@ -562,15 +364,9 @@ export function SettingsWorkspace() {
       cell: (entry) => (
         <Badge
           variant={
-            entry.action ===
-              "activated" ||
-            entry.action ===
-              "connected"
+            entry.action === "activated" || entry.action === "connected"
               ? "success"
-              : entry.action ===
-                  "archived" ||
-                entry.action ===
-                  "disconnected"
+              : entry.action === "archived" || entry.action === "disconnected"
                 ? "neutral"
                 : "info"
           }
@@ -582,23 +378,17 @@ export function SettingsWorkspace() {
     {
       id: "scope",
       header: "Scope",
-      cell: (entry) =>
-        entry.branchName ??
-        "All organization branches",
+      cell: (entry) => entry.branchName ?? "All organization branches",
     },
     {
       id: "actor",
       header: "Actor",
-      cell: (entry) =>
-        entry.actorName,
+      cell: (entry) => entry.actorName,
     },
     {
       id: "created",
       header: "Created",
-      cell: (entry) =>
-        formatSettingsDateTime(
-          entry.createdAt,
-        ),
+      cell: (entry) => formatSettingsDateTime(entry.createdAt),
     },
     {
       id: "actions",
@@ -611,9 +401,7 @@ export function SettingsWorkspace() {
           aria-label={`Open audit details for ${entry.entityName}`}
           onClick={(event) => {
             event.stopPropagation();
-            setSelectedAuditId(
-              entry.id,
-            );
+            setSelectedAuditId(entry.id);
           }}
         >
           <MoreHorizontal />
@@ -622,29 +410,18 @@ export function SettingsWorkspace() {
     },
   ];
 
-  function openCreateProfile(
-    category: SettingsCategory,
-  ) {
+  function openCreateProfile(category: SettingsCategory) {
     setCreateCategory(category);
     setSelectedProfileId(null);
     setEditorMode("profile");
   }
 
-  function saveProfile(
-    profile: SettingsProfile,
-  ) {
+  function saveProfile(profile: SettingsProfile) {
     setProfiles((current) => {
-      const exists = current.some(
-        (item) =>
-          item.id === profile.id,
-      );
+      const exists = current.some((item) => item.id === profile.id);
 
       return exists
-        ? current.map((item) =>
-            item.id === profile.id
-              ? profile
-              : item,
-          )
+        ? current.map((item) => (item.id === profile.id ? profile : item))
         : [profile, ...current];
     });
 
@@ -652,157 +429,109 @@ export function SettingsWorkspace() {
     setSelectedProfileId(profile.id);
   }
 
-  function updateProfileStatus(
-    status: SettingsStatus,
-  ) {
+  function updateProfileStatus(status: SettingsStatus) {
     if (!selectedProfile) {
       return;
     }
 
     setProfiles((current) =>
       current.map((profile) =>
-        profile.id ===
-        selectedProfile.id
+        profile.id === selectedProfile.id
           ? {
               ...profile,
               status,
-              updatedAt: new Date()
-                .toISOString()
-                .slice(0, 10),
-              updatedBy:
-                CURRENT_ADMIN.name,
+              updatedAt: new Date().toISOString().slice(0, 10),
+              updatedBy: CURRENT_ADMIN.name,
             }
           : profile,
       ),
     );
   }
 
-  function saveIntegration(
-    integration: IntegrationRecord,
-  ) {
+  function saveIntegration(integration: IntegrationRecord) {
     setIntegrations((current) => {
-      const exists = current.some(
-        (item) =>
-          item.id ===
-          integration.id,
-      );
+      const exists = current.some((item) => item.id === integration.id);
 
       return exists
-        ? current.map((item) =>
-            item.id ===
-            integration.id
-              ? integration
-              : item,
-          )
+        ? current.map((item) => (item.id === integration.id ? integration : item))
         : [integration, ...current];
     });
 
     setEditorMode(null);
-    setSelectedIntegrationId(
-      integration.id,
-    );
+    setSelectedIntegrationId(integration.id);
   }
 
-  function updateIntegrationStatus(
-    status: IntegrationStatus,
-  ) {
+  function updateIntegrationStatus(status: IntegrationStatus) {
     if (!selectedIntegration) {
       return;
     }
 
     setIntegrations((current) =>
       current.map((integration) =>
-        integration.id ===
-        selectedIntegration.id
+        integration.id === selectedIntegration.id
           ? {
               ...integration,
               status,
-              updatedAt: new Date()
-                .toISOString()
-                .slice(0, 10),
-              updatedBy:
-                CURRENT_ADMIN.name,
+              updatedAt: new Date().toISOString().slice(0, 10),
+              updatedBy: CURRENT_ADMIN.name,
             }
           : integration,
       ),
     );
   }
 
-  const headerAction =
-    currentCategory ? (
-      <Button
-        onClick={() =>
-          openCreateProfile(
-            currentCategory,
-          )
-        }
-      >
-        <Plus />
-        {SETTINGS_COPY.addProfile}
-      </Button>
-    ) : section ===
-      "integrations" ? (
-      <Button
-        onClick={() => {
-          setSelectedIntegrationId(
-            null,
-          );
-          setEditorMode(
-            "integration",
-          );
-        }}
-      >
-        <Plus />
-        {
-          SETTINGS_COPY.addIntegration
-        }
-      </Button>
-    ) : undefined;
+  const headerAction = currentCategory ? (
+    <Button onClick={() => openCreateProfile(currentCategory)}>
+      <Plus />
+      {SETTINGS_COPY.addProfile}
+    </Button>
+  ) : section === "integrations" ? (
+    <Button
+      onClick={() => {
+        setSelectedIntegrationId(null);
+        setEditorMode("integration");
+      }}
+    >
+      <Plus />
+      {SETTINGS_COPY.addIntegration}
+    </Button>
+  ) : undefined;
 
   return (
     <div className="mx-auto max-w-360">
       <PageHeader
         eyebrow={SETTINGS_COPY.eyebrow}
         title={sectionCopy.title}
-        description={
-          sectionCopy.description
-        }
+        description={sectionCopy.description}
         actions={headerAction}
       />
 
       <div className="mt-7 overflow-x-auto border-b border-border">
         <div className="flex min-w-max gap-1">
-          {SETTINGS_SECTIONS.map(
-            (item) => (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => {
-                  setSection(item.id);
-                  setQuery("");
-                  setStatusFilter(
-                    "all",
-                  );
-                }}
-                className={
-                  section === item.id
-                    ? "border-b-2 border-primary px-4 py-3 text-sm font-semibold text-primary"
-                    : "border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-text-muted transition hover:text-text"
-                }
-              >
-                {item.label}
-              </button>
-            ),
-          )}
+          {SETTINGS_SECTIONS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              onClick={() => {
+                setSection(item.id);
+                setQuery("");
+                setStatusFilter("all");
+              }}
+              className={
+                section === item.id
+                  ? "border-b-2 border-primary px-4 py-3 text-sm font-semibold text-primary"
+                  : "border-b-2 border-transparent px-4 py-3 text-sm font-semibold text-text-muted transition hover:text-text"
+              }
+            >
+              {item.label}
+            </button>
+          ))}
         </div>
       </div>
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
@@ -813,67 +542,47 @@ export function SettingsWorkspace() {
               {
                 title: "Organization",
                 icon: Settings2,
-                profile:
-                  effectiveOrganization,
+                profile: effectiveOrganization,
               },
               {
                 title: "Security",
                 icon: ShieldCheck,
-                profile:
-                  effectiveSecurity,
+                profile: effectiveSecurity,
               },
               {
                 title: "Notifications",
                 icon: Bell,
-                profile:
-                  effectiveNotifications,
+                profile: effectiveNotifications,
               },
             ].map((item) => {
               const Icon = item.icon;
-              const summary =
-                item.profile
-                  ? getProfileSummary(
-                      item.profile,
-                    )
-                  : [];
+              const summary = item.profile ? getProfileSummary(item.profile) : [];
 
               return (
-                <Card
-                  key={item.title}
-                  className="p-5"
-                >
+                <Card key={item.title} className="p-5">
                   <div className="flex items-center gap-3">
                     <span className="flex size-10 items-center justify-center rounded-control bg-info-muted text-info">
                       <Icon size={19} />
                     </span>
                     <div>
-                      <h2 className="font-bold">
-                        {item.title}
-                      </h2>
+                      <h2 className="font-bold">{item.title}</h2>
                       <p className="mt-1 text-xs text-text-muted">
-                        {item.profile?.name ??
-                          "No active profile"}
+                        {item.profile?.name ?? "No active profile"}
                       </p>
                     </div>
                   </div>
 
                   <div className="mt-5 space-y-3">
                     {summary.length > 0 ? (
-                      summary.map(
-                        (row) => (
-                          <div
-                            key={row.label}
-                            className="flex items-center justify-between gap-4 rounded-control bg-canvas px-4 py-3"
-                          >
-                            <span className="text-sm text-text-muted">
-                              {row.label}
-                            </span>
-                            <span className="text-sm font-semibold">
-                              {row.value}
-                            </span>
-                          </div>
-                        ),
-                      )
+                      summary.map((row) => (
+                        <div
+                          key={row.label}
+                          className="flex items-center justify-between gap-4 rounded-control bg-canvas px-4 py-3"
+                        >
+                          <span className="text-sm text-text-muted">{row.label}</span>
+                          <span className="text-sm font-semibold">{row.value}</span>
+                        </div>
+                      ))
                     ) : (
                       <p className="rounded-control bg-warning-muted p-4 text-sm font-medium text-warning">
                         No active profile is available.
@@ -887,30 +596,17 @@ export function SettingsWorkspace() {
 
           <Card className="mt-6 overflow-hidden">
             <div className="border-b border-border p-5">
-              <h2 className="text-lg font-bold">
-                Recent settings activity
-              </h2>
+              <h2 className="text-lg font-bold">Recent settings activity</h2>
               <p className="mt-1 text-sm text-text-muted">
                 Latest administrative changes in the selected scope.
               </p>
             </div>
             <DataTable
-              rows={scopedAudit.slice(
-                0,
-                6,
-              )}
+              rows={scopedAudit.slice(0, 6)}
               columns={auditColumns}
-              getRowKey={(entry) =>
-                entry.id
-              }
-              onRowClick={(entry) =>
-                setSelectedAuditId(
-                  entry.id,
-                )
-              }
-              emptyState={
-                <EmptyState />
-              }
+              getRowKey={(entry) => entry.id}
+              onRowClick={(entry) => setSelectedAuditId(entry.id)}
+              emptyState={<EmptyState />}
             />
           </Card>
         </>
@@ -921,15 +617,9 @@ export function SettingsWorkspace() {
           <TableHeader
             query={query}
             setQuery={setQuery}
-            statusFilter={
-              statusFilter
-            }
-            setStatusFilter={
-              setStatusFilter
-            }
-            statusOptions={Object.entries(
-              SETTINGS_STATUS_CONFIG,
-            ).map(
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            statusOptions={Object.entries(SETTINGS_STATUS_CONFIG).map(
               ([value, config]) => ({
                 value,
                 label: config.label,
@@ -939,14 +629,8 @@ export function SettingsWorkspace() {
           <DataTable
             rows={filteredProfiles}
             columns={profileColumns}
-            getRowKey={(profile) =>
-              profile.id
-            }
-            onRowClick={(profile) =>
-              setSelectedProfileId(
-                profile.id,
-              )
-            }
+            getRowKey={(profile) => profile.id}
+            onRowClick={(profile) => setSelectedProfileId(profile.id)}
             emptyState={<EmptyState />}
           />
         </Card>
@@ -957,15 +641,9 @@ export function SettingsWorkspace() {
           <TableHeader
             query={query}
             setQuery={setQuery}
-            statusFilter={
-              statusFilter
-            }
-            setStatusFilter={
-              setStatusFilter
-            }
-            statusOptions={Object.entries(
-              INTEGRATION_STATUS_CONFIG,
-            ).map(
+            statusFilter={statusFilter}
+            setStatusFilter={setStatusFilter}
+            statusOptions={Object.entries(INTEGRATION_STATUS_CONFIG).map(
               ([value, config]) => ({
                 value,
                 label: config.label,
@@ -975,14 +653,8 @@ export function SettingsWorkspace() {
           <DataTable
             rows={filteredIntegrations}
             columns={integrationColumns}
-            getRowKey={(integration) =>
-              integration.id
-            }
-            onRowClick={(integration) =>
-              setSelectedIntegrationId(
-                integration.id,
-              )
-            }
+            getRowKey={(integration) => integration.id}
+            onRowClick={(integration) => setSelectedIntegrationId(integration.id)}
             emptyState={<EmptyState />}
           />
         </Card>
@@ -990,40 +662,22 @@ export function SettingsWorkspace() {
 
       {section === "audit" && (
         <Card className="mt-6 overflow-hidden">
-          <TableHeader
-            query={query}
-            setQuery={setQuery}
-          />
+          <TableHeader query={query} setQuery={setQuery} />
           <DataTable
             rows={filteredAudit}
             columns={auditColumns}
-            getRowKey={(entry) =>
-              entry.id
-            }
-            onRowClick={(entry) =>
-              setSelectedAuditId(
-                entry.id,
-              )
-            }
+            getRowKey={(entry) => entry.id}
+            onRowClick={(entry) => setSelectedAuditId(entry.id)}
             emptyState={<EmptyState />}
           />
         </Card>
       )}
 
       <Drawer
-        open={Boolean(
-          selectedProfile &&
-            editorMode === null,
-        )}
-        onClose={() =>
-          setSelectedProfileId(
-            null,
-          )
-        }
+        open={Boolean(selectedProfile && editorMode === null)}
+        onClose={() => setSelectedProfileId(null)}
         title="Settings profile"
-        description={
-          selectedProfile?.name
-        }
+        description={selectedProfile?.name}
         footer={
           selectedProfile ? (
             <div className="flex flex-wrap justify-end gap-3">
@@ -1031,26 +685,18 @@ export function SettingsWorkspace() {
                 variant="outline"
                 onClick={() =>
                   updateProfileStatus(
-                    selectedProfile.status ===
-                      "active"
-                      ? "archived"
-                      : "active",
+                    selectedProfile.status === "active" ? "archived" : "active",
                   )
                 }
               >
-                {selectedProfile.status ===
-                "active"
+                {selectedProfile.status === "active"
                   ? SETTINGS_COPY.archive
                   : SETTINGS_COPY.activate}
               </Button>
               <Button
                 onClick={() => {
-                  setCreateCategory(
-                    selectedProfile.category,
-                  );
-                  setEditorMode(
-                    "profile",
-                  );
+                  setCreateCategory(selectedProfile.category);
+                  setEditorMode("profile");
                 }}
               >
                 <FilePenLine />
@@ -1060,27 +706,14 @@ export function SettingsWorkspace() {
           ) : undefined
         }
       >
-        {selectedProfile && (
-          <ProfileDetails
-            profile={selectedProfile}
-          />
-        )}
+        {selectedProfile && <ProfileDetails profile={selectedProfile} />}
       </Drawer>
 
       <Drawer
-        open={Boolean(
-          selectedIntegration &&
-            editorMode === null,
-        )}
-        onClose={() =>
-          setSelectedIntegrationId(
-            null,
-          )
-        }
+        open={Boolean(selectedIntegration && editorMode === null)}
+        onClose={() => setSelectedIntegrationId(null)}
         title="Integration"
-        description={
-          selectedIntegration?.name
-        }
+        description={selectedIntegration?.name}
         footer={
           selectedIntegration ? (
             <div className="flex flex-wrap justify-end gap-3">
@@ -1088,25 +721,17 @@ export function SettingsWorkspace() {
                 variant="outline"
                 onClick={() =>
                   updateIntegrationStatus(
-                    selectedIntegration.status ===
-                      "connected"
+                    selectedIntegration.status === "connected"
                       ? "disconnected"
                       : "connected",
                   )
                 }
               >
-                {selectedIntegration.status ===
-                "connected"
+                {selectedIntegration.status === "connected"
                   ? SETTINGS_COPY.disconnect
                   : SETTINGS_COPY.connect}
               </Button>
-              <Button
-                onClick={() =>
-                  setEditorMode(
-                    "integration",
-                  )
-                }
-              >
+              <Button onClick={() => setEditorMode("integration")}>
                 <FilePenLine />
                 {SETTINGS_COPY.edit}
               </Button>
@@ -1114,97 +739,45 @@ export function SettingsWorkspace() {
           ) : undefined
         }
       >
-        {selectedIntegration && (
-          <IntegrationDetails
-            integration={
-              selectedIntegration
-            }
-          />
-        )}
+        {selectedIntegration && <IntegrationDetails integration={selectedIntegration} />}
       </Drawer>
 
       <Drawer
         open={Boolean(selectedAudit)}
-        onClose={() =>
-          setSelectedAuditId(null)
-        }
+        onClose={() => setSelectedAuditId(null)}
         title="Settings audit details"
-        description={
-          selectedAudit?.entityName
-        }
+        description={selectedAudit?.entityName}
       >
-        {selectedAudit && (
-          <AuditDetails
-            entry={selectedAudit}
-          />
-        )}
+        {selectedAudit && <AuditDetails entry={selectedAudit} />}
       </Drawer>
 
       <Drawer
         open={editorMode === "profile"}
-        onClose={() =>
-          setEditorMode(null)
-        }
-        title={
-          selectedProfile
-            ? "Edit settings profile"
-            : "Add settings profile"
-        }
+        onClose={() => setEditorMode(null)}
+        title={selectedProfile ? "Edit settings profile" : "Add settings profile"}
         description="Configure reusable organization or branch-specific settings."
       >
         <ProfileForm
-          key={
-            selectedProfile?.id ??
-            createCategory
-          }
-          profile={
-            selectedProfile ??
-            undefined
-          }
-          category={
-            selectedProfile?.category ??
-            createCategory
-          }
-          selectedBranchId={
-            selectedBranchId
-          }
-          onCancel={() =>
-            setEditorMode(null)
-          }
+          key={selectedProfile?.id ?? createCategory}
+          profile={selectedProfile ?? undefined}
+          category={selectedProfile?.category ?? createCategory}
+          selectedBranchId={selectedBranchId}
+          onCancel={() => setEditorMode(null)}
           onSave={saveProfile}
         />
       </Drawer>
 
       <Drawer
-        open={
-          editorMode ===
-          "integration"
-        }
-        onClose={() =>
-          setEditorMode(null)
-        }
-        title={
-          selectedIntegration
-            ? "Edit integration"
-            : "Add integration"
-        }
+        open={editorMode === "integration"}
+        onClose={() => setEditorMode(null)}
+        title={selectedIntegration ? "Edit integration" : "Add integration"}
         description="Configure provider, scope, endpoint and synchronization."
       >
         <IntegrationForm
-          key={
-            selectedIntegration?.id ??
-            "new-integration"
-          }
-          integration={
-            selectedIntegration ??
-            undefined
-          }
-          selectedBranchId={
-            selectedBranchId
-          }
-          onCancel={() =>
-            setEditorMode(null)
-          }
+          key={selectedIntegration?.id ?? "new-integration"}
+          integration={selectedIntegration ?? undefined}
+          selectedBranchId={selectedBranchId}
+          onCancel={() => setEditorMode(null)}
           onSave={saveIntegration}
         />
       </Drawer>
@@ -1220,13 +793,9 @@ function TableHeader({
   statusOptions,
 }: {
   query: string;
-  setQuery: (
-    value: string,
-  ) => void;
+  setQuery: (value: string) => void;
   statusFilter?: string;
-  setStatusFilter?: (
-    value: string,
-  ) => void;
+  setStatusFilter?: (value: string) => void;
   statusOptions?: {
     value: string;
     label: string;
@@ -1239,45 +808,25 @@ function TableHeader({
           <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
           <Input
             value={query}
-            onChange={(event) =>
-              setQuery(
-                event.target.value,
-              )
-            }
-            placeholder={
-              SETTINGS_COPY.searchPlaceholder
-            }
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={SETTINGS_COPY.searchPlaceholder}
             className="pl-9"
           />
         </div>
 
-        {setStatusFilter &&
-          statusOptions && (
-            <Select
-              value={
-                statusFilter ?? "all"
-              }
-              onChange={(event) =>
-                setStatusFilter(
-                  event.target.value,
-                )
-              }
-            >
-              <option value="all">
-                All statuses
+        {setStatusFilter && statusOptions && (
+          <Select
+            value={statusFilter ?? "all"}
+            onChange={(event) => setStatusFilter(event.target.value)}
+          >
+            <option value="all">All statuses</option>
+            {statusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
               </option>
-              {statusOptions.map(
-                (option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ),
-              )}
-            </Select>
-          )}
+            ))}
+          </Select>
+        )}
       </div>
     </div>
   );
@@ -1287,23 +836,13 @@ function EmptyState() {
   return (
     <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
       <Settings2 className="size-8 text-text-muted" />
-      <h3 className="mt-4 font-bold">
-        {SETTINGS_COPY.emptyTitle}
-      </h3>
-      <p className="mt-2 text-sm text-text-muted">
-        {
-          SETTINGS_COPY.emptyDescription
-        }
-      </p>
+      <h3 className="mt-4 font-bold">{SETTINGS_COPY.emptyTitle}</h3>
+      <p className="mt-2 text-sm text-text-muted">{SETTINGS_COPY.emptyDescription}</p>
     </div>
   );
 }
 
-function ProfileDetails({
-  profile,
-}: {
-  profile: SettingsProfile;
-}) {
+function ProfileDetails({ profile }: { profile: SettingsProfile }) {
   return (
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-4 rounded-card border border-border p-5">
@@ -1311,126 +850,67 @@ function ProfileDetails({
           <p className="text-xs font-semibold capitalize text-primary">
             {profile.category}
           </p>
-          <h3 className="mt-2 font-bold">
-            {profile.name}
-          </h3>
+          <h3 className="mt-2 font-bold">{profile.name}</h3>
           <p className="mt-1 text-sm text-text-muted">
-            {profile.branchName ??
-              "All organization branches"}
+            {profile.branchName ?? "All organization branches"}
           </p>
         </div>
-        <Badge
-          variant={
-            SETTINGS_STATUS_CONFIG[
-              profile.status
-            ].badgeVariant
-          }
-        >
-          {
-            SETTINGS_STATUS_CONFIG[
-              profile.status
-            ].label
-          }
+        <Badge variant={SETTINGS_STATUS_CONFIG[profile.status].badgeVariant}>
+          {SETTINGS_STATUS_CONFIG[profile.status].label}
         </Badge>
       </div>
 
       <div className="space-y-3">
-        {SETTINGS_FIELD_CONFIG[
-          profile.category
-        ].map((field) => (
+        {SETTINGS_FIELD_CONFIG[profile.category].map((field) => (
           <div
             key={field.key}
             className="flex items-center justify-between gap-4 rounded-control border border-border p-4"
           >
-            <span className="text-sm text-text-muted">
-              {field.label}
-            </span>
+            <span className="text-sm text-text-muted">{field.label}</span>
             <span className="text-sm font-semibold">
-              {formatSettingsValue(
-                profile.values[
-                  field.key
-                ] ??
-                  "Not configured",
-              )}
+              {formatSettingsValue(profile.values[field.key] ?? "Not configured")}
             </span>
           </div>
         ))}
       </div>
 
       <p className="rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-        {profile.note ||
-          "No internal note has been added."}
+        {profile.note || "No internal note has been added."}
       </p>
     </div>
   );
 }
 
-function IntegrationDetails({
-  integration,
-}: {
-  integration: IntegrationRecord;
-}) {
+function IntegrationDetails({ integration }: { integration: IntegrationRecord }) {
   return (
     <div className="space-y-5">
       <div className="flex items-start justify-between gap-4 rounded-card border border-border p-5">
         <div>
           <p className="text-xs font-semibold text-primary">
-            {
-              INTEGRATION_TYPE_CONFIG[
-                integration.type
-              ].label
-            }
+            {INTEGRATION_TYPE_CONFIG[integration.type].label}
           </p>
-          <h3 className="mt-2 font-bold">
-            {integration.name}
-          </h3>
-          <p className="mt-1 text-sm text-text-muted">
-            {integration.provider}
-          </p>
+          <h3 className="mt-2 font-bold">{integration.name}</h3>
+          <p className="mt-1 text-sm text-text-muted">{integration.provider}</p>
         </div>
-        <Badge
-          variant={
-            INTEGRATION_STATUS_CONFIG[
-              integration.status
-            ].badgeVariant
-          }
-        >
-          {
-            INTEGRATION_STATUS_CONFIG[
-              integration.status
-            ].label
-          }
+        <Badge variant={INTEGRATION_STATUS_CONFIG[integration.status].badgeVariant}>
+          {INTEGRATION_STATUS_CONFIG[integration.status].label}
         </Badge>
       </div>
 
       {[
-        [
-          "Scope",
-          integration.branchName ??
-            "All organization branches",
-        ],
-        [
-          "Endpoint",
-          integration.endpointLabel,
-        ],
-        [
-          "Sync frequency",
-          integration.syncFrequency,
-        ],
+        ["Scope", integration.branchName ?? "All organization branches"],
+        ["Endpoint", integration.endpointLabel],
+        ["Sync frequency", integration.syncFrequency],
         [
           "Last sync",
           integration.lastSyncAt
-            ? formatSettingsDateTime(
-                integration.lastSyncAt,
-              )
+            ? formatSettingsDateTime(integration.lastSyncAt)
             : "Never",
         ],
         [
           "Last test",
           integration.lastTestAt
-            ? formatSettingsDateTime(
-                integration.lastTestAt,
-              )
+            ? formatSettingsDateTime(integration.lastTestAt)
             : "Never",
         ],
       ].map(([label, value]) => (
@@ -1438,42 +918,26 @@ function IntegrationDetails({
           key={label}
           className="flex items-center justify-between gap-4 rounded-control border border-border p-4"
         >
-          <span className="text-sm text-text-muted">
-            {label}
-          </span>
-          <span className="text-sm font-semibold">
-            {value}
-          </span>
+          <span className="text-sm text-text-muted">{label}</span>
+          <span className="text-sm font-semibold">{value}</span>
         </div>
       ))}
 
       <p className="rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-        {integration.note ||
-          "No integration note has been added."}
+        {integration.note || "No integration note has been added."}
       </p>
     </div>
   );
 }
 
-function AuditDetails({
-  entry,
-}: {
-  entry: SettingsAuditEntry;
-}) {
+function AuditDetails({ entry }: { entry: SettingsAuditEntry }) {
   return (
     <div className="space-y-5">
       <div className="rounded-card border border-border p-5">
-        <p className="text-xs font-semibold capitalize text-primary">
-          {entry.category}
-        </p>
-        <h3 className="mt-2 font-bold">
-          {entry.entityName}
-        </h3>
+        <p className="text-xs font-semibold capitalize text-primary">{entry.category}</p>
+        <h3 className="mt-2 font-bold">{entry.entityName}</h3>
         <p className="mt-2 text-sm text-text-muted">
-          {entry.actorName} ·{" "}
-          {formatSettingsDateTime(
-            entry.createdAt,
-          )}
+          {entry.actorName} · {formatSettingsDateTime(entry.createdAt)}
         </p>
       </div>
 
@@ -1482,16 +946,14 @@ function AuditDetails({
       </p>
 
       <div className="space-y-2">
-        {entry.changes.map(
-          (change) => (
-            <div
-              key={change}
-              className="rounded-control border border-border px-4 py-3 text-sm font-medium"
-            >
-              {change}
-            </div>
-          ),
-        )}
+        {entry.changes.map((change) => (
+          <div
+            key={change}
+            className="rounded-control border border-border px-4 py-3 text-sm font-medium"
+          >
+            {change}
+          </div>
+        ))}
       </div>
     </div>
   );
@@ -1508,66 +970,32 @@ function ProfileForm({
   category: SettingsCategory;
   selectedBranchId: string;
   onCancel: () => void;
-  onSave: (
-    profile: SettingsProfile,
-  ) => void;
+  onSave: (profile: SettingsProfile) => void;
 }) {
-  const [name, setName] =
-    useState(profile?.name ?? "");
-  const [scope, setScope] =
-    useState<SettingsScope>(
-      profile?.scope ??
-        "organization",
-    );
-  const [branchId, setBranchId] =
-    useState(
-      profile?.branchId ??
-        (selectedBranchId === "all"
-          ? ""
-          : selectedBranchId),
-    );
-  const [status, setStatus] =
-    useState<SettingsStatus>(
-      profile?.status ?? "draft",
-    );
-  const [values, setValues] =
-    useState<
-      Record<string, SettingsValue>
-    >(
-      profile?.values ??
-        createDefaultValues(
-          category,
-        ),
-    );
-  const [note, setNote] =
-    useState(profile?.note ?? "");
-  const [submitted, setSubmitted] =
-    useState(false);
-
-  const fields =
-    SETTINGS_FIELD_CONFIG[
-      category
-    ];
-
-  const valid = Boolean(
-    name.trim() &&
-      (scope === "organization" ||
-        branchId),
+  const [name, setName] = useState(profile?.name ?? "");
+  const [scope, setScope] = useState<SettingsScope>(profile?.scope ?? "organization");
+  const [branchId, setBranchId] = useState(
+    profile?.branchId ?? (selectedBranchId === "all" ? "" : selectedBranchId),
   );
+  const [status, setStatus] = useState<SettingsStatus>(profile?.status ?? "draft");
+  const [values, setValues] = useState<Record<string, SettingsValue>>(
+    profile?.values ?? createDefaultValues(category),
+  );
+  const [note, setNote] = useState(profile?.note ?? "");
+  const [submitted, setSubmitted] = useState(false);
 
-  function setValue(
-    key: string,
-    value: SettingsValue,
-  ) {
+  const fields = SETTINGS_FIELD_CONFIG[category];
+
+  const valid = Boolean(name.trim() && (scope === "organization" || branchId));
+
+  function setValue(key: string, value: SettingsValue) {
     setValues((current) => ({
       ...current,
       [key]: value,
     }));
   }
 
-  function submit(
-    event: FormEvent<HTMLFormElement>,
-  ) {
+  function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitted(true);
 
@@ -1575,113 +1003,60 @@ function ProfileForm({
       return;
     }
 
-    const branch =
-      BRANCH_OPTIONS.find(
-        (item) =>
-          item.id === branchId,
-      );
+    const branch = BRANCH_OPTIONS.find((item) => item.id === branchId);
 
     onSave({
-      id:
-        profile?.id ??
-        crypto.randomUUID(),
+      id: profile?.id ?? crypto.randomUUID(),
       name: name.trim(),
       category,
       scope,
-      branchId:
-        scope === "branch"
-          ? branchId
-          : undefined,
-      branchName:
-        scope === "branch"
-          ? branch?.name
-          : undefined,
+      branchId: scope === "branch" ? branchId : undefined,
+      branchName: scope === "branch" ? branch?.name : undefined,
       status,
       values,
-      updatedAt: new Date()
-        .toISOString()
-        .slice(0, 10),
-      updatedBy:
-        CURRENT_ADMIN.name,
+      updatedAt: new Date().toISOString().slice(0, 10),
+      updatedBy: CURRENT_ADMIN.name,
       note: note.trim(),
     });
   }
 
   return (
-    <form
-      onSubmit={submit}
-      className="space-y-7"
-    >
+    <form onSubmit={submit} className="space-y-7">
       <div className="grid gap-5 sm:grid-cols-2">
         <FormField
           label="Profile name"
           htmlFor="settingsProfileName"
-          error={
-            submitted && !name.trim()
-              ? "Enter a profile name"
-              : undefined
-          }
+          error={submitted && !name.trim() ? "Enter a profile name" : undefined}
         >
           <Input
             id="settingsProfileName"
             value={name}
-            onChange={(event) =>
-              setName(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setName(event.target.value)}
           />
         </FormField>
 
-        <FormField
-          label="Status"
-          htmlFor="settingsProfileStatus"
-        >
+        <FormField label="Status" htmlFor="settingsProfileStatus">
           <Select
             id="settingsProfileStatus"
             value={status}
-            onChange={(event) =>
-              setStatus(
-                event.target
-                  .value as SettingsStatus,
-              )
-            }
+            onChange={(event) => setStatus(event.target.value as SettingsStatus)}
           >
-            {Object.entries(
-              SETTINGS_STATUS_CONFIG,
-            ).map(
-              ([value, config]) => (
-                <option
-                  key={value}
-                  value={value}
-                >
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(SETTINGS_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
-        <FormField
-          label="Scope"
-          htmlFor="settingsProfileScope"
-        >
+        <FormField label="Scope" htmlFor="settingsProfileScope">
           <Select
             id="settingsProfileScope"
             value={scope}
-            onChange={(event) =>
-              setScope(
-                event.target
-                  .value as SettingsScope,
-              )
-            }
+            onChange={(event) => setScope(event.target.value as SettingsScope)}
           >
-            <option value="organization">
-              Organization
-            </option>
-            <option value="branch">
-              Branch
-            </option>
+            <option value="organization">Organization</option>
+            <option value="branch">Branch</option>
           </Select>
         </FormField>
 
@@ -1689,32 +1064,16 @@ function ProfileForm({
           <FormField
             label="Branch"
             htmlFor="settingsProfileBranch"
-            error={
-              submitted && !branchId
-                ? "Select a branch"
-                : undefined
-            }
+            error={submitted && !branchId ? "Select a branch" : undefined}
           >
             <Select
               id="settingsProfileBranch"
               value={branchId}
-              onChange={(event) =>
-                setBranchId(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setBranchId(event.target.value)}
             >
-              <option value="">
-                Select branch
-              </option>
-              {BRANCH_OPTIONS.filter(
-                (branch) =>
-                  !branch.isAggregate,
-              ).map((branch) => (
-                <option
-                  key={branch.id}
-                  value={branch.id}
-                >
+              <option value="">Select branch</option>
+              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map((branch) => (
+                <option key={branch.id} value={branch.id}>
                   {branch.name}
                 </option>
               ))}
@@ -1728,48 +1087,26 @@ function ProfileForm({
           <SettingsField
             key={field.key}
             field={field}
-            value={
-              values[field.key] ??
-              ""
-            }
-            onChange={(value) =>
-              setValue(
-                field.key,
-                value,
-              )
-            }
+            value={values[field.key] ?? ""}
+            onChange={(value) => setValue(field.key, value)}
           />
         ))}
       </div>
 
-      <FormField
-        label="Internal note"
-        htmlFor="settingsProfileNote"
-        optional
-      >
+      <FormField label="Internal note" htmlFor="settingsProfileNote" optional>
         <Textarea
           id="settingsProfileNote"
           value={note}
-          onChange={(event) =>
-            setNote(
-              event.target.value,
-            )
-          }
+          onChange={(event) => setNote(event.target.value)}
         />
       </FormField>
 
       <div className="flex justify-end gap-3 border-t border-border pt-5">
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="ghost" onClick={onCancel}>
           {SETTINGS_COPY.cancel}
         </Button>
         <Button type="submit">
-          {profile
-            ? SETTINGS_COPY.save
-            : SETTINGS_COPY.create}
+          {profile ? SETTINGS_COPY.save : SETTINGS_COPY.create}
         </Button>
       </div>
     </form>
@@ -1783,21 +1120,15 @@ function SettingsField({
 }: {
   field: (typeof SETTINGS_FIELD_CONFIG)[SettingsCategory][number];
   value: SettingsValue;
-  onChange: (
-    value: SettingsValue,
-  ) => void;
+  onChange: (value: SettingsValue) => void;
 }) {
   if (field.type === "switch") {
     return (
       <div className="flex items-center justify-between gap-5 rounded-control border border-border p-4">
         <div>
-          <p className="text-sm font-semibold">
-            {field.label}
-          </p>
+          <p className="text-sm font-semibold">{field.label}</p>
           {field.description && (
-            <p className="mt-1 text-xs text-text-muted">
-              {field.description}
-            </p>
+            <p className="mt-1 text-xs text-text-muted">{field.description}</p>
           )}
         </div>
         <Switch
@@ -1813,52 +1144,31 @@ function SettingsField({
     <FormField
       label={field.label}
       htmlFor={`settings-field-${field.key}`}
-      description={
-        field.description
-      }
+      description={field.description}
     >
       {field.type === "select" ? (
         <Select
           id={`settings-field-${field.key}`}
           value={String(value)}
-          onChange={(event) =>
-            onChange(
-              event.target.value,
-            )
-          }
+          onChange={(event) => onChange(event.target.value)}
         >
-          {field.options?.map(
-            (option) => (
-              <option
-                key={option.value}
-                value={option.value}
-              >
-                {option.label}
-              </option>
-            ),
-          )}
+          {field.options?.map((option) => (
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
         </Select>
       ) : (
         <Input
           id={`settings-field-${field.key}`}
           type={
-            field.type === "number"
-              ? "number"
-              : field.type === "time"
-                ? "time"
-                : "text"
+            field.type === "number" ? "number" : field.type === "time" ? "time" : "text"
           }
           min={field.minimum}
           value={String(value)}
           onChange={(event) =>
             onChange(
-              field.type === "number"
-                ? Number(
-                    event.target
-                      .value,
-                  )
-                : event.target
-                    .value,
+              field.type === "number" ? Number(event.target.value) : event.target.value,
             )
           }
         />
@@ -1876,252 +1186,125 @@ function IntegrationForm({
   integration?: IntegrationRecord;
   selectedBranchId: string;
   onCancel: () => void;
-  onSave: (
-    integration: IntegrationRecord,
-  ) => void;
+  onSave: (integration: IntegrationRecord) => void;
 }) {
-  const [name, setName] =
-    useState(
-      integration?.name ?? "",
-    );
-  const [provider, setProvider] =
-    useState(
-      integration?.provider ?? "",
-    );
-  const [type, setType] =
-    useState<IntegrationType>(
-      integration?.type ??
-        "email",
-    );
-  const [scope, setScope] =
-    useState<SettingsScope>(
-      integration?.scope ??
-        "organization",
-    );
-  const [branchId, setBranchId] =
-    useState(
-      integration?.branchId ??
-        (selectedBranchId === "all"
-          ? ""
-          : selectedBranchId),
-    );
-  const [status, setStatus] =
-    useState<IntegrationStatus>(
-      integration?.status ??
-        "disconnected",
-    );
-  const [syncFrequency, setSyncFrequency] =
-    useState(
-      integration?.syncFrequency ??
-        "Manual",
-    );
-  const [endpointLabel, setEndpointLabel] =
-    useState(
-      integration?.endpointLabel ??
-        "",
-    );
-  const [note, setNote] =
-    useState(
-      integration?.note ?? "",
-    );
+  const [name, setName] = useState(integration?.name ?? "");
+  const [provider, setProvider] = useState(integration?.provider ?? "");
+  const [type, setType] = useState<IntegrationType>(integration?.type ?? "email");
+  const [scope, setScope] = useState<SettingsScope>(integration?.scope ?? "organization");
+  const [branchId, setBranchId] = useState(
+    integration?.branchId ?? (selectedBranchId === "all" ? "" : selectedBranchId),
+  );
+  const [status, setStatus] = useState<IntegrationStatus>(
+    integration?.status ?? "disconnected",
+  );
+  const [syncFrequency, setSyncFrequency] = useState(
+    integration?.syncFrequency ?? "Manual",
+  );
+  const [endpointLabel, setEndpointLabel] = useState(integration?.endpointLabel ?? "");
+  const [note, setNote] = useState(integration?.note ?? "");
 
-  function submit(
-    event: FormEvent<HTMLFormElement>,
-  ) {
+  function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    const branch =
-      BRANCH_OPTIONS.find(
-        (item) =>
-          item.id === branchId,
-      );
+    const branch = BRANCH_OPTIONS.find((item) => item.id === branchId);
 
     if (
       !name.trim() ||
       !provider.trim() ||
       !endpointLabel.trim() ||
-      (scope === "branch" &&
-        !branchId)
+      (scope === "branch" && !branchId)
     ) {
       return;
     }
 
     onSave({
-      id:
-        integration?.id ??
-        crypto.randomUUID(),
+      id: integration?.id ?? crypto.randomUUID(),
       name: name.trim(),
-      provider:
-        provider.trim(),
+      provider: provider.trim(),
       type,
       scope,
-      branchId:
-        scope === "branch"
-          ? branchId
-          : undefined,
-      branchName:
-        scope === "branch"
-          ? branch?.name
-          : undefined,
+      branchId: scope === "branch" ? branchId : undefined,
+      branchName: scope === "branch" ? branch?.name : undefined,
       status,
       syncFrequency,
-      endpointLabel:
-        endpointLabel.trim(),
-      lastSyncAt:
-        integration?.lastSyncAt,
-      lastTestAt:
-        integration?.lastTestAt,
-      updatedAt: new Date()
-        .toISOString()
-        .slice(0, 10),
-      updatedBy:
-        CURRENT_ADMIN.name,
+      endpointLabel: endpointLabel.trim(),
+      lastSyncAt: integration?.lastSyncAt,
+      lastTestAt: integration?.lastTestAt,
+      updatedAt: new Date().toISOString().slice(0, 10),
+      updatedBy: CURRENT_ADMIN.name,
       note: note.trim(),
     });
   }
 
   return (
-    <form
-      onSubmit={submit}
-      className="space-y-7"
-    >
+    <form onSubmit={submit} className="space-y-7">
       <div className="grid gap-5 sm:grid-cols-2">
-        <FormField
-          label="Integration name"
-          htmlFor="integrationName"
-        >
+        <FormField label="Integration name" htmlFor="integrationName">
           <Input
             id="integrationName"
             value={name}
-            onChange={(event) =>
-              setName(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setName(event.target.value)}
           />
         </FormField>
 
-        <FormField
-          label="Provider"
-          htmlFor="integrationProvider"
-        >
+        <FormField label="Provider" htmlFor="integrationProvider">
           <Input
             id="integrationProvider"
             value={provider}
-            onChange={(event) =>
-              setProvider(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setProvider(event.target.value)}
           />
         </FormField>
 
-        <FormField
-          label="Type"
-          htmlFor="integrationType"
-        >
+        <FormField label="Type" htmlFor="integrationType">
           <Select
             id="integrationType"
             value={type}
-            onChange={(event) =>
-              setType(
-                event.target
-                  .value as IntegrationType,
-              )
-            }
+            onChange={(event) => setType(event.target.value as IntegrationType)}
           >
-            {Object.entries(
-              INTEGRATION_TYPE_CONFIG,
-            ).map(
-              ([value, config]) => (
-                <option
-                  key={value}
-                  value={value}
-                >
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(INTEGRATION_TYPE_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
-        <FormField
-          label="Status"
-          htmlFor="integrationStatus"
-        >
+        <FormField label="Status" htmlFor="integrationStatus">
           <Select
             id="integrationStatus"
             value={status}
-            onChange={(event) =>
-              setStatus(
-                event.target
-                  .value as IntegrationStatus,
-              )
-            }
+            onChange={(event) => setStatus(event.target.value as IntegrationStatus)}
           >
-            {Object.entries(
-              INTEGRATION_STATUS_CONFIG,
-            ).map(
-              ([value, config]) => (
-                <option
-                  key={value}
-                  value={value}
-                >
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(INTEGRATION_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
-        <FormField
-          label="Scope"
-          htmlFor="integrationScope"
-        >
+        <FormField label="Scope" htmlFor="integrationScope">
           <Select
             id="integrationScope"
             value={scope}
-            onChange={(event) =>
-              setScope(
-                event.target
-                  .value as SettingsScope,
-              )
-            }
+            onChange={(event) => setScope(event.target.value as SettingsScope)}
           >
-            <option value="organization">
-              Organization
-            </option>
-            <option value="branch">
-              Branch
-            </option>
+            <option value="organization">Organization</option>
+            <option value="branch">Branch</option>
           </Select>
         </FormField>
 
         {scope === "branch" && (
-          <FormField
-            label="Branch"
-            htmlFor="integrationBranch"
-          >
+          <FormField label="Branch" htmlFor="integrationBranch">
             <Select
               id="integrationBranch"
               value={branchId}
-              onChange={(event) =>
-                setBranchId(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setBranchId(event.target.value)}
             >
-              <option value="">
-                Select branch
-              </option>
-              {BRANCH_OPTIONS.filter(
-                (branch) =>
-                  !branch.isAggregate,
-              ).map((branch) => (
-                <option
-                  key={branch.id}
-                  value={branch.id}
-                >
+              <option value="">Select branch</option>
+              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map((branch) => (
+                <option key={branch.id} value={branch.id}>
                   {branch.name}
                 </option>
               ))}
@@ -2129,79 +1312,43 @@ function IntegrationForm({
           </FormField>
         )}
 
-        <FormField
-          label="Sync frequency"
-          htmlFor="integrationSync"
-        >
+        <FormField label="Sync frequency" htmlFor="integrationSync">
           <Select
             id="integrationSync"
             value={syncFrequency}
-            onChange={(event) =>
-              setSyncFrequency(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setSyncFrequency(event.target.value)}
           >
-            {[
-              "Manual",
-              "Hourly",
-              "Daily",
-              "Weekly",
-            ].map((value) => (
-              <option
-                key={value}
-                value={value}
-              >
+            {["Manual", "Hourly", "Daily", "Weekly"].map((value) => (
+              <option key={value} value={value}>
                 {value}
               </option>
             ))}
           </Select>
         </FormField>
 
-        <FormField
-          label="Endpoint label"
-          htmlFor="integrationEndpoint"
-        >
+        <FormField label="Endpoint label" htmlFor="integrationEndpoint">
           <Input
             id="integrationEndpoint"
             value={endpointLabel}
-            onChange={(event) =>
-              setEndpointLabel(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setEndpointLabel(event.target.value)}
           />
         </FormField>
       </div>
 
-      <FormField
-        label="Internal note"
-        htmlFor="integrationNote"
-        optional
-      >
+      <FormField label="Internal note" htmlFor="integrationNote" optional>
         <Textarea
           id="integrationNote"
           value={note}
-          onChange={(event) =>
-            setNote(
-              event.target.value,
-            )
-          }
+          onChange={(event) => setNote(event.target.value)}
         />
       </FormField>
 
       <div className="flex justify-end gap-3 border-t border-border pt-5">
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="ghost" onClick={onCancel}>
           {SETTINGS_COPY.cancel}
         </Button>
         <Button type="submit">
-          {integration
-            ? SETTINGS_COPY.save
-            : SETTINGS_COPY.create}
+          {integration ? SETTINGS_COPY.save : SETTINGS_COPY.create}
         </Button>
       </div>
     </form>

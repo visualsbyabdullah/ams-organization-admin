@@ -15,10 +15,7 @@ type SidebarProps = {
   onMobileClose: () => void;
 };
 
-function isActiveRoute(
-  pathname: string,
-  href: string,
-) {
+function isActiveRoute(pathname: string, href: string) {
   if (href === "/") {
     return pathname === "/";
   }
@@ -26,10 +23,7 @@ function isActiveRoute(
   return pathname.startsWith(href);
 }
 
-export function Sidebar({
-  mobileOpen,
-  onMobileClose,
-}: SidebarProps) {
+export function Sidebar({ mobileOpen, onMobileClose }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -49,9 +43,7 @@ export function Sidebar({
       <aside
         className={cn(
           "fixed inset-y-0 left-0 z-50 flex w-70 flex-col border-r border-border bg-surface transition-transform duration-200 lg:translate-x-0",
-          mobileOpen
-            ? "translate-x-0"
-            : "-translate-x-full",
+          mobileOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex h-18 items-center justify-between border-b border-border px-5">
@@ -78,10 +70,7 @@ export function Sidebar({
 
                 <div className="space-y-1">
                   {group.items.map((item) => {
-                    const active = isActiveRoute(
-                      pathname,
-                      item.href,
-                    );
+                    const active = isActiveRoute(pathname, item.href);
                     const Icon = item.icon;
 
                     return (
@@ -96,10 +85,7 @@ export function Sidebar({
                             : "text-text-muted hover:bg-surface-muted hover:text-text",
                         )}
                       >
-                        <Icon
-                          size={18}
-                          strokeWidth={2}
-                        />
+                        <Icon size={18} strokeWidth={2} />
 
                         <span>{item.label}</span>
                       </Link>
@@ -113,9 +99,7 @@ export function Sidebar({
 
         <div className="border-t border-border p-4">
           <div className="rounded-control bg-surface-muted p-3">
-            <p className="text-sm font-semibold">
-              Need help?
-            </p>
+            <p className="text-sm font-semibold">Need help?</p>
 
             <p className="mt-1 text-xs leading-5 text-text-muted">
               Contact AMS support for assistance.

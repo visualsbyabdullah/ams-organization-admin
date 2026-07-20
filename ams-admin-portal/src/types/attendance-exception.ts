@@ -9,22 +9,11 @@
   | "location_mismatch";
 
 export type AttendanceExceptionStatus =
-  | "open"
-  | "under_review"
-  | "approved"
-  | "rejected"
-  | "resolved";
+  "open" | "under_review" | "approved" | "rejected" | "resolved";
 
-export type AttendanceExceptionSeverity =
-  | "low"
-  | "medium"
-  | "high";
+export type AttendanceExceptionSeverity = "low" | "medium" | "high";
 
-export type AttendanceExceptionSource =
-  | "system"
-  | "employee"
-  | "manager"
-  | "admin";
+export type AttendanceExceptionSource = "system" | "employee" | "manager" | "admin";
 
 export type AttendanceException = {
   id: string;

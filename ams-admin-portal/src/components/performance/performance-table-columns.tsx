@@ -45,12 +45,7 @@ export function createCycleColumns(
       id: "scope",
       header: "Scope",
       cell: (cycle) => (
-        <Badge
-          variant={
-            PERFORMANCE_CYCLE_SCOPE_CONFIG[cycle.scope]
-              .badgeVariant
-          }
-        >
+        <Badge variant={PERFORMANCE_CYCLE_SCOPE_CONFIG[cycle.scope].badgeVariant}>
           {PERFORMANCE_CYCLE_SCOPE_CONFIG[cycle.scope].label}
         </Badge>
       ),
@@ -78,12 +73,7 @@ export function createCycleColumns(
       id: "status",
       header: "Status",
       cell: (cycle) => (
-        <Badge
-          variant={
-            PERFORMANCE_CYCLE_STATUS_CONFIG[cycle.status]
-              .badgeVariant
-          }
-        >
+        <Badge variant={PERFORMANCE_CYCLE_STATUS_CONFIG[cycle.status].badgeVariant}>
           {PERFORMANCE_CYCLE_STATUS_CONFIG[cycle.status].label}
         </Badge>
       ),
@@ -117,15 +107,10 @@ export function createReviewColumns(
       id: "employee",
       header: "Employee",
       cell: (review) => {
-        const employee = EMPLOYEES.find(
-          (item) => item.id === review.employeeId,
-        );
+        const employee = EMPLOYEES.find((item) => item.id === review.employeeId);
         return employee ? (
           <div className="flex items-center gap-3">
-            <Avatar
-              name={employee.name}
-              initials={employee.initials}
-            />
+            <Avatar name={employee.name} initials={employee.initials} />
             <div>
               <p className="font-semibold">{employee.name}</p>
               <p className="mt-1 text-xs text-text-muted">
@@ -142,9 +127,8 @@ export function createReviewColumns(
       id: "cycle",
       header: "Cycle",
       cell: (review) =>
-        PERFORMANCE_CYCLES.find(
-          (cycle) => cycle.id === review.cycleId,
-        )?.name ?? review.cycleId,
+        PERFORMANCE_CYCLES.find((cycle) => cycle.id === review.cycleId)?.name ??
+        review.cycleId,
     },
     {
       id: "manager",
@@ -172,12 +156,7 @@ export function createReviewColumns(
       id: "status",
       header: "Status",
       cell: (review) => (
-        <Badge
-          variant={
-            PERFORMANCE_REVIEW_STATUS_CONFIG[review.status]
-              .badgeVariant
-          }
-        >
+        <Badge variant={PERFORMANCE_REVIEW_STATUS_CONFIG[review.status].badgeVariant}>
           {PERFORMANCE_REVIEW_STATUS_CONFIG[review.status].label}
         </Badge>
       ),
@@ -212,9 +191,7 @@ export function createGoalColumns(
       header: "Goal",
       cell: (goal) => (
         <div>
-          <p className="max-w-xs whitespace-normal font-semibold">
-            {goal.title}
-          </p>
+          <p className="max-w-xs whitespace-normal font-semibold">{goal.title}</p>
           <p className="mt-1 text-xs text-text-muted">
             {goal.ownerName} Â· {goal.department}
           </p>
@@ -225,12 +202,7 @@ export function createGoalColumns(
       id: "level",
       header: "Level",
       cell: (goal) => (
-        <Badge
-          variant={
-            PERFORMANCE_GOAL_LEVEL_CONFIG[goal.level]
-              .badgeVariant
-          }
-        >
+        <Badge variant={PERFORMANCE_GOAL_LEVEL_CONFIG[goal.level].badgeVariant}>
           {PERFORMANCE_GOAL_LEVEL_CONFIG[goal.level].label}
         </Badge>
       ),
@@ -254,12 +226,7 @@ export function createGoalColumns(
       id: "status",
       header: "Status",
       cell: (goal) => (
-        <Badge
-          variant={
-            PERFORMANCE_GOAL_STATUS_CONFIG[goal.status]
-              .badgeVariant
-          }
-        >
+        <Badge variant={PERFORMANCE_GOAL_STATUS_CONFIG[goal.status].badgeVariant}>
           {PERFORMANCE_GOAL_STATUS_CONFIG[goal.status].label}
         </Badge>
       ),
@@ -305,12 +272,7 @@ export function createSettingsColumns(
       id: "scope",
       header: "Scope",
       cell: (settings) => (
-        <Badge
-          variant={
-            PERFORMANCE_SETTINGS_SCOPE_CONFIG[settings.scope]
-              .badgeVariant
-          }
-        >
+        <Badge variant={PERFORMANCE_SETTINGS_SCOPE_CONFIG[settings.scope].badgeVariant}>
           {PERFORMANCE_SETTINGS_SCOPE_CONFIG[settings.scope].label}
         </Badge>
       ),
@@ -319,15 +281,12 @@ export function createSettingsColumns(
       id: "frequency",
       header: "Frequency",
       cell: (settings) =>
-        PERFORMANCE_REVIEW_FREQUENCY_CONFIG[
-          settings.reviewFrequency
-        ].label,
+        PERFORMANCE_REVIEW_FREQUENCY_CONFIG[settings.reviewFrequency].label,
     },
     {
       id: "weights",
       header: "Goal / competency",
-      cell: (settings) =>
-        `${settings.goalWeight}% / ${settings.competencyWeight}%`,
+      cell: (settings) => `${settings.goalWeight}% / ${settings.competencyWeight}%`,
     },
     {
       id: "rating",
@@ -338,12 +297,7 @@ export function createSettingsColumns(
       id: "status",
       header: "Status",
       cell: (settings) => (
-        <Badge
-          variant={
-            PERFORMANCE_SETTINGS_STATUS_CONFIG[settings.status]
-              .badgeVariant
-          }
-        >
+        <Badge variant={PERFORMANCE_SETTINGS_STATUS_CONFIG[settings.status].badgeVariant}>
           {PERFORMANCE_SETTINGS_STATUS_CONFIG[settings.status].label}
         </Badge>
       ),

@@ -1,11 +1,6 @@
-﻿export type TrainingCourseStatus =
-  | "draft"
-  | "published"
-  | "archived";
+﻿export type TrainingCourseStatus = "draft" | "published" | "archived";
 
-export type TrainingCourseScope =
-  | "organization"
-  | "branch";
+export type TrainingCourseScope = "organization" | "branch";
 
 export type TrainingCategory =
   | "onboarding"
@@ -15,33 +10,17 @@ export type TrainingCategory =
   | "safety"
   | "professional_development";
 
-export type TrainingDeliveryMode =
-  | "onsite"
-  | "virtual"
-  | "self_paced"
-  | "hybrid";
+export type TrainingDeliveryMode = "onsite" | "virtual" | "self_paced" | "hybrid";
 
 export type TrainingEnrollmentStatus =
-  | "assigned"
-  | "in_progress"
-  | "completed"
-  | "overdue"
-  | "cancelled";
+  "assigned" | "in_progress" | "completed" | "overdue" | "cancelled";
 
 export type TrainingSessionStatus =
-  | "scheduled"
-  | "in_progress"
-  | "completed"
-  | "cancelled";
+  "scheduled" | "in_progress" | "completed" | "cancelled";
 
-export type TrainingSettingsScope =
-  | "organization"
-  | "branch";
+export type TrainingSettingsScope = "organization" | "branch";
 
-export type TrainingSettingsStatus =
-  | "active"
-  | "draft"
-  | "archived";
+export type TrainingSettingsStatus = "active" | "draft" | "archived";
 
 export type TrainingCourse = {
   id: string;

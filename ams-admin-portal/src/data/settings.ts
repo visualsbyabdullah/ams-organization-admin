@@ -25,8 +25,7 @@ export const SETTINGS_PROFILES: SettingsProfile[] = [
     },
     updatedAt: "2026-07-17",
     updatedBy: "Maaz",
-    note:
-      "Default organization settings used when no branch override exists.",
+    note: "Default organization settings used when no branch override exists.",
   },
   {
     id: "org-islamabad",
@@ -50,8 +49,7 @@ export const SETTINGS_PROFILES: SettingsProfile[] = [
     },
     updatedAt: "2026-07-16",
     updatedBy: "Maaz",
-    note:
-      "Islamabad uses a branch-specific employee identifier prefix.",
+    note: "Islamabad uses a branch-specific employee identifier prefix.",
   },
   {
     id: "security-default",
@@ -73,8 +71,7 @@ export const SETTINGS_PROFILES: SettingsProfile[] = [
     },
     updatedAt: "2026-07-17",
     updatedBy: "Maaz",
-    note:
-      "Primary access and data-governance policy.",
+    note: "Primary access and data-governance policy.",
   },
   {
     id: "security-islamabad",
@@ -98,8 +95,7 @@ export const SETTINGS_PROFILES: SettingsProfile[] = [
     },
     updatedAt: "2026-07-16",
     updatedBy: "Maaz",
-    note:
-      "Shorter administrative sessions for the primary branch.",
+    note: "Shorter administrative sessions for the primary branch.",
   },
   {
     id: "notifications-default",
@@ -122,8 +118,7 @@ export const SETTINGS_PROFILES: SettingsProfile[] = [
     },
     updatedAt: "2026-07-17",
     updatedBy: "Maaz",
-    note:
-      "Default operational notifications for administrators.",
+    note: "Default operational notifications for administrators.",
   },
   {
     id: "notifications-karachi",
@@ -148,8 +143,7 @@ export const SETTINGS_PROFILES: SettingsProfile[] = [
     },
     updatedAt: "2026-07-14",
     updatedBy: "Sara Ahmed",
-    note:
-      "Daily digest disabled while urgent alerts remain enabled.",
+    note: "Daily digest disabled while urgent alerts remain enabled.",
   },
 ];
 
@@ -167,8 +161,7 @@ export const SETTINGS_INTEGRATIONS: IntegrationRecord[] = [
     lastTestAt: "2026-07-17T12:15:00+05:00",
     updatedAt: "2026-07-17",
     updatedBy: "Maaz",
-    note:
-      "Used for notifications and scheduled communications.",
+    note: "Used for notifications and scheduled communications.",
   },
   {
     id: "integration-attendance",
@@ -183,8 +176,7 @@ export const SETTINGS_INTEGRATIONS: IntegrationRecord[] = [
     lastTestAt: "2026-07-16T09:30:00+05:00",
     updatedAt: "2026-07-16",
     updatedBy: "Maaz",
-    note:
-      "Imports biometric attendance punches.",
+    note: "Imports biometric attendance punches.",
   },
   {
     id: "integration-payroll",
@@ -199,8 +191,7 @@ export const SETTINGS_INTEGRATIONS: IntegrationRecord[] = [
     lastTestAt: "2026-07-15T10:00:00+05:00",
     updatedAt: "2026-07-15",
     updatedBy: "Maaz",
-    note:
-      "Credentials require review before the next payroll run.",
+    note: "Credentials require review before the next payroll run.",
   },
   {
     id: "integration-calendar-islamabad",
@@ -217,8 +208,7 @@ export const SETTINGS_INTEGRATIONS: IntegrationRecord[] = [
     lastTestAt: "2026-07-16T14:00:00+05:00",
     updatedAt: "2026-07-16",
     updatedBy: "Maaz",
-    note:
-      "Synchronizes training and branch operations events.",
+    note: "Synchronizes training and branch operations events.",
   },
   {
     id: "integration-storage",
@@ -231,8 +221,7 @@ export const SETTINGS_INTEGRATIONS: IntegrationRecord[] = [
     endpointLabel: "Not configured",
     updatedAt: "2026-07-12",
     updatedBy: "Maaz",
-    note:
-      "Storage integration is available but not configured.",
+    note: "Storage integration is available but not configured.",
   },
 ];
 
@@ -245,12 +234,8 @@ export const SETTINGS_AUDIT_LOG: SettingsAuditEntry[] = [
     entityName: "Organization Defaults",
     actorName: "Maaz",
     createdAt: "2026-07-17T11:40:00+05:00",
-    summary:
-      "Updated organization defaults.",
-    changes: [
-      "Workweek: 40 hours",
-      "Document branding: Enabled",
-    ],
+    summary: "Updated organization defaults.",
+    changes: ["Workweek: 40 hours", "Document branding: Enabled"],
   },
   {
     id: "audit-002",
@@ -262,11 +247,8 @@ export const SETTINGS_AUDIT_LOG: SettingsAuditEntry[] = [
     entityName: "Islamabad Security Override",
     actorName: "Maaz",
     createdAt: "2026-07-16T16:20:00+05:00",
-    summary:
-      "Reduced administrative session timeout.",
-    changes: [
-      "Session timeout: 60 → 45 minutes",
-    ],
+    summary: "Reduced administrative session timeout.",
+    changes: ["Session timeout: 60 → 45 minutes"],
   },
   {
     id: "audit-003",
@@ -276,11 +258,8 @@ export const SETTINGS_AUDIT_LOG: SettingsAuditEntry[] = [
     entityName: "Payroll Bank Export",
     actorName: "Maaz",
     createdAt: "2026-07-15T10:00:00+05:00",
-    summary:
-      "Tested payroll export connection.",
-    changes: [
-      "Connection result: Needs attention",
-    ],
+    summary: "Tested payroll export connection.",
+    changes: ["Connection result: Needs attention"],
   },
   {
     id: "audit-004",
@@ -292,10 +271,7 @@ export const SETTINGS_AUDIT_LOG: SettingsAuditEntry[] = [
     entityName: "Karachi Notification Override",
     actorName: "Sara Ahmed",
     createdAt: "2026-07-14T15:30:00+05:00",
-    summary:
-      "Disabled the daily digest.",
-    changes: [
-      "Daily digest: Enabled → Disabled",
-    ],
+    summary: "Disabled the daily digest.",
+    changes: ["Daily digest: Enabled → Disabled"],
   },
 ];

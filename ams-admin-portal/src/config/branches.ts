@@ -1,16 +1,10 @@
-import type {
-  BranchStatus,
-  BranchWorkingDay,
-} from "@/types/branch";
+import type { BranchStatus, BranchWorkingDay } from "@/types/branch";
 
 export const BRANCH_STATUS_CONFIG: Record<
   BranchStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "neutral";
+    badgeVariant: "success" | "warning" | "neutral";
   }
 > = {
   active: {
@@ -64,10 +58,9 @@ export const BRANCH_WORKING_DAY_CONFIG: Record<
   },
 };
 
-export const BRANCH_WORKING_DAYS =
-  Object.keys(
-    BRANCH_WORKING_DAY_CONFIG,
-  ) as BranchWorkingDay[];
+export const BRANCH_WORKING_DAYS = Object.keys(
+  BRANCH_WORKING_DAY_CONFIG,
+) as BranchWorkingDay[];
 
 export const BRANCH_TIMEZONE_OPTIONS = [
   {
@@ -95,18 +88,15 @@ export const BRANCH_COPY = {
     utilization: "Capacity utilization",
   },
   mapsTitle: "Branch locations",
-  mapsDescription:
-    "Live map position generated from each branch latitude and longitude.",
+  mapsDescription: "Live map position generated from each branch latitude and longitude.",
   registerTitle: "Branch register",
   registerDescription:
     "Review every organization branch and open its details from the actions column.",
-  searchPlaceholder:
-    "Search branch, code, city, manager or address",
+  searchPlaceholder: "Search branch, code, city, manager or address",
   allStatuses: "All branch statuses",
   allCities: "All cities",
   emptyTitle: "No branches found",
-  emptyDescription:
-    "Change the filters or add a new organization branch.",
+  emptyDescription: "Change the filters or add a new organization branch.",
   actions: {
     edit: "Edit branch",
     activate: "Activate branch",

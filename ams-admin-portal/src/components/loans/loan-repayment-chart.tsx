@@ -11,29 +11,18 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 import { formatPKR } from "@/lib/currency";
-import type {
-  LoanRepaymentTrendPoint,
-} from "@/types/loan";
+import type { LoanRepaymentTrendPoint } from "@/types/loan";
 
 type LoanRepaymentChartProps = {
   data: LoanRepaymentTrendPoint[];
 };
 
-export function LoanRepaymentChart({
-  data,
-}: LoanRepaymentChartProps) {
+export function LoanRepaymentChart({ data }: LoanRepaymentChartProps) {
   return (
     <div className="h-72 w-full [&_*:focus]:outline-none [&_svg]:outline-none">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           accessibilityLayer={false}
           data={data}
@@ -63,21 +52,12 @@ export function LoanRepaymentChart({
             tickLine={false}
             tick={CHART_AXIS_STYLE}
             width={72}
-            tickFormatter={(value) =>
-              formatPKR(
-                Number(value),
-                true,
-              )
-            }
+            tickFormatter={(value) => formatPKR(Number(value), true)}
           />
 
           <Tooltip
-            contentStyle={
-              CHART_TOOLTIP_STYLE
-            }
-            formatter={(value) =>
-              formatPKR(Number(value))
-            }
+            contentStyle={CHART_TOOLTIP_STYLE}
+            formatter={(value) => formatPKR(Number(value))}
           />
 
           <Legend
@@ -93,12 +73,8 @@ export function LoanRepaymentChart({
             type="monotone"
             dataKey="scheduled"
             name="Scheduled"
-            stroke={
-              CHART_COLORS.primary
-            }
-            fill={
-              CHART_COLORS.primary
-            }
+            stroke={CHART_COLORS.primary}
+            fill={CHART_COLORS.primary}
             fillOpacity={0.08}
             strokeWidth={2.5}
           />
@@ -107,12 +83,8 @@ export function LoanRepaymentChart({
             type="monotone"
             dataKey="collected"
             name="Collected"
-            stroke={
-              CHART_COLORS.present
-            }
-            fill={
-              CHART_COLORS.present
-            }
+            stroke={CHART_COLORS.present}
+            fill={CHART_COLORS.present}
             fillOpacity={0.08}
             strokeWidth={2.5}
           />
@@ -121,9 +93,7 @@ export function LoanRepaymentChart({
             type="monotone"
             dataKey="overdue"
             name="Overdue"
-            stroke={
-              CHART_COLORS.absent
-            }
+            stroke={CHART_COLORS.absent}
             fill="transparent"
             strokeWidth={2}
           />

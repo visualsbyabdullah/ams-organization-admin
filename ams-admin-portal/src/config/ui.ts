@@ -12,9 +12,7 @@ export const UI_COPY = {
   dashboard: {
     eyebrow: "Organization overview",
     title: "Good afternoon",
-    aggregateDescription:
-      "Here is what needs your attention across all branches.",
-    branchDescription:
-      "Here is what needs your attention in the selected branch.",
+    aggregateDescription: "Here is what needs your attention across all branches.",
+    branchDescription: "Here is what needs your attention in the selected branch.",
   },
 } as const;

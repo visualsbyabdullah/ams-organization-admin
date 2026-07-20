@@ -39,10 +39,7 @@ import { ChartCard } from "@/components/dashboard/chart-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { FormField } from "@/components/forms/form-field";
 import { SupportTabs } from "@/components/support/support-tabs";
-import {
-  DataTable,
-  type DataTableColumn,
-} from "@/components/shared/data-table";
+import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -53,11 +50,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 import {
   SUPPORT_ACTION_LABELS,
   SUPPORT_ARTICLE_STATUS_CONFIG,
@@ -126,12 +119,7 @@ function SupportVolumeChart({ data }: { data: SupportVolumePoint[] }) {
             tick={CHART_AXIS_STYLE}
             dy={8}
           />
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={CHART_AXIS_STYLE}
-            width={44}
-          />
+          <YAxis axisLine={false} tickLine={false} tick={CHART_AXIS_STYLE} width={44} />
           <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
           <Legend
             iconType="circle"
@@ -174,8 +162,7 @@ function TicketForm({
   onSave: (ticket: SupportTicket) => void;
 }) {
   const availableEmployees = EMPLOYEES.filter(
-    (employee) =>
-      selectedBranchId === "all" || employee.branchId === selectedBranchId,
+    (employee) => selectedBranchId === "all" || employee.branchId === selectedBranchId,
   );
 
   const availableCategories = SUPPORT_CATEGORIES.filter(
@@ -226,8 +213,7 @@ function TicketForm({
 
     onSave({
       id: ticket?.id ?? crypto.randomUUID(),
-      ticketNumber:
-        ticket?.ticketNumber ?? `AMS-SUP-${Date.now().toString().slice(-6)}`,
+      ticketNumber: ticket?.ticketNumber ?? `AMS-SUP-${Date.now().toString().slice(-6)}`,
       employeeId,
       branchId: employee.branchId,
       categoryId,
@@ -294,9 +280,7 @@ function TicketForm({
           <Select
             id="supportPriority"
             value={priority}
-            onChange={(event) =>
-              setPriority(event.target.value as SupportTicketPriority)
-            }
+            onChange={(event) => setPriority(event.target.value as SupportTicketPriority)}
           >
             {Object.entries(SUPPORT_PRIORITY_CONFIG).map(([value, config]) => (
               <option key={value} value={value}>
@@ -310,9 +294,7 @@ function TicketForm({
           <Select
             id="supportChannel"
             value={channel}
-            onChange={(event) =>
-              setChannel(event.target.value as SupportTicketChannel)
-            }
+            onChange={(event) => setChannel(event.target.value as SupportTicketChannel)}
           >
             {Object.entries(SUPPORT_CHANNEL_CONFIG).map(([value, config]) => (
               <option key={value} value={value}>
@@ -322,11 +304,7 @@ function TicketForm({
           </Select>
         </FormField>
 
-        <FormField
-          label="Assigned team or person"
-          htmlFor="supportAssignee"
-          optional
-        >
+        <FormField label="Assigned team or person" htmlFor="supportAssignee" optional>
           <Input
             id="supportAssignee"
             value={assignedTo}
@@ -352,9 +330,7 @@ function TicketForm({
       <FormField
         label="Request details"
         htmlFor="supportDescription"
-        error={
-          submitted && !description.trim() ? "Enter request details" : undefined
-        }
+        error={submitted && !description.trim() ? "Enter request details" : undefined}
       >
         <Textarea
           id="supportDescription"
@@ -377,9 +353,7 @@ function TicketForm({
         <Button type="button" variant="ghost" onClick={onCancel}>
           {SUPPORT_ACTION_LABELS.cancel}
         </Button>
-        <Button type="submit">
-          {ticket ? "Save ticket" : "Create ticket"}
-        </Button>
+        <Button type="submit">{ticket ? "Save ticket" : "Create ticket"}</Button>
       </div>
     </form>
   );
@@ -387,9 +361,7 @@ function TicketForm({
 
 function TicketDetails({ ticket }: { ticket: SupportTicket }) {
   const employee = EMPLOYEES.find((item) => item.id === ticket.employeeId);
-  const category = SUPPORT_CATEGORIES.find(
-    (item) => item.id === ticket.categoryId,
-  );
+  const category = SUPPORT_CATEGORIES.find((item) => item.id === ticket.categoryId);
   const slaState = getSupportSlaState(ticket);
 
   return (
@@ -397,17 +369,13 @@ function TicketDetails({ ticket }: { ticket: SupportTicket }) {
       <section className="rounded-card border border-border">
         <div className="flex items-start justify-between gap-4 border-b border-border p-5">
           <div>
-            <p className="text-xs font-semibold text-primary">
-              {ticket.ticketNumber}
-            </p>
+            <p className="text-xs font-semibold text-primary">{ticket.ticketNumber}</p>
             <h3 className="mt-2 font-bold">{ticket.title}</h3>
             <p className="mt-1 text-xs text-text-muted">
               Created {formatSupportDateTime(ticket.createdAt)}
             </p>
           </div>
-          <Badge
-            variant={SUPPORT_TICKET_STATUS_CONFIG[ticket.status].badgeVariant}
-          >
+          <Badge variant={SUPPORT_TICKET_STATUS_CONFIG[ticket.status].badgeVariant}>
             {SUPPORT_TICKET_STATUS_CONFIG[ticket.status].label}
           </Badge>
         </div>
@@ -443,9 +411,7 @@ function TicketDetails({ ticket }: { ticket: SupportTicket }) {
           <div>
             <dt className="text-xs text-text-muted">Priority</dt>
             <dd className="mt-1">
-              <Badge
-                variant={SUPPORT_PRIORITY_CONFIG[ticket.priority].badgeVariant}
-              >
+              <Badge variant={SUPPORT_PRIORITY_CONFIG[ticket.priority].badgeVariant}>
                 {SUPPORT_PRIORITY_CONFIG[ticket.priority].label}
               </Badge>
             </dd>
@@ -517,9 +483,7 @@ function CategoryForm({
   const [name, setName] = useState(category?.name ?? "");
   const [code, setCode] = useState(category?.code ?? "");
   const [description, setDescription] = useState(category?.description ?? "");
-  const [scope, setScope] = useState<SupportScope>(
-    category?.scope ?? "organization",
-  );
+  const [scope, setScope] = useState<SupportScope>(category?.scope ?? "organization");
   const [branchId, setBranchId] = useState(
     category?.branchId ?? (selectedBranchId === "all" ? "" : selectedBranchId),
   );
@@ -529,9 +493,7 @@ function CategoryForm({
   const [defaultPriority, setDefaultPriority] = useState<SupportTicketPriority>(
     category?.defaultPriority ?? "medium",
   );
-  const [defaultAssignee, setDefaultAssignee] = useState(
-    category?.defaultAssignee ?? "",
-  );
+  const [defaultAssignee, setDefaultAssignee] = useState(category?.defaultAssignee ?? "");
   const [firstResponseHours, setFirstResponseHours] = useState(
     String(category?.firstResponseHours ?? 4),
   );
@@ -589,9 +551,7 @@ function CategoryForm({
         <FormField
           label="Category name"
           htmlFor="supportCategoryName"
-          error={
-            submitted && !name.trim() ? "Enter a category name" : undefined
-          }
+          error={submitted && !name.trim() ? "Enter a category name" : undefined}
         >
           <Input
             id="supportCategoryName"
@@ -604,9 +564,7 @@ function CategoryForm({
         <FormField
           label="Category code"
           htmlFor="supportCategoryCode"
-          error={
-            submitted && !code.trim() ? "Enter a category code" : undefined
-          }
+          error={submitted && !code.trim() ? "Enter a category code" : undefined}
         >
           <Input
             id="supportCategoryCode"
@@ -642,13 +600,11 @@ function CategoryForm({
               onChange={(event) => setBranchId(event.target.value)}
             >
               <option value="">Select branch</option>
-              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map(
-                (branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </option>
-                ),
-              )}
+              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
             </Select>
           </FormField>
         )}
@@ -657,17 +613,13 @@ function CategoryForm({
           <Select
             id="supportCategoryStatus"
             value={status}
-            onChange={(event) =>
-              setStatus(event.target.value as SupportCategoryStatus)
-            }
+            onChange={(event) => setStatus(event.target.value as SupportCategoryStatus)}
           >
-            {Object.entries(SUPPORT_CATEGORY_STATUS_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(SUPPORT_CATEGORY_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
@@ -687,11 +639,7 @@ function CategoryForm({
           </Select>
         </FormField>
 
-        <FormField
-          label="Default assignee"
-          htmlFor="supportDefaultAssignee"
-          optional
-        >
+        <FormField label="Default assignee" htmlFor="supportDefaultAssignee" optional>
           <Input
             id="supportDefaultAssignee"
             value={defaultAssignee}
@@ -733,9 +681,7 @@ function CategoryForm({
         label="Category description"
         htmlFor="supportCategoryDescription"
         error={
-          submitted && !description.trim()
-            ? "Enter a category description"
-            : undefined
+          submitted && !description.trim() ? "Enter a category description" : undefined
         }
       >
         <Textarea
@@ -779,9 +725,7 @@ function CategoryForm({
         <Button type="button" variant="ghost" onClick={onCancel}>
           {SUPPORT_ACTION_LABELS.cancel}
         </Button>
-        <Button type="submit">
-          {category ? "Save category" : "Create category"}
-        </Button>
+        <Button type="submit">{category ? "Save category" : "Create category"}</Button>
       </div>
     </form>
   );
@@ -802,15 +746,11 @@ function ArticleForm({
   const [categoryId, setCategoryId] = useState(
     article?.categoryId ?? SUPPORT_CATEGORIES[0]?.id ?? "",
   );
-  const [scope, setScope] = useState<SupportScope>(
-    article?.scope ?? "organization",
-  );
+  const [scope, setScope] = useState<SupportScope>(article?.scope ?? "organization");
   const [branchId, setBranchId] = useState(
     article?.branchId ?? (selectedBranchId === "all" ? "" : selectedBranchId),
   );
-  const [status, setStatus] = useState<SupportArticleStatus>(
-    article?.status ?? "draft",
-  );
+  const [status, setStatus] = useState<SupportArticleStatus>(article?.status ?? "draft");
   const [visibility, setVisibility] = useState<SupportArticleVisibility>(
     article?.visibility ?? "employees",
   );
@@ -863,9 +803,7 @@ function ArticleForm({
       helpfulCount: article?.helpfulCount ?? 0,
       notHelpfulCount: article?.notHelpfulCount ?? 0,
       publishedAt:
-        status === "published"
-          ? (article?.publishedAt ?? actionDate)
-          : undefined,
+        status === "published" ? (article?.publishedAt ?? actionDate) : undefined,
       updatedAt: actionDate,
       updatedBy: CURRENT_ADMIN.name,
     });
@@ -877,9 +815,7 @@ function ArticleForm({
         <FormField
           label="Article title"
           htmlFor="supportArticleTitle"
-          error={
-            submitted && !title.trim() ? "Enter an article title" : undefined
-          }
+          error={submitted && !title.trim() ? "Enter an article title" : undefined}
         >
           <Input
             id="supportArticleTitle"
@@ -899,13 +835,13 @@ function ArticleForm({
             value={categoryId}
             onChange={(event) => setCategoryId(event.target.value)}
           >
-            {SUPPORT_CATEGORIES.filter(
-              (category) => category.status === "active",
-            ).map((category) => (
-              <option key={category.id} value={category.id}>
-                {category.name}
-              </option>
-            ))}
+            {SUPPORT_CATEGORIES.filter((category) => category.status === "active").map(
+              (category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ),
+            )}
           </Select>
         </FormField>
 
@@ -935,13 +871,11 @@ function ArticleForm({
               onChange={(event) => setBranchId(event.target.value)}
             >
               <option value="">Select branch</option>
-              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map(
-                (branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </option>
-                ),
-              )}
+              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
             </Select>
           </FormField>
         )}
@@ -950,17 +884,13 @@ function ArticleForm({
           <Select
             id="supportArticleStatus"
             value={status}
-            onChange={(event) =>
-              setStatus(event.target.value as SupportArticleStatus)
-            }
+            onChange={(event) => setStatus(event.target.value as SupportArticleStatus)}
           >
-            {Object.entries(SUPPORT_ARTICLE_STATUS_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(SUPPORT_ARTICLE_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
@@ -972,13 +902,11 @@ function ArticleForm({
               setVisibility(event.target.value as SupportArticleVisibility)
             }
           >
-            {Object.entries(SUPPORT_ARTICLE_VISIBILITY_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(SUPPORT_ARTICLE_VISIBILITY_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
@@ -995,9 +923,7 @@ function ArticleForm({
       <FormField
         label="Article summary"
         htmlFor="supportArticleSummary"
-        error={
-          submitted && !summary.trim() ? "Enter an article summary" : undefined
-        }
+        error={submitted && !summary.trim() ? "Enter an article summary" : undefined}
       >
         <Textarea
           id="supportArticleSummary"
@@ -1010,9 +936,7 @@ function ArticleForm({
       <FormField
         label="Article content"
         htmlFor="supportArticleContent"
-        error={
-          submitted && !content.trim() ? "Enter article content" : undefined
-        }
+        error={submitted && !content.trim() ? "Enter article content" : undefined}
       >
         <Textarea
           id="supportArticleContent"
@@ -1027,9 +951,7 @@ function ArticleForm({
         <Button type="button" variant="ghost" onClick={onCancel}>
           {SUPPORT_ACTION_LABELS.cancel}
         </Button>
-        <Button type="submit">
-          {article ? "Save article" : "Create article"}
-        </Button>
+        <Button type="submit">{article ? "Save article" : "Create article"}</Button>
       </div>
     </form>
   );
@@ -1047,9 +969,7 @@ function SettingsForm({
   onSave: (settings: SupportSettings) => void;
 }) {
   const [name, setName] = useState(settings?.name ?? "");
-  const [scope, setScope] = useState<SupportScope>(
-    settings?.scope ?? "organization",
-  );
+  const [scope, setScope] = useState<SupportScope>(settings?.scope ?? "organization");
   const [branchId, setBranchId] = useState(
     settings?.branchId ?? (selectedBranchId === "all" ? "" : selectedBranchId),
   );
@@ -1059,9 +979,7 @@ function SettingsForm({
   const [defaultPriority, setDefaultPriority] = useState<SupportTicketPriority>(
     settings?.defaultPriority ?? "medium",
   );
-  const [defaultAssignee, setDefaultAssignee] = useState(
-    settings?.defaultAssignee ?? "",
-  );
+  const [defaultAssignee, setDefaultAssignee] = useState(settings?.defaultAssignee ?? "");
   const [firstResponseHours, setFirstResponseHours] = useState(
     String(settings?.firstResponseHours ?? 4),
   );
@@ -1128,9 +1046,7 @@ function SettingsForm({
       firstResponseHours: Number(firstResponseHours),
       resolutionHours: Number(resolutionHours),
       escalationEnabled,
-      escalationAfterHours: escalationEnabled
-        ? Number(escalationAfterHours)
-        : 0,
+      escalationAfterHours: escalationEnabled ? Number(escalationAfterHours) : 0,
       employeePortalEnabled,
       knowledgeBaseEnabled,
       satisfactionSurveyEnabled,
@@ -1153,8 +1069,7 @@ function SettingsForm({
     },
     {
       label: "Knowledge base",
-      description:
-        "Show published guidance in the employee support experience.",
+      description: "Show published guidance in the employee support experience.",
       checked: knowledgeBaseEnabled,
       setChecked: setKnowledgeBaseEnabled,
     },
@@ -1190,9 +1105,7 @@ function SettingsForm({
         <FormField
           label="Settings name"
           htmlFor="supportSettingsName"
-          error={
-            submitted && !name.trim() ? "Enter a settings name" : undefined
-          }
+          error={submitted && !name.trim() ? "Enter a settings name" : undefined}
         >
           <Input
             id="supportSettingsName"
@@ -1206,17 +1119,13 @@ function SettingsForm({
           <Select
             id="supportSettingsStatus"
             value={status}
-            onChange={(event) =>
-              setStatus(event.target.value as SupportSettingsStatus)
-            }
+            onChange={(event) => setStatus(event.target.value as SupportSettingsStatus)}
           >
-            {Object.entries(SUPPORT_SETTINGS_STATUS_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(SUPPORT_SETTINGS_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
@@ -1246,13 +1155,11 @@ function SettingsForm({
               onChange={(event) => setBranchId(event.target.value)}
             >
               <option value="">Select branch</option>
-              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map(
-                (branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </option>
-                ),
-              )}
+              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
             </Select>
           </FormField>
         )}
@@ -1273,11 +1180,7 @@ function SettingsForm({
           </Select>
         </FormField>
 
-        <FormField
-          label="Default assignee"
-          htmlFor="supportSettingsAssignee"
-          optional
-        >
+        <FormField label="Default assignee" htmlFor="supportSettingsAssignee" optional>
           <Input
             id="supportSettingsAssignee"
             value={defaultAssignee}
@@ -1393,9 +1296,7 @@ function SettingsForm({
         <Button type="button" variant="ghost" onClick={onCancel}>
           {SUPPORT_ACTION_LABELS.cancel}
         </Button>
-        <Button type="submit">
-          {settings ? "Save settings" : "Create settings"}
-        </Button>
+        <Button type="submit">{settings ? "Save settings" : "Create settings"}</Button>
       </div>
     </form>
   );
@@ -1415,8 +1316,7 @@ function updateTicketRecord(
           status,
           assignedTo: ticket.assignedTo ?? CURRENT_ADMIN.name,
           firstRespondedAt:
-            ticket.firstRespondedAt ??
-            (status !== "open" ? actionTime : undefined),
+            ticket.firstRespondedAt ?? (status !== "open" ? actionTime : undefined),
           resolvedAt:
             status === "resolved"
               ? actionTime
@@ -1465,10 +1365,7 @@ function TicketDrawerFooter({
 
       {ticket.status === "in_progress" && (
         <>
-          <Button
-            variant="outline"
-            onClick={() => onStatus("waiting_requester")}
-          >
+          <Button variant="outline" onClick={() => onStatus("waiting_requester")}>
             {SUPPORT_ACTION_LABELS.waitForRequester}
           </Button>
           <Button onClick={() => onStatus("resolved")}>
@@ -1519,21 +1416,17 @@ export function SupportOverview() {
   const scopedTickets = useMemo(
     () =>
       tickets.filter(
-        (ticket) =>
-          selectedBranch.isAggregate || ticket.branchId === selectedBranch.id,
+        (ticket) => selectedBranch.isAggregate || ticket.branchId === selectedBranch.id,
       ),
     [selectedBranch, tickets],
   );
 
-  const selectedTicket =
-    tickets.find((ticket) => ticket.id === selectedTicketId) ?? null;
+  const selectedTicket = tickets.find((ticket) => ticket.id === selectedTicketId) ?? null;
 
   const activeTickets = scopedTickets.filter(
     (ticket) => !["resolved", "closed"].includes(ticket.status),
   );
-  const urgentTickets = activeTickets.filter(
-    (ticket) => ticket.priority === "urgent",
-  );
+  const urgentTickets = activeTickets.filter((ticket) => ticket.priority === "urgent");
   const slaAttention = activeTickets.filter((ticket) =>
     ["at_risk", "overdue"].includes(getSupportSlaState(ticket)),
   );
@@ -1608,18 +1501,14 @@ export function SupportOverview() {
         id: "employee",
         header: "Employee",
         cell: (ticket) => {
-          const employee = EMPLOYEES.find(
-            (item) => item.id === ticket.employeeId,
-          );
+          const employee = EMPLOYEES.find((item) => item.id === ticket.employeeId);
 
           return employee ? (
             <div className="flex items-center gap-3">
               <Avatar name={employee.name} initials={employee.initials} />
               <div>
                 <p className="font-semibold">{employee.name}</p>
-                <p className="mt-1 text-xs text-text-muted">
-                  {employee.employeeCode}
-                </p>
+                <p className="mt-1 text-xs text-text-muted">{employee.employeeCode}</p>
               </div>
             </div>
           ) : (
@@ -1631,9 +1520,7 @@ export function SupportOverview() {
         id: "priority",
         header: "Priority",
         cell: (ticket) => (
-          <Badge
-            variant={SUPPORT_PRIORITY_CONFIG[ticket.priority].badgeVariant}
-          >
+          <Badge variant={SUPPORT_PRIORITY_CONFIG[ticket.priority].badgeVariant}>
             {SUPPORT_PRIORITY_CONFIG[ticket.priority].label}
           </Badge>
         ),
@@ -1642,9 +1529,7 @@ export function SupportOverview() {
         id: "status",
         header: "Status",
         cell: (ticket) => (
-          <Badge
-            variant={SUPPORT_TICKET_STATUS_CONFIG[ticket.status].badgeVariant}
-          >
+          <Badge variant={SUPPORT_TICKET_STATUS_CONFIG[ticket.status].badgeVariant}>
             {SUPPORT_TICKET_STATUS_CONFIG[ticket.status].label}
           </Badge>
         ),
@@ -1732,11 +1617,7 @@ export function SupportOverview() {
             <Button
               variant="outline"
               onClick={() =>
-                exportSupportTickets(
-                  scopedTickets,
-                  employeeNames,
-                  categoryNames,
-                )
+                exportSupportTickets(scopedTickets, employeeNames, categoryNames)
               }
             >
               <Download />
@@ -1766,10 +1647,7 @@ export function SupportOverview() {
           description={SUPPORT_COPY.overview.chartDescription}
         >
           <SupportVolumeChart
-            data={
-              SUPPORT_VOLUME_TRENDS[selectedBranchId] ??
-              SUPPORT_VOLUME_TRENDS.all
-            }
+            data={SUPPORT_VOLUME_TRENDS[selectedBranchId] ?? SUPPORT_VOLUME_TRENDS.all}
           />
         </ChartCard>
 
@@ -1779,9 +1657,7 @@ export function SupportOverview() {
               <Headphones size={19} />
             </span>
             <div>
-              <h2 className="text-lg font-bold">
-                {SUPPORT_COPY.overview.queueTitle}
-              </h2>
+              <h2 className="text-lg font-bold">{SUPPORT_COPY.overview.queueTitle}</h2>
               <p className="mt-1 text-sm text-text-muted">
                 {SUPPORT_COPY.overview.queueDescription}
               </p>
@@ -1791,9 +1667,7 @@ export function SupportOverview() {
           <div className="mt-5 space-y-3">
             {attentionQueue.length > 0 ? (
               attentionQueue.map((ticket) => {
-                const employee = EMPLOYEES.find(
-                  (item) => item.id === ticket.employeeId,
-                );
+                const employee = EMPLOYEES.find((item) => item.id === ticket.employeeId);
                 const slaState = getSupportSlaState(ticket);
 
                 return (
@@ -1810,17 +1684,13 @@ export function SupportOverview() {
                           {employee?.name ?? "Unknown employee"}
                         </p>
                       </div>
-                      <Badge
-                        variant={SUPPORT_SLA_CONFIG[slaState].badgeVariant}
-                      >
+                      <Badge variant={SUPPORT_SLA_CONFIG[slaState].badgeVariant}>
                         {SUPPORT_SLA_CONFIG[slaState].label}
                       </Badge>
                     </div>
                     <div className="mt-3 flex items-center justify-between gap-3">
                       <Badge
-                        variant={
-                          SUPPORT_PRIORITY_CONFIG[ticket.priority].badgeVariant
-                        }
+                        variant={SUPPORT_PRIORITY_CONFIG[ticket.priority].badgeVariant}
                       >
                         {SUPPORT_PRIORITY_CONFIG[ticket.priority].label}
                       </Badge>
@@ -1842,9 +1712,7 @@ export function SupportOverview() {
 
       <Card className="mt-6 overflow-hidden">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {SUPPORT_COPY.overview.tableTitle}
-          </h2>
+          <h2 className="text-lg font-bold">{SUPPORT_COPY.overview.tableTitle}</h2>
           <p className="mt-1 text-sm text-text-muted">
             {SUPPORT_COPY.overview.tableDescription}
           </p>
@@ -1915,8 +1783,7 @@ export function SupportTicketsWorkspace() {
   const scopedTickets = useMemo(
     () =>
       tickets.filter(
-        (ticket) =>
-          selectedBranch.isAggregate || ticket.branchId === selectedBranch.id,
+        (ticket) => selectedBranch.isAggregate || ticket.branchId === selectedBranch.id,
       ),
     [selectedBranch, tickets],
   );
@@ -1926,9 +1793,7 @@ export function SupportTicketsWorkspace() {
 
     return scopedTickets.filter((ticket) => {
       const employee = EMPLOYEES.find((item) => item.id === ticket.employeeId);
-      const category = SUPPORT_CATEGORIES.find(
-        (item) => item.id === ticket.categoryId,
-      );
+      const category = SUPPORT_CATEGORIES.find((item) => item.id === ticket.categoryId);
       const searchable = [
         ticket.ticketNumber,
         ticket.title,
@@ -1960,8 +1825,7 @@ export function SupportTicketsWorkspace() {
     statusFilter,
   ]);
 
-  const selectedTicket =
-    tickets.find((ticket) => ticket.id === selectedTicketId) ?? null;
+  const selectedTicket = tickets.find((ticket) => ticket.id === selectedTicketId) ?? null;
 
   const categories = SUPPORT_CATEGORIES.filter(
     (category) =>
@@ -1989,9 +1853,7 @@ export function SupportTicketsWorkspace() {
         id: "requester",
         header: "Requester",
         cell: (ticket) => {
-          const employee = EMPLOYEES.find(
-            (item) => item.id === ticket.employeeId,
-          );
+          const employee = EMPLOYEES.find((item) => item.id === ticket.employeeId);
           return employee ? (
             <div className="flex items-center gap-3">
               <Avatar name={employee.name} initials={employee.initials} />
@@ -2011,17 +1873,14 @@ export function SupportTicketsWorkspace() {
         id: "category",
         header: "Category",
         cell: (ticket) =>
-          SUPPORT_CATEGORIES.find(
-            (category) => category.id === ticket.categoryId,
-          )?.name ?? "Unassigned",
+          SUPPORT_CATEGORIES.find((category) => category.id === ticket.categoryId)
+            ?.name ?? "Unassigned",
       },
       {
         id: "priority",
         header: "Priority",
         cell: (ticket) => (
-          <Badge
-            variant={SUPPORT_PRIORITY_CONFIG[ticket.priority].badgeVariant}
-          >
+          <Badge variant={SUPPORT_PRIORITY_CONFIG[ticket.priority].badgeVariant}>
             {SUPPORT_PRIORITY_CONFIG[ticket.priority].label}
           </Badge>
         ),
@@ -2047,9 +1906,7 @@ export function SupportTicketsWorkspace() {
         id: "status",
         header: "Status",
         cell: (ticket) => (
-          <Badge
-            variant={SUPPORT_TICKET_STATUS_CONFIG[ticket.status].badgeVariant}
-          >
+          <Badge variant={SUPPORT_TICKET_STATUS_CONFIG[ticket.status].badgeVariant}>
             {SUPPORT_TICKET_STATUS_CONFIG[ticket.status].label}
           </Badge>
         ),
@@ -2120,11 +1977,7 @@ export function SupportTicketsWorkspace() {
             <Button
               variant="outline"
               onClick={() =>
-                exportSupportTickets(
-                  visibleTickets,
-                  employeeNames,
-                  categoryNames,
-                )
+                exportSupportTickets(visibleTickets, employeeNames, categoryNames)
               }
             >
               <Download />
@@ -2149,9 +2002,7 @@ export function SupportTicketsWorkspace() {
 
       <Card className="mt-6 overflow-hidden">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {SUPPORT_COPY.tickets.registerTitle}
-          </h2>
+          <h2 className="text-lg font-bold">{SUPPORT_COPY.tickets.registerTitle}</h2>
           <p className="mt-1 text-sm text-text-muted">
             {SUPPORT_COPY.tickets.registerDescription}
           </p>
@@ -2172,13 +2023,11 @@ export function SupportTicketsWorkspace() {
               onChange={(event) => setStatusFilter(event.target.value)}
             >
               <option value="all">{SUPPORT_COPY.tickets.allStatuses}</option>
-              {Object.entries(SUPPORT_TICKET_STATUS_CONFIG).map(
-                ([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(SUPPORT_TICKET_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
 
             <Select
@@ -2186,13 +2035,11 @@ export function SupportTicketsWorkspace() {
               onChange={(event) => setPriorityFilter(event.target.value)}
             >
               <option value="all">{SUPPORT_COPY.tickets.allPriorities}</option>
-              {Object.entries(SUPPORT_PRIORITY_CONFIG).map(
-                ([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(SUPPORT_PRIORITY_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
 
             <Select
@@ -2229,9 +2076,7 @@ export function SupportTicketsWorkspace() {
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <FileSearch className="size-8 text-text-muted" />
-              <h3 className="mt-4 font-bold">
-                {SUPPORT_COPY.tickets.emptyTitle}
-              </h3>
+              <h3 className="mt-4 font-bold">{SUPPORT_COPY.tickets.emptyTitle}</h3>
               <p className="mt-2 text-sm text-text-muted">
                 {SUPPORT_COPY.tickets.emptyDescription}
               </p>
@@ -2266,21 +2111,13 @@ export function SupportTicketsWorkspace() {
       <Drawer
         open={editorMode !== null}
         onClose={() => setEditorMode(null)}
-        title={
-          editorMode === "create" ? "New support ticket" : "Edit support ticket"
-        }
+        title={editorMode === "create" ? "New support ticket" : "Edit support ticket"}
         description="Record the employee request, routing, priority and service-level target."
       >
         {editorMode && (
           <TicketForm
-            key={
-              editorMode === "create"
-                ? "new-support-ticket"
-                : selectedTicket?.id
-            }
-            ticket={
-              editorMode === "edit" ? (selectedTicket ?? undefined) : undefined
-            }
+            key={editorMode === "create" ? "new-support-ticket" : selectedTicket?.id}
+            ticket={editorMode === "edit" ? (selectedTicket ?? undefined) : undefined}
             selectedBranchId={selectedBranchId}
             onCancel={() => setEditorMode(null)}
             onSave={saveTicket}
@@ -2293,14 +2130,11 @@ export function SupportTicketsWorkspace() {
 
 export function SupportCategoriesWorkspace() {
   const { selectedBranch, selectedBranchId } = useBranchScope();
-  const [categories, setCategories] =
-    useState<SupportCategory[]>(SUPPORT_CATEGORIES);
+  const [categories, setCategories] = useState<SupportCategory[]>(SUPPORT_CATEGORIES);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
-    null,
-  );
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedCategories = useMemo(
@@ -2346,9 +2180,7 @@ export function SupportCategoriesWorkspace() {
   const branchOverrides = scopedCategories.filter(
     (category) => category.scope === "branch",
   );
-  const employeeVisible = activeCategories.filter(
-    (category) => category.employeeVisible,
-  );
+  const employeeVisible = activeCategories.filter((category) => category.employeeVisible);
   const averageResolution = activeCategories.length
     ? Math.round(
         activeCategories.reduce(
@@ -2425,11 +2257,7 @@ export function SupportCategoriesWorkspace() {
         id: "priority",
         header: "Default priority",
         cell: (category) => (
-          <Badge
-            variant={
-              SUPPORT_PRIORITY_CONFIG[category.defaultPriority].badgeVariant
-            }
-          >
+          <Badge variant={SUPPORT_PRIORITY_CONFIG[category.defaultPriority].badgeVariant}>
             {SUPPORT_PRIORITY_CONFIG[category.defaultPriority].label}
           </Badge>
         ),
@@ -2453,11 +2281,7 @@ export function SupportCategoriesWorkspace() {
         id: "status",
         header: "Status",
         cell: (category) => (
-          <Badge
-            variant={
-              SUPPORT_CATEGORY_STATUS_CONFIG[category.status].badgeVariant
-            }
-          >
+          <Badge variant={SUPPORT_CATEGORY_STATUS_CONFIG[category.status].badgeVariant}>
             {SUPPORT_CATEGORY_STATUS_CONFIG[category.status].label}
           </Badge>
         ),
@@ -2539,9 +2363,7 @@ export function SupportCategoriesWorkspace() {
 
       <Card className="mt-6 overflow-hidden">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {SUPPORT_COPY.categories.registerTitle}
-          </h2>
+          <h2 className="text-lg font-bold">{SUPPORT_COPY.categories.registerTitle}</h2>
           <p className="mt-1 text-sm text-text-muted">
             {SUPPORT_COPY.categories.registerDescription}
           </p>
@@ -2571,13 +2393,11 @@ export function SupportCategoriesWorkspace() {
               onChange={(event) => setStatusFilter(event.target.value)}
             >
               <option value="all">{SUPPORT_COPY.categories.allStatuses}</option>
-              {Object.entries(SUPPORT_CATEGORY_STATUS_CONFIG).map(
-                ([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(SUPPORT_CATEGORY_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
           </div>
         </div>
@@ -2590,9 +2410,7 @@ export function SupportCategoriesWorkspace() {
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <Tags className="size-8 text-text-muted" />
-              <h3 className="mt-4 font-bold">
-                {SUPPORT_COPY.categories.emptyTitle}
-              </h3>
+              <h3 className="mt-4 font-bold">{SUPPORT_COPY.categories.emptyTitle}</h3>
               <p className="mt-2 text-sm text-text-muted">
                 {SUPPORT_COPY.categories.emptyDescription}
               </p>
@@ -2614,27 +2432,18 @@ export function SupportCategoriesWorkspace() {
                 {SUPPORT_ACTION_LABELS.duplicate}
               </Button>
               {selectedCategory.status === "active" && (
-                <Button
-                  variant="outline"
-                  onClick={() => updateStatus("inactive")}
-                >
+                <Button variant="outline" onClick={() => updateStatus("inactive")}>
                   {SUPPORT_ACTION_LABELS.deactivate}
                 </Button>
               )}
               {selectedCategory.status !== "active" && (
-                <Button
-                  variant="outline"
-                  onClick={() => updateStatus("active")}
-                >
+                <Button variant="outline" onClick={() => updateStatus("active")}>
                   <CheckCircle2 />
                   {SUPPORT_ACTION_LABELS.activate}
                 </Button>
               )}
               {selectedCategory.status !== "archived" && (
-                <Button
-                  variant="outline"
-                  onClick={() => updateStatus("archived")}
-                >
+                <Button variant="outline" onClick={() => updateStatus("archived")}>
                   <Archive />
                   {SUPPORT_ACTION_LABELS.archive}
                 </Button>
@@ -2660,22 +2469,16 @@ export function SupportCategoriesWorkspace() {
                 </div>
                 <Badge
                   variant={
-                    SUPPORT_CATEGORY_STATUS_CONFIG[selectedCategory.status]
-                      .badgeVariant
+                    SUPPORT_CATEGORY_STATUS_CONFIG[selectedCategory.status].badgeVariant
                   }
                 >
-                  {
-                    SUPPORT_CATEGORY_STATUS_CONFIG[selectedCategory.status]
-                      .label
-                  }
+                  {SUPPORT_CATEGORY_STATUS_CONFIG[selectedCategory.status].label}
                 </Badge>
               </div>
               <dl className="grid gap-5 p-5 sm:grid-cols-2">
                 <div>
                   <dt className="text-xs text-text-muted">Code</dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedCategory.code}
-                  </dd>
+                  <dd className="mt-1 text-sm font-semibold">{selectedCategory.code}</dd>
                 </div>
                 <div>
                   <dt className="text-xs text-text-muted">Scope</dt>
@@ -2710,25 +2513,13 @@ export function SupportCategoriesWorkspace() {
       <Drawer
         open={editorMode !== null}
         onClose={() => setEditorMode(null)}
-        title={
-          editorMode === "create"
-            ? "Add support category"
-            : "Edit support category"
-        }
+        title={editorMode === "create" ? "Add support category" : "Edit support category"}
         description="Configure routing, service levels and employee visibility."
       >
         {editorMode && (
           <CategoryForm
-            key={
-              editorMode === "create"
-                ? "new-support-category"
-                : selectedCategory?.id
-            }
-            category={
-              editorMode === "edit"
-                ? (selectedCategory ?? undefined)
-                : undefined
-            }
+            key={editorMode === "create" ? "new-support-category" : selectedCategory?.id}
+            category={editorMode === "edit" ? (selectedCategory ?? undefined) : undefined}
             selectedBranchId={selectedBranchId}
             onCancel={() => setEditorMode(null)}
             onSave={saveCategory}
@@ -2745,9 +2536,7 @@ export function SupportKnowledgeBaseWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [visibilityFilter, setVisibilityFilter] = useState("all");
-  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(
-    null,
-  );
+  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedArticles = useMemo(
@@ -2764,9 +2553,7 @@ export function SupportKnowledgeBaseWorkspace() {
   const visibleArticles = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
     return scopedArticles.filter((article) => {
-      const category = SUPPORT_CATEGORIES.find(
-        (item) => item.id === article.categoryId,
-      );
+      const category = SUPPORT_CATEGORIES.find((item) => item.id === article.categoryId);
       const searchable = [
         article.title,
         article.summary,
@@ -2791,9 +2578,7 @@ export function SupportKnowledgeBaseWorkspace() {
   const publishedArticles = scopedArticles.filter(
     (article) => article.status === "published",
   );
-  const draftArticles = scopedArticles.filter(
-    (article) => article.status === "draft",
-  );
+  const draftArticles = scopedArticles.filter((article) => article.status === "draft");
   const totalHelpful = publishedArticles.reduce(
     (total, article) => total + article.helpfulCount,
     0,
@@ -2858,9 +2643,8 @@ export function SupportKnowledgeBaseWorkspace() {
         id: "category",
         header: "Category",
         cell: (article) =>
-          SUPPORT_CATEGORIES.find(
-            (category) => category.id === article.categoryId,
-          )?.name ?? "Unassigned",
+          SUPPORT_CATEGORIES.find((category) => category.id === article.categoryId)
+            ?.name ?? "Unassigned",
       },
       {
         id: "scope",
@@ -2876,9 +2660,7 @@ export function SupportKnowledgeBaseWorkspace() {
         header: "Visibility",
         cell: (article) => (
           <Badge
-            variant={
-              SUPPORT_ARTICLE_VISIBILITY_CONFIG[article.visibility].badgeVariant
-            }
+            variant={SUPPORT_ARTICLE_VISIBILITY_CONFIG[article.visibility].badgeVariant}
           >
             {SUPPORT_ARTICLE_VISIBILITY_CONFIG[article.visibility].label}
           </Badge>
@@ -2903,9 +2685,7 @@ export function SupportKnowledgeBaseWorkspace() {
         id: "status",
         header: "Status",
         cell: (article) => (
-          <Badge
-            variant={SUPPORT_ARTICLE_STATUS_CONFIG[article.status].badgeVariant}
-          >
+          <Badge variant={SUPPORT_ARTICLE_STATUS_CONFIG[article.status].badgeVariant}>
             {SUPPORT_ARTICLE_STATUS_CONFIG[article.status].label}
           </Badge>
         ),
@@ -2935,9 +2715,7 @@ export function SupportKnowledgeBaseWorkspace() {
               ...article,
               status,
               publishedAt:
-                status === "published"
-                  ? (article.publishedAt ?? actionDate)
-                  : undefined,
+                status === "published" ? (article.publishedAt ?? actionDate) : undefined,
               updatedAt: actionDate,
               updatedBy: CURRENT_ADMIN.name,
             }
@@ -2995,9 +2773,7 @@ export function SupportKnowledgeBaseWorkspace() {
 
       <Card className="mt-6 overflow-hidden">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {SUPPORT_COPY.knowledge.registerTitle}
-          </h2>
+          <h2 className="text-lg font-bold">{SUPPORT_COPY.knowledge.registerTitle}</h2>
           <p className="mt-1 text-sm text-text-muted">
             {SUPPORT_COPY.knowledge.registerDescription}
           </p>
@@ -3016,21 +2792,17 @@ export function SupportKnowledgeBaseWorkspace() {
               onChange={(event) => setStatusFilter(event.target.value)}
             >
               <option value="all">{SUPPORT_COPY.knowledge.allStatuses}</option>
-              {Object.entries(SUPPORT_ARTICLE_STATUS_CONFIG).map(
-                ([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(SUPPORT_ARTICLE_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
             <Select
               value={visibilityFilter}
               onChange={(event) => setVisibilityFilter(event.target.value)}
             >
-              <option value="all">
-                {SUPPORT_COPY.knowledge.allVisibility}
-              </option>
+              <option value="all">{SUPPORT_COPY.knowledge.allVisibility}</option>
               {Object.entries(SUPPORT_ARTICLE_VISIBILITY_CONFIG).map(
                 ([value, config]) => (
                   <option key={value} value={value}>
@@ -3050,9 +2822,7 @@ export function SupportKnowledgeBaseWorkspace() {
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <BookOpen className="size-8 text-text-muted" />
-              <h3 className="mt-4 font-bold">
-                {SUPPORT_COPY.knowledge.emptyTitle}
-              </h3>
+              <h3 className="mt-4 font-bold">{SUPPORT_COPY.knowledge.emptyTitle}</h3>
               <p className="mt-2 text-sm text-text-muted">
                 {SUPPORT_COPY.knowledge.emptyDescription}
               </p>
@@ -3074,10 +2844,7 @@ export function SupportKnowledgeBaseWorkspace() {
                 {SUPPORT_ACTION_LABELS.duplicate}
               </Button>
               {selectedArticle.status === "draft" && (
-                <Button
-                  variant="outline"
-                  onClick={() => updateStatus("published")}
-                >
+                <Button variant="outline" onClick={() => updateStatus("published")}>
                   <CheckCircle2 />
                   {SUPPORT_ACTION_LABELS.publish}
                 </Button>
@@ -3088,10 +2855,7 @@ export function SupportKnowledgeBaseWorkspace() {
                 </Button>
               )}
               {selectedArticle.status !== "archived" && (
-                <Button
-                  variant="outline"
-                  onClick={() => updateStatus("archived")}
-                >
+                <Button variant="outline" onClick={() => updateStatus("archived")}>
                   <Archive />
                   {SUPPORT_ACTION_LABELS.archive}
                 </Button>
@@ -3116,8 +2880,7 @@ export function SupportKnowledgeBaseWorkspace() {
                 </div>
                 <Badge
                   variant={
-                    SUPPORT_ARTICLE_STATUS_CONFIG[selectedArticle.status]
-                      .badgeVariant
+                    SUPPORT_ARTICLE_STATUS_CONFIG[selectedArticle.status].badgeVariant
                   }
                 >
                   {SUPPORT_ARTICLE_STATUS_CONFIG[selectedArticle.status].label}
@@ -3135,11 +2898,7 @@ export function SupportKnowledgeBaseWorkspace() {
                 <div>
                   <dt className="text-xs text-text-muted">Visibility</dt>
                   <dd className="mt-1 text-sm font-semibold">
-                    {
-                      SUPPORT_ARTICLE_VISIBILITY_CONFIG[
-                        selectedArticle.visibility
-                      ].label
-                    }
+                    {SUPPORT_ARTICLE_VISIBILITY_CONFIG[selectedArticle.visibility].label}
                   </dd>
                 </div>
                 <div>
@@ -3176,22 +2935,14 @@ export function SupportKnowledgeBaseWorkspace() {
         open={editorMode !== null}
         onClose={() => setEditorMode(null)}
         title={
-          editorMode === "create"
-            ? "Add knowledge article"
-            : "Edit knowledge article"
+          editorMode === "create" ? "Add knowledge article" : "Edit knowledge article"
         }
         description="Create reusable employee guidance with controlled scope and visibility."
       >
         {editorMode && (
           <ArticleForm
-            key={
-              editorMode === "create"
-                ? "new-support-article"
-                : selectedArticle?.id
-            }
-            article={
-              editorMode === "edit" ? (selectedArticle ?? undefined) : undefined
-            }
+            key={editorMode === "create" ? "new-support-article" : selectedArticle?.id}
+            article={editorMode === "edit" ? (selectedArticle ?? undefined) : undefined}
             selectedBranchId={selectedBranchId}
             onCancel={() => setEditorMode(null)}
             onSave={saveArticle}
@@ -3208,9 +2959,7 @@ export function SupportSettingsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedSettingsId, setSelectedSettingsId] = useState<string | null>(
-    null,
-  );
+  const [selectedSettingsId, setSelectedSettingsId] = useState<string | null>(null);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedSettings = useMemo(
@@ -3244,9 +2993,8 @@ export function SupportSettingsWorkspace() {
     settings.find((item) => item.id === selectedSettingsId) ?? null;
 
   const organizationDefault =
-    settings.find(
-      (item) => item.scope === "organization" && item.status === "active",
-    ) ?? null;
+    settings.find((item) => item.scope === "organization" && item.status === "active") ??
+    null;
   const branchOverride = selectedBranch.isAggregate
     ? null
     : (settings.find(
@@ -3257,21 +3005,13 @@ export function SupportSettingsWorkspace() {
       ) ?? null);
   const effectiveSettings = branchOverride ?? organizationDefault;
 
-  const activeSettings = scopedSettings.filter(
-    (item) => item.status === "active",
-  );
-  const branchOverrides = scopedSettings.filter(
-    (item) => item.scope === "branch",
-  );
-  const portalEnabled = scopedSettings.filter(
-    (item) => item.employeePortalEnabled,
-  );
+  const activeSettings = scopedSettings.filter((item) => item.status === "active");
+  const branchOverrides = scopedSettings.filter((item) => item.scope === "branch");
+  const portalEnabled = scopedSettings.filter((item) => item.employeePortalEnabled);
   const averageResolution = activeSettings.length
     ? Math.round(
-        activeSettings.reduce(
-          (total, item) => total + item.resolutionHours,
-          0,
-        ) / activeSettings.length,
+        activeSettings.reduce((total, item) => total + item.resolutionHours, 0) /
+          activeSettings.length,
       )
     : 0;
 
@@ -3342,9 +3082,7 @@ export function SupportSettingsWorkspace() {
         id: "priority",
         header: "Default priority",
         cell: (item) => (
-          <Badge
-            variant={SUPPORT_PRIORITY_CONFIG[item.defaultPriority].badgeVariant}
-          >
+          <Badge variant={SUPPORT_PRIORITY_CONFIG[item.defaultPriority].badgeVariant}>
             {SUPPORT_PRIORITY_CONFIG[item.defaultPriority].label}
           </Badge>
         ),
@@ -3368,9 +3106,7 @@ export function SupportSettingsWorkspace() {
         id: "status",
         header: "Status",
         cell: (item) => (
-          <Badge
-            variant={SUPPORT_SETTINGS_STATUS_CONFIG[item.status].badgeVariant}
-          >
+          <Badge variant={SUPPORT_SETTINGS_STATUS_CONFIG[item.status].badgeVariant}>
             {SUPPORT_SETTINGS_STATUS_CONFIG[item.status].label}
           </Badge>
         ),
@@ -3383,9 +3119,7 @@ export function SupportSettingsWorkspace() {
     setSettings((current) => {
       const exists = current.some((item) => item.id === nextSettings.id);
       return exists
-        ? current.map((item) =>
-            item.id === nextSettings.id ? nextSettings : item,
-          )
+        ? current.map((item) => (item.id === nextSettings.id ? nextSettings : item))
         : [nextSettings, ...current];
     });
     setEditorMode(null);
@@ -3461,9 +3195,7 @@ export function SupportSettingsWorkspace() {
       <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <Card className="order-1 overflow-hidden">
           <div className="border-b border-border p-5">
-            <h2 className="text-lg font-bold">
-              {SUPPORT_COPY.settings.registerTitle}
-            </h2>
+            <h2 className="text-lg font-bold">{SUPPORT_COPY.settings.registerTitle}</h2>
             <p className="mt-1 text-sm text-text-muted">
               {SUPPORT_COPY.settings.registerDescription}
             </p>
@@ -3493,13 +3225,11 @@ export function SupportSettingsWorkspace() {
                 onChange={(event) => setStatusFilter(event.target.value)}
               >
                 <option value="all">{SUPPORT_COPY.settings.allStatuses}</option>
-                {Object.entries(SUPPORT_SETTINGS_STATUS_CONFIG).map(
-                  ([value, config]) => (
-                    <option key={value} value={value}>
-                      {config.label}
-                    </option>
-                  ),
-                )}
+                {Object.entries(SUPPORT_SETTINGS_STATUS_CONFIG).map(([value, config]) => (
+                  <option key={value} value={value}>
+                    {config.label}
+                  </option>
+                ))}
               </Select>
             </div>
           </div>
@@ -3512,9 +3242,7 @@ export function SupportSettingsWorkspace() {
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <Settings2 className="size-8 text-text-muted" />
-                <h3 className="mt-4 font-bold">
-                  {SUPPORT_COPY.settings.emptyTitle}
-                </h3>
+                <h3 className="mt-4 font-bold">{SUPPORT_COPY.settings.emptyTitle}</h3>
                 <p className="mt-2 text-sm text-text-muted">
                   {SUPPORT_COPY.settings.emptyDescription}
                 </p>
@@ -3543,9 +3271,7 @@ export function SupportSettingsWorkspace() {
               <div className="rounded-control border border-border p-4">
                 <p className="text-sm font-bold">{effectiveSettings.name}</p>
                 <p className="mt-1 text-xs text-text-muted">
-                  {branchOverride
-                    ? "Active branch override"
-                    : "Organization default"}
+                  {branchOverride ? "Active branch override" : "Organization default"}
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-3">
@@ -3609,19 +3335,13 @@ export function SupportSettingsWorkspace() {
                 {SUPPORT_ACTION_LABELS.duplicate}
               </Button>
               {selectedSettings.status === "active" && (
-                <Button
-                  variant="outline"
-                  onClick={() => updateStatus("archived")}
-                >
+                <Button variant="outline" onClick={() => updateStatus("archived")}>
                   <Archive />
                   {SUPPORT_ACTION_LABELS.archive}
                 </Button>
               )}
               {selectedSettings.status !== "active" && (
-                <Button
-                  variant="outline"
-                  onClick={() => updateStatus("active")}
-                >
+                <Button variant="outline" onClick={() => updateStatus("active")}>
                   <CheckCircle2 />
                   {SUPPORT_ACTION_LABELS.activate}
                 </Button>
@@ -3647,14 +3367,10 @@ export function SupportSettingsWorkspace() {
                 </div>
                 <Badge
                   variant={
-                    SUPPORT_SETTINGS_STATUS_CONFIG[selectedSettings.status]
-                      .badgeVariant
+                    SUPPORT_SETTINGS_STATUS_CONFIG[selectedSettings.status].badgeVariant
                   }
                 >
-                  {
-                    SUPPORT_SETTINGS_STATUS_CONFIG[selectedSettings.status]
-                      .label
-                  }
+                  {SUPPORT_SETTINGS_STATUS_CONFIG[selectedSettings.status].label}
                 </Badge>
               </div>
               <dl className="grid gap-5 p-5 sm:grid-cols-2">
@@ -3694,9 +3410,7 @@ export function SupportSettingsWorkspace() {
                       key={control.key}
                       className="flex items-center justify-between rounded-control border border-border p-4"
                     >
-                      <span className="text-sm font-semibold">
-                        {control.label}
-                      </span>
+                      <span className="text-sm font-semibold">{control.label}</span>
                       <Badge variant={enabled ? "success" : "neutral"}>
                         {enabled ? "Enabled" : "Disabled"}
                       </Badge>
@@ -3708,8 +3422,7 @@ export function SupportSettingsWorkspace() {
             <section>
               <h3 className="text-sm font-bold">Internal note</h3>
               <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                {selectedSettings.note ||
-                  "No support settings note has been added."}
+                {selectedSettings.note || "No support settings note has been added."}
               </p>
             </section>
           </div>
@@ -3719,25 +3432,13 @@ export function SupportSettingsWorkspace() {
       <Drawer
         open={editorMode !== null}
         onClose={() => setEditorMode(null)}
-        title={
-          editorMode === "create"
-            ? "Add support settings"
-            : "Edit support settings"
-        }
+        title={editorMode === "create" ? "Add support settings" : "Edit support settings"}
         description="Configure service levels, employee access and branch support workflows."
       >
         {editorMode && (
           <SettingsForm
-            key={
-              editorMode === "create"
-                ? "new-support-settings"
-                : selectedSettings?.id
-            }
-            settings={
-              editorMode === "edit"
-                ? (selectedSettings ?? undefined)
-                : undefined
-            }
+            key={editorMode === "create" ? "new-support-settings" : selectedSettings?.id}
+            settings={editorMode === "edit" ? (selectedSettings ?? undefined) : undefined}
             selectedBranchId={selectedBranchId}
             onCancel={() => setEditorMode(null)}
             onSave={saveSettings}

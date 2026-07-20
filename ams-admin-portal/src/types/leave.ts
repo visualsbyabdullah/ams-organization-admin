@@ -1,16 +1,7 @@
 ﻿export type LeaveType =
-  | "annual"
-  | "casual"
-  | "sick"
-  | "unpaid"
-  | "maternity"
-  | "paternity";
+  "annual" | "casual" | "sick" | "unpaid" | "maternity" | "paternity";
 
-export type LeaveRequestStatus =
-  | "pending"
-  | "approved"
-  | "rejected"
-  | "cancelled";
+export type LeaveRequestStatus = "pending" | "approved" | "rejected" | "cancelled";
 
 export type LeaveRequest = {
   id: string;
@@ -31,14 +22,8 @@ export type LeaveRequest = {
 export type LeaveBalance = {
   employeeId: string;
   year: number;
-  allowance: Record<
-    LeaveType,
-    number
-  >;
-  used: Record<
-    LeaveType,
-    number
-  >;
+  allowance: Record<LeaveType, number>;
+  used: Record<LeaveType, number>;
 };
 
 export type LeaveTrendPoint = {

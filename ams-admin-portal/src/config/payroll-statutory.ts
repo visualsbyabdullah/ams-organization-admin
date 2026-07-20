@@ -4,21 +4,15 @@
   StatutoryFilingStatus,
 } from "@/types/payroll-statutory";
 
-export const STATUTORY_REFERENCE_DATE =
-  "2026-07-16";
+export const STATUTORY_REFERENCE_DATE = "2026-07-16";
 
-export const STATUTORY_REFERENCE_PERIOD =
-  "2026-07";
+export const STATUTORY_REFERENCE_PERIOD = "2026-07";
 
 export const STATUTORY_EMPLOYEE_STATUS_CONFIG: Record<
   StatutoryEmployeeStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "neutral"
-      | "danger";
+    badgeVariant: "success" | "warning" | "neutral" | "danger";
   }
 > = {
   compliant: {
@@ -43,12 +37,7 @@ export const STATUTORY_FILING_STATUS_CONFIG: Record<
   StatutoryFilingStatus,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "info"
-      | "success"
-      | "warning"
-      | "danger";
+    badgeVariant: "neutral" | "info" | "success" | "warning" | "danger";
   }
 > = {
   draft: {
@@ -77,11 +66,7 @@ export const STATUTORY_FILING_CATEGORY_CONFIG: Record<
   StatutoryFilingCategory,
   {
     label: string;
-    badgeVariant:
-      | "info"
-      | "success"
-      | "warning"
-      | "neutral";
+    badgeVariant: "info" | "success" | "warning" | "neutral";
   }
 > = {
   income_tax: {
@@ -137,12 +122,10 @@ export const PAYROLL_STATUTORY_COPY = {
   employeeTitle: "Employee statutory register",
   employeeDescription:
     "Review tax and contribution values calculated for employee payroll records.",
-  searchPlaceholder:
-    "Search employee, ID, department or registration number",
+  searchPlaceholder: "Search employee, ID, department or registration number",
   allEmployeeStatuses: "All employee statuses",
   filingsTitle: "Statutory filings",
-  filingsDescription:
-    "Track branch-level filing preparation, submission and acceptance.",
+  filingsDescription: "Track branch-level filing preparation, submission and acceptance.",
   allFilingStatuses: "All filing statuses",
   allCategories: "All filing categories",
 } as const;

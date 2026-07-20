@@ -1,17 +1,8 @@
 ﻿"use client";
 
-import {
-  Cell,
-  Pie,
-  PieChart,
-  ResponsiveContainer,
-  Tooltip,
-} from "recharts";
+import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
 
-import {
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 
 type StatusPoint = {
   name: string;
@@ -23,27 +14,15 @@ type TimesheetStatusChartProps = {
   data: StatusPoint[];
 };
 
-export function TimesheetStatusChart({
-  data,
-}: TimesheetStatusChartProps) {
-  const total = data.reduce(
-    (sum, item) => sum + item.value,
-    0,
-  );
+export function TimesheetStatusChart({ data }: TimesheetStatusChartProps) {
+  const total = data.reduce((sum, item) => sum + item.value, 0);
 
   return (
     <div>
       <div className="relative h-56">
-        <ResponsiveContainer
-          width="100%"
-          height="100%"
-        >
+        <ResponsiveContainer width="100%" height="100%">
           <PieChart>
-            <Tooltip
-              contentStyle={
-                CHART_TOOLTIP_STYLE
-              }
-            />
+            <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
 
             <Pie
               data={data}
@@ -58,23 +37,16 @@ export function TimesheetStatusChart({
               stroke="transparent"
             >
               {data.map((item) => (
-                <Cell
-                  key={item.name}
-                  fill={item.color}
-                />
+                <Cell key={item.name} fill={item.color} />
               ))}
             </Pie>
           </PieChart>
         </ResponsiveContainer>
 
         <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-          <strong className="text-3xl font-bold">
-            {total}
-          </strong>
+          <strong className="text-3xl font-bold">{total}</strong>
 
-          <span className="mt-1 text-xs text-text-muted">
-            Timesheets
-          </span>
+          <span className="mt-1 text-xs text-text-muted">Timesheets</span>
         </div>
       </div>
 
@@ -88,8 +60,7 @@ export function TimesheetStatusChart({
               <span
                 className="size-2.5 shrink-0 rounded-full"
                 style={{
-                  backgroundColor:
-                    item.color,
+                  backgroundColor: item.color,
                 }}
               />
 
@@ -98,9 +69,7 @@ export function TimesheetStatusChart({
               </span>
             </div>
 
-            <span className="text-sm font-bold">
-              {item.value}
-            </span>
+            <span className="text-sm font-bold">{item.value}</span>
           </div>
         ))}
       </div>

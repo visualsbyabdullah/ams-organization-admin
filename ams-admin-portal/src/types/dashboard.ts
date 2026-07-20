@@ -1,10 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 
-export type MetricTone =
-  | "success"
-  | "warning"
-  | "info"
-  | "danger";
+export type MetricTone = "success" | "warning" | "info" | "danger";
 
 export type DashboardMetric = {
   label: string;

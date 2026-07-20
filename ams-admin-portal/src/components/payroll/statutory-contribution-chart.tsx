@@ -11,29 +11,18 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 import { formatPKR } from "@/lib/currency";
-import type {
-  StatutoryContributionPoint,
-} from "@/types/payroll-statutory";
+import type { StatutoryContributionPoint } from "@/types/payroll-statutory";
 
 type StatutoryContributionChartProps = {
   data: StatutoryContributionPoint[];
 };
 
-export function StatutoryContributionChart({
-  data,
-}: StatutoryContributionChartProps) {
+export function StatutoryContributionChart({ data }: StatutoryContributionChartProps) {
   return (
     <div className="h-72 w-full [&_*:focus]:outline-none [&_svg]:outline-none">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart
           accessibilityLayer={false}
           data={data}
@@ -63,21 +52,12 @@ export function StatutoryContributionChart({
             tickLine={false}
             tick={CHART_AXIS_STYLE}
             width={72}
-            tickFormatter={(value) =>
-              formatPKR(
-                Number(value),
-                true,
-              )
-            }
+            tickFormatter={(value) => formatPKR(Number(value), true)}
           />
 
           <Tooltip
-            contentStyle={
-              CHART_TOOLTIP_STYLE
-            }
-            formatter={(value) =>
-              formatPKR(Number(value))
-            }
+            contentStyle={CHART_TOOLTIP_STYLE}
+            formatter={(value) => formatPKR(Number(value))}
             cursor={{
               fill: "var(--ams-surface-muted)",
             }}

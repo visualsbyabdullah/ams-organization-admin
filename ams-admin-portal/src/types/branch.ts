@@ -4,19 +4,10 @@ export type BranchOption = {
   isAggregate?: boolean;
 };
 
-export type BranchStatus =
-  | "active"
-  | "inactive"
-  | "planned";
+export type BranchStatus = "active" | "inactive" | "planned";
 
 export type BranchWorkingDay =
-  | "monday"
-  | "tuesday"
-  | "wednesday"
-  | "thursday"
-  | "friday"
-  | "saturday"
-  | "sunday";
+  "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
 
 export type BranchRecord = {
   id: string;

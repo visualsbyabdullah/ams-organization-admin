@@ -11,8 +11,7 @@ export const SUPPORT_CATEGORIES: SupportCategory[] = [
     id: "support-category-001",
     name: "Payroll & Compensation",
     code: "PAY",
-    description:
-      "Salary, payslip, deduction, allowance and compensation questions.",
+    description: "Salary, payslip, deduction, allowance and compensation questions.",
     scope: "organization",
     status: "active",
     defaultPriority: "high",
@@ -28,8 +27,7 @@ export const SUPPORT_CATEGORIES: SupportCategory[] = [
     id: "support-category-002",
     name: "Attendance & Time",
     code: "ATT",
-    description:
-      "Attendance corrections, shifts, check-in and timesheet support.",
+    description: "Attendance corrections, shifts, check-in and timesheet support.",
     scope: "organization",
     status: "active",
     defaultPriority: "medium",
@@ -45,8 +43,7 @@ export const SUPPORT_CATEGORIES: SupportCategory[] = [
     id: "support-category-003",
     name: "Leave & Holidays",
     code: "LEV",
-    description:
-      "Leave balance, request, approval and holiday-calendar questions.",
+    description: "Leave balance, request, approval and holiday-calendar questions.",
     scope: "organization",
     status: "active",
     defaultPriority: "medium",
@@ -78,8 +75,7 @@ export const SUPPORT_CATEGORIES: SupportCategory[] = [
     id: "support-category-005",
     name: "Employment Documents",
     code: "DOC",
-    description:
-      "Letters, certificates, contracts and employee document requests.",
+    description: "Letters, certificates, contracts and employee document requests.",
     scope: "organization",
     status: "active",
     defaultPriority: "medium",
@@ -191,8 +187,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
     branchId: "karachi",
     categoryId: "support-category-002",
     title: "Check-out time requires correction",
-    description:
-      "Yesterday's check-out was recorded before the actual departure time.",
+    description: "Yesterday's check-out was recorded before the actual departure time.",
     status: "waiting_requester",
     priority: "medium",
     channel: "portal",
@@ -202,8 +197,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
     dueAt: "2026-07-17T12:20:00+05:00",
     firstRespondedAt: "2026-07-16T14:05:00+05:00",
     tags: ["attendance", "correction"],
-    internalNote:
-      "Waiting for the employee to confirm the correct departure time.",
+    internalNote: "Waiting for the employee to confirm the correct departure time.",
   },
   {
     id: "support-ticket-004",
@@ -212,8 +206,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
     branchId: "lahore",
     categoryId: "support-category-003",
     title: "Annual leave balance appears incorrect",
-    description:
-      "The available balance reduced after a cancelled leave request.",
+    description: "The available balance reduced after a cancelled leave request.",
     status: "resolved",
     priority: "medium",
     channel: "phone",
@@ -225,8 +218,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
     resolvedAt: "2026-07-16T09:20:00+05:00",
     satisfactionRating: 5,
     tags: ["leave", "balance"],
-    internalNote:
-      "Cancelled request was recalculated and the balance was restored.",
+    internalNote: "Cancelled request was recalculated and the balance was restored.",
   },
   {
     id: "support-ticket-005",
@@ -235,8 +227,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
     branchId: "islamabad",
     categoryId: "support-category-006",
     title: "Replacement keyboard required",
-    description:
-      "Several keys on the assigned keyboard are no longer responding.",
+    description: "Several keys on the assigned keyboard are no longer responding.",
     status: "open",
     priority: "medium",
     channel: "walk_in",
@@ -267,8 +258,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
     closedAt: "2026-07-15T15:45:00+05:00",
     satisfactionRating: 4,
     tags: ["document", "letter"],
-    internalNote:
-      "Signed letter was uploaded to the employee document library.",
+    internalNote: "Signed letter was uploaded to the employee document library.",
   },
   {
     id: "support-ticket-007",
@@ -296,8 +286,7 @@ export const SUPPORT_TICKETS: SupportTicket[] = [
     branchId: "karachi",
     categoryId: "support-category-007",
     title: "Meeting room display not connecting",
-    description:
-      "The conference display is not accepting wireless connections.",
+    description: "The conference display is not accepting wireless connections.",
     status: "resolved",
     priority: "high",
     channel: "phone",
@@ -379,8 +368,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     scope: "organization",
     status: "draft",
     visibility: "managers",
-    summary:
-      "How managers can request, verify and follow up on employee documents.",
+    summary: "How managers can request, verify and follow up on employee documents.",
     content:
       "Use the Documents request register to select an employee, required document type and due date. Verification should be completed after submission.",
     tags: ["documents", "manager", "verification"],
@@ -399,8 +387,7 @@ export const SUPPORT_ARTICLES: SupportArticle[] = [
     branchName: "Islamabad Branch",
     status: "published",
     visibility: "employees",
-    summary:
-      "How Islamabad employees should report and replace faulty office equipment.",
+    summary: "How Islamabad employees should report and replace faulty office equipment.",
     content:
       "Open a Facilities ticket, identify the assigned equipment, describe the issue and include a clear image when possible.",
     tags: ["facilities", "equipment", "islamabad"],

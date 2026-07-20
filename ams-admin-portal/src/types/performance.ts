@@ -1,48 +1,21 @@
 ﻿export type PerformanceCycleStatus =
-  | "draft"
-  | "active"
-  | "calibration"
-  | "completed"
-  | "archived";
+  "draft" | "active" | "calibration" | "completed" | "archived";
 
-export type PerformanceCycleScope =
-  | "organization"
-  | "branch";
+export type PerformanceCycleScope = "organization" | "branch";
 
 export type PerformanceReviewStatus =
-  | "not_started"
-  | "self_review"
-  | "manager_review"
-  | "calibration"
-  | "completed";
+  "not_started" | "self_review" | "manager_review" | "calibration" | "completed";
 
 export type PerformanceGoalStatus =
-  | "draft"
-  | "active"
-  | "at_risk"
-  | "completed"
-  | "cancelled";
+  "draft" | "active" | "at_risk" | "completed" | "cancelled";
 
-export type PerformanceGoalLevel =
-  | "individual"
-  | "team"
-  | "department"
-  | "organization";
+export type PerformanceGoalLevel = "individual" | "team" | "department" | "organization";
 
-export type PerformanceReviewFrequency =
-  | "monthly"
-  | "quarterly"
-  | "biannual"
-  | "annual";
+export type PerformanceReviewFrequency = "monthly" | "quarterly" | "biannual" | "annual";
 
-export type PerformanceSettingsStatus =
-  | "active"
-  | "draft"
-  | "archived";
+export type PerformanceSettingsStatus = "active" | "draft" | "archived";
 
-export type PerformanceSettingsScope =
-  | "organization"
-  | "branch";
+export type PerformanceSettingsScope = "organization" | "branch";
 
 export type PerformanceCycle = {
   id: string;

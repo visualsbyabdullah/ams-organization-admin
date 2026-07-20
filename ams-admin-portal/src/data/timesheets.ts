@@ -1,7 +1,4 @@
-﻿import type {
-  Timesheet,
-  TimesheetDay,
-} from "@/types/timesheet";
+﻿import type { Timesheet, TimesheetDay } from "@/types/timesheet";
 
 function createDay(
   date: string,
@@ -19,9 +16,7 @@ function createDay(
   };
 }
 
-function createLeaveDay(
-  date: string,
-): TimesheetDay {
+function createLeaveDay(date: string): TimesheetDay {
   return {
     date,
     regularMinutes: 0,
@@ -32,9 +27,7 @@ function createLeaveDay(
   };
 }
 
-function createWeekendDay(
-  date: string,
-): TimesheetDay {
+function createWeekendDay(date: string): TimesheetDay {
   return {
     date,
     regularMinutes: 0,
@@ -45,9 +38,7 @@ function createWeekendDay(
   };
 }
 
-function createMissingDay(
-  date: string,
-): TimesheetDay {
+function createMissingDay(date: string): TimesheetDay {
   return {
     date,
     regularMinutes: 0,
@@ -87,8 +78,7 @@ export const TIMESHEETS: Timesheet[] = [
     periodEnd: "2026-07-19",
     status: "submitted",
     submittedAt: "2026-07-19",
-    note:
-      "Traffic delay affected Tuesday check-in.",
+    note: "Traffic delay affected Tuesday check-in.",
     days: [
       createDay("2026-07-13", 470),
       createDay("2026-07-14", 475),
@@ -127,8 +117,7 @@ export const TIMESHEETS: Timesheet[] = [
     periodEnd: "2026-07-19",
     status: "submitted",
     submittedAt: "2026-07-19",
-    note:
-      "Thursday checkout is missing.",
+    note: "Thursday checkout is missing.",
     days: [
       createDay("2026-07-13", 510, 30),
       createDay("2026-07-14", 480),
@@ -165,8 +154,7 @@ export const TIMESHEETS: Timesheet[] = [
     periodEnd: "2026-07-19",
     status: "rejected",
     submittedAt: "2026-07-18",
-    note:
-      "Timesheet returned because two attendance entries require correction.",
+    note: "Timesheet returned because two attendance entries require correction.",
     days: [
       createDay("2026-07-13", 460),
       createMissingDay("2026-07-14"),

@@ -1,29 +1,13 @@
 export type SettingsSection =
-  | "overview"
-  | "organization"
-  | "security"
-  | "notifications"
-  | "integrations"
-  | "audit";
+  "overview" | "organization" | "security" | "notifications" | "integrations" | "audit";
 
-export type SettingsScope =
-  | "organization"
-  | "branch";
+export type SettingsScope = "organization" | "branch";
 
-export type SettingsStatus =
-  | "active"
-  | "draft"
-  | "archived";
+export type SettingsStatus = "active" | "draft" | "archived";
 
-export type SettingsCategory =
-  | "organization"
-  | "security"
-  | "notifications";
+export type SettingsCategory = "organization" | "security" | "notifications";
 
-export type SettingsValue =
-  | string
-  | number
-  | boolean;
+export type SettingsValue = string | number | boolean;
 
 export type SettingsProfile = {
   id: string;
@@ -39,12 +23,7 @@ export type SettingsProfile = {
   note: string;
 };
 
-export type SettingsFieldType =
-  | "text"
-  | "number"
-  | "time"
-  | "select"
-  | "switch";
+export type SettingsFieldType = "text" | "number" | "time" | "select" | "switch";
 
 export type SettingsFieldOption = {
   value: string;
@@ -60,17 +39,9 @@ export type SettingsFieldDefinition = {
   options?: SettingsFieldOption[];
 };
 
-export type IntegrationType =
-  | "email"
-  | "attendance"
-  | "payroll"
-  | "storage"
-  | "calendar";
+export type IntegrationType = "email" | "attendance" | "payroll" | "storage" | "calendar";
 
-export type IntegrationStatus =
-  | "connected"
-  | "attention"
-  | "disconnected";
+export type IntegrationStatus = "connected" | "attention" | "disconnected";
 
 export type IntegrationRecord = {
   id: string;
@@ -92,9 +63,7 @@ export type IntegrationRecord = {
 
 export type SettingsAuditEntry = {
   id: string;
-  category:
-    | SettingsCategory
-    | "integration";
+  category: SettingsCategory | "integration";
   action:
     | "created"
     | "updated"

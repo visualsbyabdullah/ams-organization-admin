@@ -23,11 +23,7 @@ import type {
   PerformanceSettings,
 } from "@/types/performance";
 
-export function PerformanceCycleDetails({
-  cycle,
-}: {
-  cycle: PerformanceCycle;
-}) {
+export function PerformanceCycleDetails({ cycle }: { cycle: PerformanceCycle }) {
   return (
     <div className="space-y-6">
       <section className="rounded-card border border-border">
@@ -38,23 +34,13 @@ export function PerformanceCycleDetails({
               Updated {formatDate(cycle.updatedAt)} by {cycle.createdBy}
             </p>
           </div>
-          <Badge
-            variant={
-              PERFORMANCE_CYCLE_STATUS_CONFIG[cycle.status]
-                .badgeVariant
-            }
-          >
+          <Badge variant={PERFORMANCE_CYCLE_STATUS_CONFIG[cycle.status].badgeVariant}>
             {PERFORMANCE_CYCLE_STATUS_CONFIG[cycle.status].label}
           </Badge>
         </div>
         <dl className="grid gap-5 p-5 sm:grid-cols-2">
           <Detail label="Scope">
-            <Badge
-              variant={
-                PERFORMANCE_CYCLE_SCOPE_CONFIG[cycle.scope]
-                  .badgeVariant
-              }
-            >
+            <Badge variant={PERFORMANCE_CYCLE_SCOPE_CONFIG[cycle.scope].badgeVariant}>
               {PERFORMANCE_CYCLE_SCOPE_CONFIG[cycle.scope].label}
             </Badge>
           </Detail>
@@ -65,7 +51,8 @@ export function PerformanceCycleDetails({
             {formatDate(cycle.startDate)} â€“ {formatDate(cycle.endDate)}
           </Detail>
           <Detail label="Completion">
-            {cycle.completedReviews} of {cycle.participants} reviews ({getCycleCompletionRate(cycle)}%)
+            {cycle.completedReviews} of {cycle.participants} reviews (
+            {getCycleCompletionRate(cycle)}%)
           </Detail>
           <Detail label="Self-review deadline">
             {formatDate(cycle.selfReviewDueDate)}
@@ -73,9 +60,7 @@ export function PerformanceCycleDetails({
           <Detail label="Manager deadline">
             {formatDate(cycle.managerReviewDueDate)}
           </Detail>
-          <Detail label="Calibration date">
-            {formatDate(cycle.calibrationDate)}
-          </Detail>
+          <Detail label="Calibration date">{formatDate(cycle.calibrationDate)}</Detail>
         </dl>
       </section>
       <Note title="Cycle note" value={cycle.note} />
@@ -83,36 +68,21 @@ export function PerformanceCycleDetails({
   );
 }
 
-export function PerformanceReviewDetails({
-  review,
-}: {
-  review: PerformanceReview;
-}) {
-  const employee = EMPLOYEES.find(
-    (item) => item.id === review.employeeId,
-  );
-  const cycle = PERFORMANCE_CYCLES.find(
-    (item) => item.id === review.cycleId,
-  );
+export function PerformanceReviewDetails({ review }: { review: PerformanceReview }) {
+  const employee = EMPLOYEES.find((item) => item.id === review.employeeId);
+  const cycle = PERFORMANCE_CYCLES.find((item) => item.id === review.cycleId);
 
   return (
     <div className="space-y-6">
       <section className="rounded-card border border-border">
         <div className="flex items-start justify-between gap-4 border-b border-border p-5">
           <div>
-            <h3 className="font-bold">
-              {employee?.name || "Employee review"}
-            </h3>
+            <h3 className="font-bold">{employee?.name || "Employee review"}</h3>
             <p className="mt-1 text-xs text-text-muted">
               {cycle?.name || review.cycleId} Â· {review.managerName}
             </p>
           </div>
-          <Badge
-            variant={
-              PERFORMANCE_REVIEW_STATUS_CONFIG[review.status]
-                .badgeVariant
-            }
-          >
+          <Badge variant={PERFORMANCE_REVIEW_STATUS_CONFIG[review.status].badgeVariant}>
             {PERFORMANCE_REVIEW_STATUS_CONFIG[review.status].label}
           </Badge>
         </div>
@@ -120,12 +90,8 @@ export function PerformanceReviewDetails({
           <Detail label="Employee ID">
             {employee?.employeeCode || review.employeeId}
           </Detail>
-          <Detail label="Department">
-            {employee?.department || "Not available"}
-          </Detail>
-          <Detail label="Self rating">
-            {review.selfRating ?? "Not submitted"}
-          </Detail>
+          <Detail label="Department">{employee?.department || "Not available"}</Detail>
+          <Detail label="Self rating">{review.selfRating ?? "Not submitted"}</Detail>
           <Detail label="Manager rating">
             {review.managerRating ?? "Not submitted"}
           </Detail>
@@ -141,7 +107,11 @@ export function PerformanceReviewDetails({
       </section>
       <div className="grid gap-3 sm:grid-cols-2">
         <ScoreCard label="Goal score" value={review.goalScore} tone="info" />
-        <ScoreCard label="Competency score" value={review.competencyScore} tone="success" />
+        <ScoreCard
+          label="Competency score"
+          value={review.competencyScore}
+          tone="success"
+        />
       </div>
       <Note title="Strengths" value={review.strengths} />
       <Note title="Development areas" value={review.developmentAreas} />
@@ -150,11 +120,7 @@ export function PerformanceReviewDetails({
   );
 }
 
-export function PerformanceGoalDetails({
-  goal,
-}: {
-  goal: PerformanceGoal;
-}) {
+export function PerformanceGoalDetails({ goal }: { goal: PerformanceGoal }) {
   return (
     <div className="space-y-6">
       <section className="rounded-card border border-border">
@@ -165,23 +131,13 @@ export function PerformanceGoalDetails({
               {goal.ownerName} Â· Updated {formatDate(goal.updatedAt)}
             </p>
           </div>
-          <Badge
-            variant={
-              PERFORMANCE_GOAL_STATUS_CONFIG[goal.status]
-                .badgeVariant
-            }
-          >
+          <Badge variant={PERFORMANCE_GOAL_STATUS_CONFIG[goal.status].badgeVariant}>
             {PERFORMANCE_GOAL_STATUS_CONFIG[goal.status].label}
           </Badge>
         </div>
         <dl className="grid gap-5 p-5 sm:grid-cols-2">
           <Detail label="Goal level">
-            <Badge
-              variant={
-                PERFORMANCE_GOAL_LEVEL_CONFIG[goal.level]
-                  .badgeVariant
-              }
-            >
+            <Badge variant={PERFORMANCE_GOAL_LEVEL_CONFIG[goal.level].badgeVariant}>
               {PERFORMANCE_GOAL_LEVEL_CONFIG[goal.level].label}
             </Badge>
           </Detail>
@@ -200,9 +156,7 @@ export function PerformanceGoalDetails({
       </section>
       <div className="rounded-control bg-info-muted p-5">
         <p className="text-xs text-info">Goal progress</p>
-        <p className="mt-1 text-2xl font-bold text-info">
-          {goal.progress}%
-        </p>
+        <p className="mt-1 text-2xl font-bold text-info">{goal.progress}%</p>
       </div>
       <Note title="Goal description" value={goal.description} />
     </div>
@@ -232,10 +186,7 @@ export function PerformanceSettingsDetails({
             </p>
           </div>
           <Badge
-            variant={
-              PERFORMANCE_SETTINGS_STATUS_CONFIG[settings.status]
-                .badgeVariant
-            }
+            variant={PERFORMANCE_SETTINGS_STATUS_CONFIG[settings.status].badgeVariant}
           >
             {PERFORMANCE_SETTINGS_STATUS_CONFIG[settings.status].label}
           </Badge>
@@ -243,10 +194,7 @@ export function PerformanceSettingsDetails({
         <dl className="grid gap-5 p-5 sm:grid-cols-2">
           <Detail label="Scope">
             <Badge
-              variant={
-                PERFORMANCE_SETTINGS_SCOPE_CONFIG[settings.scope]
-                  .badgeVariant
-              }
+              variant={PERFORMANCE_SETTINGS_SCOPE_CONFIG[settings.scope].badgeVariant}
             >
               {PERFORMANCE_SETTINGS_SCOPE_CONFIG[settings.scope].label}
             </Badge>
@@ -257,13 +205,9 @@ export function PerformanceSettingsDetails({
           <Detail label="Review frequency">
             {PERFORMANCE_REVIEW_FREQUENCY_CONFIG[settings.reviewFrequency].label}
           </Detail>
-          <Detail label="Rating scale">
-            1â€“{settings.ratingScaleMaximum}
-          </Detail>
+          <Detail label="Rating scale">1â€“{settings.ratingScaleMaximum}</Detail>
           <Detail label="Goal weight">{settings.goalWeight}%</Detail>
-          <Detail label="Competency weight">
-            {settings.competencyWeight}%
-          </Detail>
+          <Detail label="Competency weight">{settings.competencyWeight}%</Detail>
           <Detail label="Reminder lead time">
             {settings.reminderDaysBeforeDue} days
           </Detail>
@@ -290,13 +234,7 @@ export function PerformanceSettingsDetails({
   );
 }
 
-function Detail({
-  label,
-  children,
-}: {
-  label: string;
-  children: ReactNode;
-}) {
+function Detail({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div>
       <dt className="text-xs text-text-muted">{label}</dt>
@@ -326,9 +264,7 @@ function ScoreCard({
   tone: "info" | "success";
 }) {
   const classes =
-    tone === "info"
-      ? "bg-info-muted text-info"
-      : "bg-success-muted text-success";
+    tone === "info" ? "bg-info-muted text-info" : "bg-success-muted text-success";
 
   return (
     <div className={`rounded-control p-4 ${classes}`}>

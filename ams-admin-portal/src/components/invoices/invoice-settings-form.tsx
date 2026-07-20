@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  type FormEvent,
-  useState,
-} from "react";
+import { type FormEvent, useState } from "react";
 
 import { FormField } from "@/components/forms/form-field";
 import { Button } from "@/components/ui/button";
@@ -11,9 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  INVOICE_SETTINGS_STATUS_CONFIG,
-} from "@/config/invoices";
+import { INVOICE_SETTINGS_STATUS_CONFIG } from "@/config/invoices";
 import { BRANCH_OPTIONS } from "@/data/branches";
 import { CURRENT_ADMIN } from "@/data/current-admin";
 import type {
@@ -29,10 +24,7 @@ type InvoiceSettingsFormProps = {
   onSave: (settings: InvoiceSettings) => void;
 };
 
-const BUSINESS_BRANCHES =
-  BRANCH_OPTIONS.filter(
-    (branch) => !branch.isAggregate,
-  );
+const BUSINESS_BRANCHES = BRANCH_OPTIONS.filter((branch) => !branch.isAggregate);
 
 export function InvoiceSettingsForm({
   settings,
@@ -40,98 +32,70 @@ export function InvoiceSettingsForm({
   onCancel,
   onSave,
 }: InvoiceSettingsFormProps) {
-  const [name, setName] = useState(
-    settings?.name ?? "",
-  );
+  const [name, setName] = useState(settings?.name ?? "");
 
-  const [scope, setScope] =
-    useState<InvoiceSettingsScope>(
-      settings?.scope ?? "organization",
-    );
+  const [scope, setScope] = useState<InvoiceSettingsScope>(
+    settings?.scope ?? "organization",
+  );
 
   const [branchId, setBranchId] = useState(
-    settings?.branchId ??
-      (selectedBranchId === "all"
-        ? ""
-        : selectedBranchId),
+    settings?.branchId ?? (selectedBranchId === "all" ? "" : selectedBranchId),
   );
 
-  const [status, setStatus] =
-    useState<InvoiceSettingsStatus>(
-      settings?.status ?? "draft",
-    );
+  const [status, setStatus] = useState<InvoiceSettingsStatus>(
+    settings?.status ?? "draft",
+  );
 
-  const [invoicePrefix, setInvoicePrefix] =
-    useState(settings?.invoicePrefix ?? "AMS");
+  const [invoicePrefix, setInvoicePrefix] = useState(settings?.invoicePrefix ?? "AMS");
 
-  const [nextSequence, setNextSequence] =
-    useState(
-      String(settings?.nextSequence ?? 1),
-    );
+  const [nextSequence, setNextSequence] = useState(String(settings?.nextSequence ?? 1));
 
-  const [paymentTermDays, setPaymentTermDays] =
-    useState(
-      String(settings?.paymentTermDays ?? 15),
-    );
+  const [paymentTermDays, setPaymentTermDays] = useState(
+    String(settings?.paymentTermDays ?? 15),
+  );
 
-  const [defaultTaxRate, setDefaultTaxRate] =
-    useState(
-      String(settings?.defaultTaxRate ?? 15),
-    );
+  const [defaultTaxRate, setDefaultTaxRate] = useState(
+    String(settings?.defaultTaxRate ?? 15),
+  );
 
-  const [allowPartialPayments, setAllowPartialPayments] =
-    useState(
-      settings?.allowPartialPayments ?? true,
-    );
+  const [allowPartialPayments, setAllowPartialPayments] = useState(
+    settings?.allowPartialPayments ?? true,
+  );
 
-  const [autoSendInvoices, setAutoSendInvoices] =
-    useState(
-      settings?.autoSendInvoices ?? false,
-    );
+  const [autoSendInvoices, setAutoSendInvoices] = useState(
+    settings?.autoSendInvoices ?? false,
+  );
 
-  const [autoMarkOverdue, setAutoMarkOverdue] =
-    useState(
-      settings?.autoMarkOverdue ?? true,
-    );
+  const [autoMarkOverdue, setAutoMarkOverdue] = useState(
+    settings?.autoMarkOverdue ?? true,
+  );
 
-  const [sendDueReminders, setSendDueReminders] =
-    useState(
-      settings?.sendDueReminders ?? true,
-    );
+  const [sendDueReminders, setSendDueReminders] = useState(
+    settings?.sendDueReminders ?? true,
+  );
 
-  const [reminderDaysBeforeDue, setReminderDaysBeforeDue] =
-    useState(
-      String(
-        settings?.reminderDaysBeforeDue ?? 3,
-      ),
-    );
+  const [reminderDaysBeforeDue, setReminderDaysBeforeDue] = useState(
+    String(settings?.reminderDaysBeforeDue ?? 3),
+  );
 
-  const [overdueReminderIntervalDays, setOverdueReminderIntervalDays] =
-    useState(
-      String(
-        settings?.overdueReminderIntervalDays ??
-          7,
-      ),
-    );
+  const [overdueReminderIntervalDays, setOverdueReminderIntervalDays] = useState(
+    String(settings?.overdueReminderIntervalDays ?? 7),
+  );
 
-  const [defaultNote, setDefaultNote] =
-    useState(settings?.defaultNote ?? "");
+  const [defaultNote, setDefaultNote] = useState(settings?.defaultNote ?? "");
 
-  const [submitted, setSubmitted] =
-    useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
   const isValid = Boolean(
     name.trim() &&
-      (scope === "organization" || branchId) &&
-      invoicePrefix.trim() &&
-      Number(nextSequence) > 0 &&
-      Number(paymentTermDays) >= 0 &&
-      Number(defaultTaxRate) >= 0,
+    (scope === "organization" || branchId) &&
+    invoicePrefix.trim() &&
+    Number(nextSequence) > 0 &&
+    Number(paymentTermDays) >= 0 &&
+    Number(defaultTaxRate) >= 0,
   );
 
-  function handleSubmit(
-    event: FormEvent<HTMLFormElement>,
-  ) {
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitted(true);
 
@@ -139,133 +103,70 @@ export function InvoiceSettingsForm({
       return;
     }
 
-    const branch = BUSINESS_BRANCHES.find(
-      (item) => item.id === branchId,
-    );
+    const branch = BUSINESS_BRANCHES.find((item) => item.id === branchId);
 
     onSave({
       id: settings?.id ?? crypto.randomUUID(),
       name: name.trim(),
       scope,
-      branchId:
-        scope === "branch"
-          ? branchId
-          : undefined,
-      branchName:
-        scope === "branch"
-          ? branch?.name
-          : undefined,
+      branchId: scope === "branch" ? branchId : undefined,
+      branchName: scope === "branch" ? branch?.name : undefined,
       status,
-      invoicePrefix:
-        invoicePrefix.trim().toUpperCase(),
-      nextSequence: Math.max(
-        Number(nextSequence) || 1,
-        1,
-      ),
-      paymentTermDays: Math.max(
-        Number(paymentTermDays) || 0,
-        0,
-      ),
-      defaultTaxRate: Math.max(
-        Number(defaultTaxRate) || 0,
-        0,
-      ),
+      invoicePrefix: invoicePrefix.trim().toUpperCase(),
+      nextSequence: Math.max(Number(nextSequence) || 1, 1),
+      paymentTermDays: Math.max(Number(paymentTermDays) || 0, 0),
+      defaultTaxRate: Math.max(Number(defaultTaxRate) || 0, 0),
       allowPartialPayments,
       autoSendInvoices,
       autoMarkOverdue,
       sendDueReminders,
-      reminderDaysBeforeDue: Math.max(
-        Number(reminderDaysBeforeDue) || 0,
-        0,
-      ),
-      overdueReminderIntervalDays:
-        Math.max(
-          Number(
-            overdueReminderIntervalDays,
-          ) || 1,
-          1,
-        ),
-      updatedAt: new Date()
-        .toISOString()
-        .slice(0, 10),
+      reminderDaysBeforeDue: Math.max(Number(reminderDaysBeforeDue) || 0, 0),
+      overdueReminderIntervalDays: Math.max(Number(overdueReminderIntervalDays) || 1, 1),
+      updatedAt: new Date().toISOString().slice(0, 10),
       updatedBy: CURRENT_ADMIN.name,
       defaultNote: defaultNote.trim(),
     });
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-7"
-    >
+    <form onSubmit={handleSubmit} className="space-y-7">
       <section className="grid gap-5 sm:grid-cols-2">
         <FormField
           label="Settings name"
           htmlFor="invoiceSettingsName"
-          error={
-            submitted && !name.trim()
-              ? "Enter a settings name"
-              : undefined
-          }
+          error={submitted && !name.trim() ? "Enter a settings name" : undefined}
         >
           <Input
             id="invoiceSettingsName"
             value={name}
-            onChange={(event) =>
-              setName(event.target.value)
-            }
+            onChange={(event) => setName(event.target.value)}
             placeholder="Example: Organization Billing Defaults"
           />
         </FormField>
 
-        <FormField
-          label="Status"
-          htmlFor="invoiceSettingsStatus"
-        >
+        <FormField label="Status" htmlFor="invoiceSettingsStatus">
           <Select
             id="invoiceSettingsStatus"
             value={status}
-            onChange={(event) =>
-              setStatus(
-                event.target
-                  .value as InvoiceSettingsStatus,
-              )
-            }
+            onChange={(event) => setStatus(event.target.value as InvoiceSettingsStatus)}
           >
-            {Object.entries(
-              INVOICE_SETTINGS_STATUS_CONFIG,
-            ).map(([value, config]) => (
-              <option
-                key={value}
-                value={value}
-              >
+            {Object.entries(INVOICE_SETTINGS_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
                 {config.label}
               </option>
             ))}
           </Select>
         </FormField>
 
-        <FormField
-          label="Settings scope"
-          htmlFor="invoiceSettingsScope"
-        >
+        <FormField label="Settings scope" htmlFor="invoiceSettingsScope">
           <Select
             id="invoiceSettingsScope"
             value={scope}
-            onChange={(event) =>
-              setScope(
-                event.target
-                  .value as InvoiceSettingsScope,
-              )
-            }
+            onChange={(event) => setScope(event.target.value as InvoiceSettingsScope)}
           >
-            <option value="organization">
-              Organization default
-            </option>
+            <option value="organization">Organization default</option>
 
-            <option value="branch">
-              Branch override
-            </option>
+            <option value="branch">Branch override</option>
           </Select>
         </FormField>
 
@@ -273,28 +174,17 @@ export function InvoiceSettingsForm({
           <FormField
             label="Branch"
             htmlFor="invoiceSettingsBranch"
-            error={
-              submitted && !branchId
-                ? "Select a branch"
-                : undefined
-            }
+            error={submitted && !branchId ? "Select a branch" : undefined}
           >
             <Select
               id="invoiceSettingsBranch"
               value={branchId}
-              onChange={(event) =>
-                setBranchId(event.target.value)
-              }
+              onChange={(event) => setBranchId(event.target.value)}
             >
-              <option value="">
-                Select branch
-              </option>
+              <option value="">Select branch</option>
 
               {BUSINESS_BRANCHES.map((branch) => (
-                <option
-                  key={branch.id}
-                  value={branch.id}
-                >
+                <option key={branch.id} value={branch.id}>
                   {branch.name}
                 </option>
               ))}
@@ -304,41 +194,30 @@ export function InvoiceSettingsForm({
       </section>
 
       <section>
-        <h3 className="font-bold">
-          Numbering and defaults
-        </h3>
+        <h3 className="font-bold">Numbering and defaults</h3>
 
         <div className="mt-5 grid gap-5 sm:grid-cols-2">
           <FormField
             label="Invoice prefix"
             htmlFor="invoiceSettingsPrefix"
             error={
-              submitted && !invoicePrefix.trim()
-                ? "Enter an invoice prefix"
-                : undefined
+              submitted && !invoicePrefix.trim() ? "Enter an invoice prefix" : undefined
             }
           >
             <Input
               id="invoiceSettingsPrefix"
               value={invoicePrefix}
-              onChange={(event) =>
-                setInvoicePrefix(event.target.value)
-              }
+              onChange={(event) => setInvoicePrefix(event.target.value)}
             />
           </FormField>
 
-          <FormField
-            label="Next sequence"
-            htmlFor="invoiceSettingsSequence"
-          >
+          <FormField label="Next sequence" htmlFor="invoiceSettingsSequence">
             <Input
               id="invoiceSettingsSequence"
               type="number"
               min="1"
               value={nextSequence}
-              onChange={(event) =>
-                setNextSequence(event.target.value)
-              }
+              onChange={(event) => setNextSequence(event.target.value)}
             />
           </FormField>
 
@@ -352,38 +231,25 @@ export function InvoiceSettingsForm({
               type="number"
               min="0"
               value={paymentTermDays}
-              onChange={(event) =>
-                setPaymentTermDays(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setPaymentTermDays(event.target.value)}
             />
           </FormField>
 
-          <FormField
-            label="Default tax rate"
-            htmlFor="invoiceSettingsTax"
-          >
+          <FormField label="Default tax rate" htmlFor="invoiceSettingsTax">
             <Input
               id="invoiceSettingsTax"
               type="number"
               min="0"
               step="0.01"
               value={defaultTaxRate}
-              onChange={(event) =>
-                setDefaultTaxRate(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setDefaultTaxRate(event.target.value)}
             />
           </FormField>
         </div>
       </section>
 
       <section>
-        <h3 className="font-bold">
-          Billing controls
-        </h3>
+        <h3 className="font-bold">Billing controls</h3>
 
         <div className="mt-4 space-y-3">
           {[
@@ -396,15 +262,13 @@ export function InvoiceSettingsForm({
             },
             {
               label: "Automatically send invoices",
-              description:
-                "Deliver newly generated invoices without manual review.",
+              description: "Deliver newly generated invoices without manual review.",
               checked: autoSendInvoices,
               onChange: setAutoSendInvoices,
             },
             {
               label: "Automatically mark overdue",
-              description:
-                "Change open invoices to overdue after their due date passes.",
+              description: "Change open invoices to overdue after their due date passes.",
               checked: autoMarkOverdue,
               onChange: setAutoMarkOverdue,
             },
@@ -421,13 +285,9 @@ export function InvoiceSettingsForm({
               className="flex items-center justify-between gap-5 rounded-control border border-border p-4"
             >
               <div>
-                <p className="text-sm font-semibold">
-                  {control.label}
-                </p>
+                <p className="text-sm font-semibold">{control.label}</p>
 
-                <p className="mt-1 text-xs text-text-muted">
-                  {control.description}
-                </p>
+                <p className="mt-1 text-xs text-text-muted">{control.description}</p>
               </div>
 
               <Switch
@@ -442,9 +302,7 @@ export function InvoiceSettingsForm({
 
       {sendDueReminders && (
         <section>
-          <h3 className="font-bold">
-            Reminder timing
-          </h3>
+          <h3 className="font-bold">Reminder timing</h3>
 
           <div className="mt-5 grid gap-5 sm:grid-cols-2">
             <FormField
@@ -457,11 +315,7 @@ export function InvoiceSettingsForm({
                 type="number"
                 min="0"
                 value={reminderDaysBeforeDue}
-                onChange={(event) =>
-                  setReminderDaysBeforeDue(
-                    event.target.value,
-                  )
-                }
+                onChange={(event) => setReminderDaysBeforeDue(event.target.value)}
               />
             </FormField>
 
@@ -474,14 +328,8 @@ export function InvoiceSettingsForm({
                 id="invoiceSettingsOverdueInterval"
                 type="number"
                 min="1"
-                value={
-                  overdueReminderIntervalDays
-                }
-                onChange={(event) =>
-                  setOverdueReminderIntervalDays(
-                    event.target.value,
-                  )
-                }
+                value={overdueReminderIntervalDays}
+                onChange={(event) => setOverdueReminderIntervalDays(event.target.value)}
               />
             </FormField>
           </div>
@@ -496,27 +344,17 @@ export function InvoiceSettingsForm({
         <Textarea
           id="invoiceSettingsDefaultNote"
           value={defaultNote}
-          onChange={(event) =>
-            setDefaultNote(event.target.value)
-          }
+          onChange={(event) => setDefaultNote(event.target.value)}
           placeholder="Default payment terms, bank details or billing instructions..."
         />
       </FormField>
 
       <div className="flex justify-end gap-3 border-t border-border pt-5">
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
 
-        <Button type="submit">
-          {settings
-            ? "Save settings"
-            : "Create settings"}
-        </Button>
+        <Button type="submit">{settings ? "Save settings" : "Create settings"}</Button>
       </div>
     </form>
   );

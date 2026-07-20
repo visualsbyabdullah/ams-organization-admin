@@ -8,17 +8,9 @@
   | "salary_adjustment";
 
 export type EmployeeChangeStatus =
-  | "draft"
-  | "pending"
-  | "approved"
-  | "rejected"
-  | "scheduled"
-  | "completed";
+  "draft" | "pending" | "approved" | "rejected" | "scheduled" | "completed";
 
-export type ApprovalStepStatus =
-  | "completed"
-  | "pending"
-  | "rejected";
+export type ApprovalStepStatus = "completed" | "pending" | "rejected";
 
 export type ApprovalStep = {
   label: string;

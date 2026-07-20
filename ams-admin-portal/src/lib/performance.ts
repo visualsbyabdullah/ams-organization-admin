@@ -9,43 +9,29 @@ export function clampPercentage(value: number) {
   return Math.min(Math.max(Math.round(value), 0), 100);
 }
 
-export function getCycleCompletionRate(
-  cycle: PerformanceCycle,
-) {
+export function getCycleCompletionRate(cycle: PerformanceCycle) {
   return cycle.participants > 0
-    ? clampPercentage(
-        (cycle.completedReviews / cycle.participants) * 100,
-      )
+    ? clampPercentage((cycle.completedReviews / cycle.participants) * 100)
     : 0;
 }
 
-export function getAverageReviewScore(
-  reviews: readonly PerformanceReview[],
-) {
-  const scoredReviews = reviews.filter(
-    (review) => review.overallScore > 0,
-  );
+export function getAverageReviewScore(reviews: readonly PerformanceReview[]) {
+  const scoredReviews = reviews.filter((review) => review.overallScore > 0);
 
   if (scoredReviews.length === 0) {
     return 0;
   }
 
   return Math.round(
-    scoredReviews.reduce(
-      (total, review) => total + review.overallScore,
-      0,
-    ) / scoredReviews.length,
+    scoredReviews.reduce((total, review) => total + review.overallScore, 0) /
+      scoredReviews.length,
   );
 }
 
-export function getRatingDistribution(
-  reviews: readonly PerformanceReview[],
-) {
+export function getRatingDistribution(reviews: readonly PerformanceReview[]) {
   return [1, 2, 3, 4, 5].map((rating) => ({
     rating: String(rating),
-    employees: reviews.filter(
-      (review) => review.finalRating === rating,
-    ).length,
+    employees: reviews.filter((review) => review.finalRating === rating).length,
   }));
 }
 
@@ -54,21 +40,18 @@ export function getEffectivePerformanceSettings(
   branchId: string,
 ) {
   const organizationDefault =
-    settings.find(
-      (item) =>
-        item.scope === "organization" &&
-        item.status === "active",
-    ) ?? null;
+    settings.find((item) => item.scope === "organization" && item.status === "active") ??
+    null;
 
   const branchOverride =
     branchId === "all"
       ? null
-      : settings.find(
+      : (settings.find(
           (item) =>
             item.scope === "branch" &&
             item.branchId === branchId &&
             item.status === "active",
-        ) ?? null;
+        ) ?? null);
 
   return branchOverride ?? organizationDefault;
 }
@@ -92,18 +75,10 @@ export function exportPerformanceToCsv(
       review.overallScore,
       review.branchId,
     ]),
-    ...goals.map((goal) => [
-      "Goal",
-      goal.id,
-      goal.status,
-      goal.progress,
-      goal.branchId,
-    ]),
+    ...goals.map((goal) => ["Goal", goal.id, goal.status, goal.progress, goal.branchId]),
   ];
 
-  const csv = rows
-    .map((row) => row.map(escapeCsvValue).join(","))
-    .join("\n");
+  const csv = rows.map((row) => row.map(escapeCsvValue).join(",")).join("\n");
 
   const blob = new Blob([csv], {
     type: "text/csv;charset=utf-8",

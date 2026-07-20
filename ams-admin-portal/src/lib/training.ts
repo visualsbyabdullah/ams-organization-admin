@@ -1,6 +1,4 @@
-﻿export function formatTrainingDuration(
-  hours: number,
-) {
+﻿export function formatTrainingDuration(hours: number) {
   if (hours < 1) {
     return `${Math.round(hours * 60)} min`;
   }
@@ -12,13 +10,8 @@
   return `${hours.toFixed(1)} hrs`;
 }
 
-export function calculateCompletionRate(
-  completed: number,
-  total: number,
-) {
-  return total > 0
-    ? Math.round((completed / total) * 100)
-    : 0;
+export function calculateCompletionRate(completed: number, total: number) {
+  return total > 0 ? Math.round((completed / total) * 100) : 0;
 }
 
 export function downloadTrainingCsv(
@@ -34,9 +27,7 @@ export function downloadTrainingCsv(
 
   const content = [
     headers.map(escapeValue).join(","),
-    ...rows.map((row) =>
-      row.map(escapeValue).join(","),
-    ),
+    ...rows.map((row) => row.map(escapeValue).join(",")),
   ].join("\n");
 
   const blob = new Blob([content], {

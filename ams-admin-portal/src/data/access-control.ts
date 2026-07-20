@@ -1,24 +1,15 @@
-﻿import {
-  PERMISSION_ACTIONS,
-  PERMISSION_MODULES,
-} from "@/config/access-control";
+﻿import { PERMISSION_ACTIONS, PERMISSION_MODULES } from "@/config/access-control";
 import type {
   AccessRole,
   PermissionAction,
   UserAccessRecord,
 } from "@/types/access-control";
 
-const ALL_ACTIONS =
-  PERMISSION_ACTIONS.map(
-    (action) => action.id,
-  );
+const ALL_ACTIONS = PERMISSION_ACTIONS.map((action) => action.id);
 
 function createAllPermissions() {
   return Object.fromEntries(
-    PERMISSION_MODULES.map((module) => [
-      module.id,
-      [...ALL_ACTIONS],
-    ]),
+    PERMISSION_MODULES.map((module) => [module.id, [...ALL_ACTIONS]]),
   ) as Record<string, PermissionAction[]>;
 }
 
@@ -26,8 +17,7 @@ export const ACCESS_ROLES: AccessRole[] = [
   {
     id: "organization-admin",
     name: "Organization Admin",
-    description:
-      "Complete control across all organization branches and modules.",
+    description: "Complete control across all organization branches and modules.",
     type: "system",
     status: "active",
     branchScope: "all",
@@ -36,58 +26,21 @@ export const ACCESS_ROLES: AccessRole[] = [
   {
     id: "hr-admin",
     name: "HR Admin",
-    description:
-      "Manages employees, attendance, leave, documents and performance.",
+    description: "Manages employees, attendance, leave, documents and performance.",
     type: "system",
     status: "active",
     branchScope: "all",
     permissions: {
       overview: ["view"],
-      people: [
-        "view",
-        "create",
-        "edit",
-        "approve",
-        "export",
-      ],
-      attendance: [
-        "view",
-        "create",
-        "edit",
-        "approve",
-        "export",
-      ],
-      leave: [
-        "view",
-        "create",
-        "edit",
-        "approve",
-        "export",
-      ],
+      people: ["view", "create", "edit", "approve", "export"],
+      attendance: ["view", "create", "edit", "approve", "export"],
+      leave: ["view", "create", "edit", "approve", "export"],
       payroll: ["view"],
       invoices: [],
-      performance: [
-        "view",
-        "create",
-        "edit",
-        "approve",
-      ],
-      training: [
-        "view",
-        "create",
-        "edit",
-      ],
-      documents: [
-        "view",
-        "create",
-        "edit",
-        "export",
-      ],
-      support: [
-        "view",
-        "create",
-        "edit",
-      ],
+      performance: ["view", "create", "edit", "approve"],
+      training: ["view", "create", "edit"],
+      documents: ["view", "create", "edit", "export"],
+      support: ["view", "create", "edit"],
       reports: ["view", "export"],
       branches: ["view"],
       settings: [],
@@ -96,8 +49,7 @@ export const ACCESS_ROLES: AccessRole[] = [
   {
     id: "payroll-manager",
     name: "Payroll Manager",
-    description:
-      "Manages employee salaries, payroll runs and financial adjustments.",
+    description: "Manages employee salaries, payroll runs and financial adjustments.",
     type: "system",
     status: "active",
     branchScope: "all",
@@ -106,19 +58,8 @@ export const ACCESS_ROLES: AccessRole[] = [
       people: ["view"],
       attendance: ["view", "export"],
       leave: ["view"],
-      payroll: [
-        "view",
-        "create",
-        "edit",
-        "approve",
-        "export",
-      ],
-      invoices: [
-        "view",
-        "create",
-        "edit",
-        "export",
-      ],
+      payroll: ["view", "create", "edit", "approve", "export"],
+      invoices: ["view", "create", "edit", "export"],
       performance: [],
       training: [],
       documents: ["view", "export"],
@@ -131,38 +72,21 @@ export const ACCESS_ROLES: AccessRole[] = [
   {
     id: "branch-manager",
     name: "Branch Manager",
-    description:
-      "Controls operational workflows for assigned branches.",
+    description: "Controls operational workflows for assigned branches.",
     type: "system",
     status: "active",
     branchScope: "assigned",
     permissions: {
       overview: ["view"],
       people: ["view", "edit"],
-      attendance: [
-        "view",
-        "edit",
-        "approve",
-        "export",
-      ],
-      leave: [
-        "view",
-        "approve",
-      ],
+      attendance: ["view", "edit", "approve", "export"],
+      leave: ["view", "approve"],
       payroll: ["view"],
       invoices: ["view"],
-      performance: [
-        "view",
-        "create",
-        "edit",
-      ],
+      performance: ["view", "create", "edit"],
       training: ["view"],
       documents: ["view"],
-      support: [
-        "view",
-        "create",
-        "edit",
-      ],
+      support: ["view", "create", "edit"],
       reports: ["view", "export"],
       branches: ["view"],
       settings: [],
@@ -171,29 +95,18 @@ export const ACCESS_ROLES: AccessRole[] = [
   {
     id: "line-manager",
     name: "Line Manager",
-    description:
-      "Reviews attendance, leave and performance for assigned employees.",
+    description: "Reviews attendance, leave and performance for assigned employees.",
     type: "system",
     status: "active",
     branchScope: "assigned",
     permissions: {
       overview: ["view"],
       people: ["view"],
-      attendance: [
-        "view",
-        "approve",
-      ],
-      leave: [
-        "view",
-        "approve",
-      ],
+      attendance: ["view", "approve"],
+      leave: ["view", "approve"],
       payroll: [],
       invoices: [],
-      performance: [
-        "view",
-        "create",
-        "edit",
-      ],
+      performance: ["view", "create", "edit"],
       training: ["view"],
       documents: ["view"],
       support: ["view", "create"],

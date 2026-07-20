@@ -1,8 +1,5 @@
 import { GOVERNANCE_RETENTION_DAYS } from "@/config/governance";
-import type {
-  DeletionRequest,
-  RecoveryRecord,
-} from "@/types/governance";
+import type { DeletionRequest, RecoveryRecord } from "@/types/governance";
 
 const dateTimeFormatter = new Intl.DateTimeFormat("en-GB", {
   day: "2-digit",
@@ -17,10 +14,7 @@ export function formatGovernanceDateTime(value: string) {
 }
 
 export function daysUntil(value: string) {
-  return Math.ceil(
-    (new Date(value).getTime() - Date.now()) /
-      (1000 * 60 * 60 * 24),
-  );
+  return Math.ceil((new Date(value).getTime() - Date.now()) / (1000 * 60 * 60 * 24));
 }
 
 export function getRecoveryStatus(record: RecoveryRecord) {
@@ -43,9 +37,7 @@ export function createRecoveryRecord(
 ): RecoveryRecord {
   const deletedAt = new Date();
   const retentionUntil = new Date(deletedAt);
-  retentionUntil.setDate(
-    retentionUntil.getDate() + GOVERNANCE_RETENTION_DAYS,
-  );
+  retentionUntil.setDate(retentionUntil.getDate() + GOVERNANCE_RETENTION_DAYS);
 
   return {
     id: crypto.randomUUID(),
@@ -64,13 +56,8 @@ export function createRecoveryRecord(
   };
 }
 
-export function recordIsInScope(
-  record: { branchId?: string },
-  selectedBranchId: string,
-) {
+export function recordIsInScope(record: { branchId?: string }, selectedBranchId: string) {
   return (
-    selectedBranchId === "all" ||
-    !record.branchId ||
-    record.branchId === selectedBranchId
+    selectedBranchId === "all" || !record.branchId || record.branchId === selectedBranchId
   );
 }

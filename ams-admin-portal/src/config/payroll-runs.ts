@@ -26,10 +26,8 @@ export const PAYROLL_RUNS_COPY = {
   tableTitle: "Payroll run history",
   tableDescription:
     "Review payroll runs and continue each run through its processing workflow.",
-  searchPlaceholder:
-    "Search payroll period, branch, creator or note",
+  searchPlaceholder: "Search payroll period, branch, creator or note",
   allStatuses: "All run statuses",
   emptyTitle: "No payroll runs found",
-  emptyDescription:
-    "Change the selected filters or create a new payroll run.",
+  emptyDescription: "Change the selected filters or create a new payroll run.",
 } as const;

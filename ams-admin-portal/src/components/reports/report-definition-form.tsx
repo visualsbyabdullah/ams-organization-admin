@@ -42,15 +42,9 @@ export function ReportDefinitionForm({
   const [name, setName] = useState(report?.name ?? "");
   const [code, setCode] = useState(report?.code ?? "");
   const [description, setDescription] = useState(report?.description ?? "");
-  const [category, setCategory] = useState<ReportCategory>(
-    report?.category ?? "people",
-  );
-  const [status, setStatus] = useState<ReportDefinitionStatus>(
-    report?.status ?? "draft",
-  );
-  const [scope, setScope] = useState<ReportScope>(
-    report?.scope ?? "organization",
-  );
+  const [category, setCategory] = useState<ReportCategory>(report?.category ?? "people");
+  const [status, setStatus] = useState<ReportDefinitionStatus>(report?.status ?? "draft");
+  const [scope, setScope] = useState<ReportScope>(report?.scope ?? "organization");
   const [branchId, setBranchId] = useState(
     report?.branchId ?? (selectedBranchId === "all" ? "" : selectedBranchId),
   );
@@ -78,12 +72,12 @@ export function ReportDefinitionForm({
 
   const isValid = Boolean(
     name.trim() &&
-      code.trim() &&
-      description.trim() &&
-      (scope === "organization" || branchId) &&
-      availableFormats.length > 0 &&
-      parsedFields.length > 0 &&
-      Number(recordEstimate) >= 0,
+    code.trim() &&
+    description.trim() &&
+    (scope === "organization" || branchId) &&
+    availableFormats.length > 0 &&
+    parsedFields.length > 0 &&
+    Number(recordEstimate) >= 0,
   );
 
   function toggleFormat(format: ReportFormat, checked: boolean) {
@@ -164,9 +158,7 @@ export function ReportDefinitionForm({
           <Select
             id="reportCategory"
             value={category}
-            onChange={(event) =>
-              setCategory(event.target.value as ReportCategory)
-            }
+            onChange={(event) => setCategory(event.target.value as ReportCategory)}
           >
             {Object.entries(REPORT_CATEGORY_CONFIG).map(([value, config]) => (
               <option key={value} value={value}>
@@ -180,17 +172,13 @@ export function ReportDefinitionForm({
           <Select
             id="reportStatus"
             value={status}
-            onChange={(event) =>
-              setStatus(event.target.value as ReportDefinitionStatus)
-            }
+            onChange={(event) => setStatus(event.target.value as ReportDefinitionStatus)}
           >
-            {Object.entries(REPORT_DEFINITION_STATUS_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(REPORT_DEFINITION_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
@@ -198,9 +186,7 @@ export function ReportDefinitionForm({
           <Select
             id="reportScope"
             value={scope}
-            onChange={(event) =>
-              setScope(event.target.value as ReportScope)
-            }
+            onChange={(event) => setScope(event.target.value as ReportScope)}
           >
             {Object.entries(REPORT_SCOPE_CONFIG).map(([value, config]) => (
               <option key={value} value={value}>
@@ -222,13 +208,11 @@ export function ReportDefinitionForm({
               onChange={(event) => setBranchId(event.target.value)}
             >
               <option value="">Select branch</option>
-              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map(
-                (branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </option>
-                ),
-              )}
+              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
             </Select>
           </FormField>
         )}
@@ -237,9 +221,7 @@ export function ReportDefinitionForm({
           <Select
             id="reportDefaultFormat"
             value={defaultFormat}
-            onChange={(event) =>
-              setDefaultFormat(event.target.value as ReportFormat)
-            }
+            onChange={(event) => setDefaultFormat(event.target.value as ReportFormat)}
           >
             {REPORT_FORMATS.map((format) => (
               <option key={format} value={format}>
@@ -264,9 +246,7 @@ export function ReportDefinitionForm({
         label="Report description"
         htmlFor="reportDescription"
         error={
-          submitted && !description.trim()
-            ? "Enter a report description"
-            : undefined
+          submitted && !description.trim() ? "Enter a report description" : undefined
         }
       >
         <Textarea

@@ -21,21 +21,15 @@ export function ChartCard({
     <Card className={className}>
       <div className="flex items-start justify-between gap-4 p-6 pb-0">
         <div>
-          <h2 className="text-lg font-bold">
-            {title}
-          </h2>
+          <h2 className="text-lg font-bold">{title}</h2>
 
-          <p className="mt-1 text-sm text-text-muted">
-            {description}
-          </p>
+          <p className="mt-1 text-sm text-text-muted">{description}</p>
         </div>
 
         {action}
       </div>
 
-      <div className="p-6">
-        {children}
-      </div>
+      <div className="p-6">{children}</div>
     </Card>
   );
 }

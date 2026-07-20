@@ -1,9 +1,5 @@
 export type GovernanceSection =
-  | "overview"
-  | "requests"
-  | "recovery"
-  | "notifications"
-  | "policy";
+  "overview" | "requests" | "recovery" | "notifications" | "policy";
 
 export type GovernanceRole =
   | "line_manager"
@@ -28,15 +24,9 @@ export type GovernanceModule =
   | "loans"
   | "invoices";
 
-export type DeletionMode =
-  | "recoverable"
-  | "archive_only"
-  | "void_or_reverse";
+export type DeletionMode = "recoverable" | "archive_only" | "void_or_reverse";
 
-export type DeletionRequestStatus =
-  | "pending"
-  | "approved"
-  | "rejected";
+export type DeletionRequestStatus = "pending" | "approved" | "rejected";
 
 export type DeletionRequest = {
   id: string;

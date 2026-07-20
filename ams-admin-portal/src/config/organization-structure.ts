@@ -1,7 +1,4 @@
-import type {
-  DepartmentStatus,
-  DesignationLevel,
-} from "@/types/organization-structure";
+import type { DepartmentStatus, DesignationLevel } from "@/types/organization-structure";
 
 export const DEPARTMENT_STATUS_CONFIG: Record<
   DepartmentStatus,
@@ -24,11 +21,7 @@ export const DESIGNATION_LEVEL_CONFIG: Record<
   DesignationLevel,
   {
     label: string;
-    badgeVariant:
-      | "danger"
-      | "warning"
-      | "info"
-      | "neutral";
+    badgeVariant: "danger" | "warning" | "info" | "neutral";
   }
 > = {
   leadership: {
@@ -56,8 +49,6 @@ export const ORGANIZATION_STRUCTURE_COPY = {
     "Manage departments, designations, reporting lines and branch workforce distribution.",
   addDepartment: "Add department",
   addDesignation: "Add designation",
-  departmentSearch:
-    "Search departments by name or code",
-  designationSearch:
-    "Search designations",
+  departmentSearch: "Search departments by name or code",
+  designationSearch: "Search designations",
 } as const;

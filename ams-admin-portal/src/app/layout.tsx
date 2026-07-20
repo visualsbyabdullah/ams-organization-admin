@@ -27,9 +27,7 @@ type RootLayoutProps = Readonly<{
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className={`${manrope.variable} font-sans antialiased`}>
-        {children}
-      </body>
+      <body className={`${manrope.variable} font-sans antialiased`}>{children}</body>
     </html>
   );
 }

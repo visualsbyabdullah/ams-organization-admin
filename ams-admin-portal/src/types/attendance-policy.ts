@@ -1,11 +1,6 @@
-﻿export type AttendancePolicyStatus =
-  | "active"
-  | "draft"
-  | "archived";
+﻿export type AttendancePolicyStatus = "active" | "draft" | "archived";
 
-export type AttendancePolicyScope =
-  | "all_branches"
-  | "selected_branches";
+export type AttendancePolicyScope = "all_branches" | "selected_branches";
 
 export type AttendancePolicyRules = {
   gracePeriodMinutes: number;

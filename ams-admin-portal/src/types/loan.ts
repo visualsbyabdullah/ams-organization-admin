@@ -1,22 +1,10 @@
 ﻿export type EmployeeLoanType =
-  | "personal"
-  | "salary_advance"
-  | "emergency"
-  | "medical"
-  | "education";
+  "personal" | "salary_advance" | "emergency" | "medical" | "education";
 
 export type EmployeeLoanStatus =
-  | "pending_approval"
-  | "approved"
-  | "repaying"
-  | "on_hold"
-  | "completed"
-  | "rejected";
+  "pending_approval" | "approved" | "repaying" | "on_hold" | "completed" | "rejected";
 
-export type LoanRepaymentMethod =
-  | "payroll_deduction"
-  | "bank_transfer"
-  | "cash";
+export type LoanRepaymentMethod = "payroll_deduction" | "bank_transfer" | "cash";
 
 export type EmployeeLoan = {
   id: string;

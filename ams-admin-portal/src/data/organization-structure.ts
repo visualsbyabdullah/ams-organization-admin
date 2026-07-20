@@ -9,8 +9,7 @@ export const DEPARTMENTS: Department[] = [
     id: "dept-hr",
     name: "Human Resources",
     code: "HR",
-    description:
-      "Employee operations, hiring and workplace policies.",
+    description: "Employee operations, hiring and workplace policies.",
     headEmployeeId: "emp-001",
     branchCounts: {
       islamabad: 8,
@@ -23,8 +22,7 @@ export const DEPARTMENTS: Department[] = [
     id: "dept-finance",
     name: "Finance",
     code: "FIN",
-    description:
-      "Payroll, financial controls and reporting.",
+    description: "Payroll, financial controls and reporting.",
     headEmployeeId: "emp-003",
     branchCounts: {
       islamabad: 6,
@@ -37,8 +35,7 @@ export const DEPARTMENTS: Department[] = [
     id: "dept-sales",
     name: "Sales",
     code: "SLS",
-    description:
-      "Revenue operations and customer acquisition.",
+    description: "Revenue operations and customer acquisition.",
     headEmployeeId: "emp-002",
     branchCounts: {
       islamabad: 12,
@@ -51,8 +48,7 @@ export const DEPARTMENTS: Department[] = [
     id: "dept-operations",
     name: "Operations",
     code: "OPS",
-    description:
-      "Daily branch operations and service delivery.",
+    description: "Daily branch operations and service delivery.",
     headEmployeeId: "emp-004",
     branchCounts: {
       islamabad: 20,
@@ -65,8 +61,7 @@ export const DEPARTMENTS: Department[] = [
     id: "dept-marketing",
     name: "Marketing",
     code: "MKT",
-    description:
-      "Brand, communications and campaign management.",
+    description: "Brand, communications and campaign management.",
     headEmployeeId: "emp-005",
     branchCounts: {
       islamabad: 8,
@@ -79,8 +74,7 @@ export const DEPARTMENTS: Department[] = [
     id: "dept-support",
     name: "Customer Support",
     code: "SUP",
-    description:
-      "Customer assistance and issue resolution.",
+    description: "Customer assistance and issue resolution.",
     branchCounts: {
       islamabad: 10,
       lahore: 8,
@@ -92,8 +86,7 @@ export const DEPARTMENTS: Department[] = [
     id: "dept-technology",
     name: "Technology",
     code: "TECH",
-    description:
-      "Product engineering and technical operations.",
+    description: "Product engineering and technical operations.",
     branchCounts: {
       islamabad: 7,
       lahore: 5,
@@ -162,32 +155,28 @@ export const DESIGNATIONS: Designation[] = [
   },
 ];
 
-export const BRANCH_STRUCTURE_SUMMARIES: BranchStructureSummary[] =
-  [
-    {
-      branchId: "islamabad",
-      departmentCount: 7,
-      employeeCount: 71,
-      managerCount: 8,
-    },
-    {
-      branchId: "lahore",
-      departmentCount: 7,
-      employeeCount: 64,
-      managerCount: 7,
-    },
-    {
-      branchId: "karachi",
-      departmentCount: 7,
-      employeeCount: 58,
-      managerCount: 7,
-    },
-  ];
+export const BRANCH_STRUCTURE_SUMMARIES: BranchStructureSummary[] = [
+  {
+    branchId: "islamabad",
+    departmentCount: 7,
+    employeeCount: 71,
+    managerCount: 8,
+  },
+  {
+    branchId: "lahore",
+    departmentCount: 7,
+    employeeCount: 64,
+    managerCount: 7,
+  },
+  {
+    branchId: "karachi",
+    departmentCount: 7,
+    employeeCount: 58,
+    managerCount: 7,
+  },
+];
 
-export const UNASSIGNED_EMPLOYEE_COUNTS: Record<
-  string,
-  number
-> = {
+export const UNASSIGNED_EMPLOYEE_COUNTS: Record<string, number> = {
   all: 3,
   islamabad: 1,
   lahore: 2,

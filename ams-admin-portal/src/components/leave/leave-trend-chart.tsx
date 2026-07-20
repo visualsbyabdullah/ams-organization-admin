@@ -11,28 +11,17 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
-import type {
-  LeaveTrendPoint,
-} from "@/types/leave";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
+import type { LeaveTrendPoint } from "@/types/leave";
 
 type LeaveTrendChartProps = {
   data: LeaveTrendPoint[];
 };
 
-export function LeaveTrendChart({
-  data,
-}: LeaveTrendChartProps) {
+export function LeaveTrendChart({ data }: LeaveTrendChartProps) {
   return (
     <div className="h-72 w-full [&_*:focus]:outline-none [&_svg]:outline-none">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           accessibilityLayer={false}
           data={data}
@@ -57,17 +46,9 @@ export function LeaveTrendChart({
             dy={8}
           />
 
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={CHART_AXIS_STYLE}
-          />
+          <YAxis axisLine={false} tickLine={false} tick={CHART_AXIS_STYLE} />
 
-          <Tooltip
-            contentStyle={
-              CHART_TOOLTIP_STYLE
-            }
-          />
+          <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
 
           <Legend
             iconType="circle"
@@ -82,12 +63,8 @@ export function LeaveTrendChart({
             type="monotone"
             dataKey="approved"
             name="Approved"
-            stroke={
-              CHART_COLORS.present
-            }
-            fill={
-              CHART_COLORS.present
-            }
+            stroke={CHART_COLORS.present}
+            fill={CHART_COLORS.present}
             fillOpacity={0.12}
             strokeWidth={2.5}
           />
@@ -106,9 +83,7 @@ export function LeaveTrendChart({
             type="monotone"
             dataKey="rejected"
             name="Rejected"
-            stroke={
-              CHART_COLORS.absent
-            }
+            stroke={CHART_COLORS.absent}
             fill="transparent"
             strokeWidth={2}
           />
@@ -117,4 +92,3 @@ export function LeaveTrendChart({
     </div>
   );
 }
-

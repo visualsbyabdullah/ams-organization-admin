@@ -1,10 +1,6 @@
 ﻿"use client";
 
-import {
-  type MouseEvent,
-  useMemo,
-  useState,
-} from "react";
+import { type MouseEvent, useMemo, useState } from "react";
 import {
   Award,
   CheckCircle2,
@@ -21,10 +17,7 @@ import {
 } from "lucide-react";
 
 import { MetricCard } from "@/components/dashboard/metric-card";
-import {
-  DataTable,
-  type DataTableColumn,
-} from "@/components/shared/data-table";
+import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { TrainingEnrollmentForm } from "@/components/training/training-enrollment-form";
@@ -36,168 +29,113 @@ import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import {
-  TRAINING_COPY,
-  TRAINING_ENROLLMENT_STATUS_CONFIG,
-} from "@/config/training";
+import { TRAINING_COPY, TRAINING_ENROLLMENT_STATUS_CONFIG } from "@/config/training";
 import { useBranchScope } from "@/context/branch-scope-context";
 import { EMPLOYEES } from "@/data/employees";
-import {
-  TRAINING_COURSES,
-  TRAINING_ENROLLMENTS,
-} from "@/data/training";
+import { TRAINING_COURSES, TRAINING_ENROLLMENTS } from "@/data/training";
 import { formatDate } from "@/lib/date";
-import {
-  calculateCompletionRate,
-  downloadTrainingCsv,
-} from "@/lib/training";
-import type {
-  TrainingEnrollment,
-  TrainingEnrollmentStatus,
-} from "@/types/training";
+import { calculateCompletionRate, downloadTrainingCsv } from "@/lib/training";
+import type { TrainingEnrollment, TrainingEnrollmentStatus } from "@/types/training";
 
 export function TrainingEnrollmentsWorkspace() {
   const { selectedBranch } = useBranchScope();
 
   const [enrollments, setEnrollments] =
-    useState<TrainingEnrollment[]>(
-      TRAINING_ENROLLMENTS,
-    );
+    useState<TrainingEnrollment[]>(TRAINING_ENROLLMENTS);
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [statusFilter, setStatusFilter] =
-    useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  const [courseFilter, setCourseFilter] =
-    useState("all");
+  const [courseFilter, setCourseFilter] = useState("all");
 
-  const [selectedEnrollmentId, setSelectedEnrollmentId] =
-    useState<string | null>(null);
+  const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
 
-  const [createOpen, setCreateOpen] =
-    useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const scopedEnrollments = useMemo(
     () =>
       enrollments.filter(
         (enrollment) =>
-          selectedBranch.isAggregate ||
-          enrollment.branchId === selectedBranch.id,
+          selectedBranch.isAggregate || enrollment.branchId === selectedBranch.id,
       ),
     [enrollments, selectedBranch],
   );
 
   const visibleEnrollments = useMemo(() => {
-    const query = searchQuery
-      .trim()
-      .toLowerCase();
+    const query = searchQuery.trim().toLowerCase();
 
-    return scopedEnrollments.filter(
-      (enrollment) => {
-        const employee = EMPLOYEES.find(
-          (item) => item.id === enrollment.employeeId,
-        );
+    return scopedEnrollments.filter((enrollment) => {
+      const employee = EMPLOYEES.find((item) => item.id === enrollment.employeeId);
 
-        const course = TRAINING_COURSES.find(
-          (item) => item.id === enrollment.courseId,
-        );
+      const course = TRAINING_COURSES.find((item) => item.id === enrollment.courseId);
 
-        if (!employee || !course) {
-          return false;
-        }
+      if (!employee || !course) {
+        return false;
+      }
 
-        const searchableValue = [
-          employee.name,
-          employee.employeeCode,
-          employee.department,
-          employee.designation,
-          course.title,
-          course.code,
-          enrollment.certificateId,
-          enrollment.note,
-        ]
-          .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
+      const searchableValue = [
+        employee.name,
+        employee.employeeCode,
+        employee.department,
+        employee.designation,
+        course.title,
+        course.code,
+        enrollment.certificateId,
+        enrollment.note,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase();
 
-        return (
-          searchableValue.includes(query) &&
-          (statusFilter === "all" ||
-            enrollment.status === statusFilter) &&
-          (courseFilter === "all" ||
-            enrollment.courseId === courseFilter)
-        );
-      },
-    );
-  }, [
-    courseFilter,
-    scopedEnrollments,
-    searchQuery,
-    statusFilter,
-  ]);
+      return (
+        searchableValue.includes(query) &&
+        (statusFilter === "all" || enrollment.status === statusFilter) &&
+        (courseFilter === "all" || enrollment.courseId === courseFilter)
+      );
+    });
+  }, [courseFilter, scopedEnrollments, searchQuery, statusFilter]);
 
   const selectedEnrollment =
-    enrollments.find(
-      (enrollment) =>
-        enrollment.id === selectedEnrollmentId,
-    ) ?? null;
+    enrollments.find((enrollment) => enrollment.id === selectedEnrollmentId) ?? null;
 
   const selectedEmployee = selectedEnrollment
-    ? EMPLOYEES.find(
-        (employee) =>
-          employee.id ===
-          selectedEnrollment.employeeId,
-      )
+    ? EMPLOYEES.find((employee) => employee.id === selectedEnrollment.employeeId)
     : null;
 
   const selectedCourse = selectedEnrollment
-    ? TRAINING_COURSES.find(
-        (course) =>
-          course.id === selectedEnrollment.courseId,
-      )
+    ? TRAINING_COURSES.find((course) => course.id === selectedEnrollment.courseId)
     : null;
 
   const assignedCount = scopedEnrollments.filter(
-    (enrollment) =>
-      enrollment.status === "assigned",
+    (enrollment) => enrollment.status === "assigned",
   ).length;
 
   const inProgressCount = scopedEnrollments.filter(
-    (enrollment) =>
-      enrollment.status === "in_progress",
+    (enrollment) => enrollment.status === "in_progress",
   ).length;
 
   const completedCount = scopedEnrollments.filter(
-    (enrollment) =>
-      enrollment.status === "completed",
+    (enrollment) => enrollment.status === "completed",
   ).length;
 
   const overdueCount = scopedEnrollments.filter(
-    (enrollment) =>
-      enrollment.status === "overdue",
+    (enrollment) => enrollment.status === "overdue",
   ).length;
 
   const completionRate = calculateCompletionRate(
     completedCount,
-    scopedEnrollments.filter(
-      (enrollment) =>
-        enrollment.status !== "cancelled",
-    ).length,
+    scopedEnrollments.filter((enrollment) => enrollment.status !== "cancelled").length,
   );
 
   const completionQueue = scopedEnrollments
     .filter(
       (enrollment) =>
         enrollment.status === "overdue" ||
-        (["assigned", "in_progress"].includes(
-          enrollment.status,
-        ) && enrollment.dueDate <= "2026-07-31"),
+        (["assigned", "in_progress"].includes(enrollment.status) &&
+          enrollment.dueDate <= "2026-07-31"),
     )
-    .sort((first, second) =>
-      first.dueDate.localeCompare(second.dueDate),
-    );
+    .sort((first, second) => first.dueDate.localeCompare(second.dueDate));
 
   const metrics = [
     {
@@ -230,19 +168,13 @@ export function TrainingEnrollmentsWorkspace() {
     },
   ];
 
-  const columns = useMemo<
-    DataTableColumn<TrainingEnrollment>[]
-  >(
+  const columns = useMemo<DataTableColumn<TrainingEnrollment>[]>(
     () => [
       {
         id: "employee",
-        header:
-          TRAINING_COPY.enrollments.columns.employee,
+        header: TRAINING_COPY.enrollments.columns.employee,
         cell: (enrollment) => {
-          const employee = EMPLOYEES.find(
-            (item) =>
-              item.id === enrollment.employeeId,
-          );
+          const employee = EMPLOYEES.find((item) => item.id === enrollment.employeeId);
 
           if (!employee) {
             return "Employee unavailable";
@@ -250,15 +182,10 @@ export function TrainingEnrollmentsWorkspace() {
 
           return (
             <div className="flex items-center gap-3">
-              <Avatar
-                name={employee.name}
-                initials={employee.initials}
-              />
+              <Avatar name={employee.name} initials={employee.initials} />
 
               <div>
-                <p className="font-semibold">
-                  {employee.name}
-                </p>
+                <p className="font-semibold">{employee.name}</p>
 
                 <p className="mt-1 text-xs text-text-muted">
                   {employee.employeeCode} Â· {employee.department}
@@ -270,22 +197,15 @@ export function TrainingEnrollmentsWorkspace() {
       },
       {
         id: "course",
-        header:
-          TRAINING_COPY.enrollments.columns.course,
+        header: TRAINING_COPY.enrollments.columns.course,
         cell: (enrollment) => {
-          const course = TRAINING_COURSES.find(
-            (item) => item.id === enrollment.courseId,
-          );
+          const course = TRAINING_COURSES.find((item) => item.id === enrollment.courseId);
 
           return course ? (
             <div>
-              <p className="font-semibold">
-                {course.title}
-              </p>
+              <p className="font-semibold">{course.title}</p>
 
-              <p className="mt-1 text-xs text-text-muted">
-                {course.code}
-              </p>
+              <p className="mt-1 text-xs text-text-muted">{course.code}</p>
             </div>
           ) : (
             "Course unavailable"
@@ -294,21 +214,17 @@ export function TrainingEnrollmentsWorkspace() {
       },
       {
         id: "assigned",
-        header:
-          TRAINING_COPY.enrollments.columns.assigned,
-        cell: (enrollment) =>
-          formatDate(enrollment.assignedDate),
+        header: TRAINING_COPY.enrollments.columns.assigned,
+        cell: (enrollment) => formatDate(enrollment.assignedDate),
       },
       {
         id: "due",
         header: TRAINING_COPY.enrollments.columns.due,
-        cell: (enrollment) =>
-          formatDate(enrollment.dueDate),
+        cell: (enrollment) => formatDate(enrollment.dueDate),
       },
       {
         id: "progress",
-        header:
-          TRAINING_COPY.enrollments.columns.progress,
+        header: TRAINING_COPY.enrollments.columns.progress,
         className: "min-w-44",
         cell: (enrollment) => (
           <ProgressBar
@@ -325,43 +241,27 @@ export function TrainingEnrollmentsWorkspace() {
       },
       {
         id: "score",
-        header:
-          TRAINING_COPY.enrollments.columns.score,
+        header: TRAINING_COPY.enrollments.columns.score,
         cell: (enrollment) =>
-          enrollment.score !== undefined
-            ? `${enrollment.score}%`
-            : "â€”",
+          enrollment.score !== undefined ? `${enrollment.score}%` : "â€”",
       },
       {
         id: "status",
-        header:
-          TRAINING_COPY.enrollments.columns.status,
+        header: TRAINING_COPY.enrollments.columns.status,
         cell: (enrollment) => (
           <Badge
-            variant={
-              TRAINING_ENROLLMENT_STATUS_CONFIG[
-                enrollment.status
-              ].badgeVariant
-            }
+            variant={TRAINING_ENROLLMENT_STATUS_CONFIG[enrollment.status].badgeVariant}
           >
-            {
-              TRAINING_ENROLLMENT_STATUS_CONFIG[
-                enrollment.status
-              ].label
-            }
+            {TRAINING_ENROLLMENT_STATUS_CONFIG[enrollment.status].label}
           </Badge>
         ),
       },
       {
         id: "actions",
-        header:
-          TRAINING_COPY.enrollments.columns.actions,
+        header: TRAINING_COPY.enrollments.columns.actions,
         headClassName: "w-16",
         cell: (enrollment) => {
-          const employee = EMPLOYEES.find(
-            (item) =>
-              item.id === enrollment.employeeId,
-          );
+          const employee = EMPLOYEES.find((item) => item.id === enrollment.employeeId);
 
           return (
             <Button
@@ -370,9 +270,7 @@ export function TrainingEnrollmentsWorkspace() {
               aria-label={`Open training enrollment for ${employee?.name ?? "employee"}`}
               onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
-                setSelectedEnrollmentId(
-                  enrollment.id,
-                );
+                setSelectedEnrollmentId(enrollment.id);
               }}
             >
               <MoreHorizontal />
@@ -384,21 +282,13 @@ export function TrainingEnrollmentsWorkspace() {
     [],
   );
 
-  function saveEnrollment(
-    enrollment: TrainingEnrollment,
-  ) {
-    setEnrollments((currentEnrollments) => [
-      enrollment,
-      ...currentEnrollments,
-    ]);
+  function saveEnrollment(enrollment: TrainingEnrollment) {
+    setEnrollments((currentEnrollments) => [enrollment, ...currentEnrollments]);
     setCreateOpen(false);
     setSelectedEnrollmentId(enrollment.id);
   }
 
-  function updateStatus(
-    enrollmentId: string,
-    status: TrainingEnrollmentStatus,
-  ) {
+  function updateStatus(enrollmentId: string, status: TrainingEnrollmentStatus) {
     setEnrollments((currentEnrollments) =>
       currentEnrollments.map((enrollment) => {
         if (enrollment.id !== enrollmentId) {
@@ -409,33 +299,23 @@ export function TrainingEnrollmentsWorkspace() {
           return {
             ...enrollment,
             status,
-            startedAt:
-              enrollment.startedAt ??
-              new Date().toISOString().slice(0, 10),
+            startedAt: enrollment.startedAt ?? new Date().toISOString().slice(0, 10),
             progress: Math.max(enrollment.progress, 5),
             attempts: Math.max(enrollment.attempts, 1),
           };
         }
 
         if (status === "completed") {
-          const course = TRAINING_COURSES.find(
-            (item) => item.id === enrollment.courseId,
-          );
+          const course = TRAINING_COURSES.find((item) => item.id === enrollment.courseId);
 
           return {
             ...enrollment,
             status,
             progress: 100,
-            score:
-              enrollment.score ??
-              course?.passingScore ??
-              100,
-            completedAt: new Date()
-              .toISOString()
-              .slice(0, 10),
+            score: enrollment.score ?? course?.passingScore ?? 100,
+            completedAt: new Date().toISOString().slice(0, 10),
             certificateId:
-              enrollment.certificateId ??
-              `CERT-${enrollment.id.toUpperCase()}`,
+              enrollment.certificateId ?? `CERT-${enrollment.id.toUpperCase()}`,
           };
         }
 
@@ -445,10 +325,7 @@ export function TrainingEnrollmentsWorkspace() {
             status,
             completedAt: undefined,
             certificateId: undefined,
-            progress:
-              enrollment.progress === 100
-                ? 0
-                : enrollment.progress,
+            progress: enrollment.progress === 100 ? 0 : enrollment.progress,
           };
         }
 
@@ -475,12 +352,8 @@ export function TrainingEnrollmentsWorkspace() {
         "Certificate",
       ],
       visibleEnrollments.map((enrollment) => {
-        const employee = EMPLOYEES.find(
-          (item) => item.id === enrollment.employeeId,
-        );
-        const course = TRAINING_COURSES.find(
-          (item) => item.id === enrollment.courseId,
-        );
+        const employee = EMPLOYEES.find((item) => item.id === enrollment.employeeId);
+        const course = TRAINING_COURSES.find((item) => item.id === enrollment.courseId);
 
         return [
           employee?.name ?? "",
@@ -490,9 +363,7 @@ export function TrainingEnrollmentsWorkspace() {
           enrollment.dueDate,
           enrollment.progress,
           enrollment.score ?? "",
-          TRAINING_ENROLLMENT_STATUS_CONFIG[
-            enrollment.status
-          ].label,
+          TRAINING_ENROLLMENT_STATUS_CONFIG[enrollment.status].label,
           enrollment.certificateId ?? "",
         ];
       }),
@@ -504,22 +375,15 @@ export function TrainingEnrollmentsWorkspace() {
       <PageHeader
         eyebrow={TRAINING_COPY.eyebrow}
         title={TRAINING_COPY.enrollments.title}
-        description={
-          TRAINING_COPY.enrollments.description
-        }
+        description={TRAINING_COPY.enrollments.description}
         actions={
           <>
-            <Button
-              variant="outline"
-              onClick={exportEnrollments}
-            >
+            <Button variant="outline" onClick={exportEnrollments}>
               <Download />
               {TRAINING_COPY.enrollments.exportAction}
             </Button>
 
-            <Button
-              onClick={() => setCreateOpen(true)}
-            >
+            <Button onClick={() => setCreateOpen(true)}>
               <Plus />
               {TRAINING_COPY.enrollments.createAction}
             </Button>
@@ -533,10 +397,7 @@ export function TrainingEnrollmentsWorkspace() {
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
@@ -557,44 +418,32 @@ export function TrainingEnrollmentsWorkspace() {
 
                 <Input
                   value={searchQuery}
-                  onChange={(event) =>
-                    setSearchQuery(event.target.value)
-                  }
-                  placeholder={
-                    TRAINING_COPY.enrollments.searchPlaceholder
-                  }
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder={TRAINING_COPY.enrollments.searchPlaceholder}
                   className="pl-9"
                 />
               </div>
 
               <Select
                 value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(event.target.value)
-                }
+                onChange={(event) => setStatusFilter(event.target.value)}
               >
-                <option value="all">
-                  {TRAINING_COPY.enrollments.allStatuses}
-                </option>
+                <option value="all">{TRAINING_COPY.enrollments.allStatuses}</option>
 
-                {Object.entries(
-                  TRAINING_ENROLLMENT_STATUS_CONFIG,
-                ).map(([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ))}
+                {Object.entries(TRAINING_ENROLLMENT_STATUS_CONFIG).map(
+                  ([value, config]) => (
+                    <option key={value} value={value}>
+                      {config.label}
+                    </option>
+                  ),
+                )}
               </Select>
 
               <Select
                 value={courseFilter}
-                onChange={(event) =>
-                  setCourseFilter(event.target.value)
-                }
+                onChange={(event) => setCourseFilter(event.target.value)}
               >
-                <option value="all">
-                  {TRAINING_COPY.enrollments.allCourses}
-                </option>
+                <option value="all">{TRAINING_COPY.enrollments.allCourses}</option>
 
                 {TRAINING_COURSES.filter(
                   (course) =>
@@ -602,10 +451,7 @@ export function TrainingEnrollmentsWorkspace() {
                     course.scope === "organization" ||
                     course.branchId === selectedBranch.id,
                 ).map((course) => (
-                  <option
-                    key={course.id}
-                    value={course.id}
-                  >
+                  <option key={course.id} value={course.id}>
                     {course.title}
                   </option>
                 ))}
@@ -616,21 +462,13 @@ export function TrainingEnrollmentsWorkspace() {
           <DataTable
             rows={visibleEnrollments}
             columns={columns}
-            getRowKey={(enrollment) =>
-              enrollment.id
-            }
-            onRowClick={(enrollment) =>
-              setSelectedEnrollmentId(
-                enrollment.id,
-              )
-            }
+            getRowKey={(enrollment) => enrollment.id}
+            onRowClick={(enrollment) => setSelectedEnrollmentId(enrollment.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <FileSearch className="size-8 text-text-muted" />
 
-                <h3 className="mt-4 font-bold">
-                  {TRAINING_COPY.enrollments.emptyTitle}
-                </h3>
+                <h3 className="mt-4 font-bold">{TRAINING_COPY.enrollments.emptyTitle}</h3>
 
                 <p className="mt-2 text-sm text-text-muted">
                   {TRAINING_COPY.enrollments.emptyDescription}
@@ -661,8 +499,7 @@ export function TrainingEnrollmentsWorkspace() {
             {completionQueue.length > 0 ? (
               completionQueue.map((enrollment) => {
                 const employee = EMPLOYEES.find(
-                  (item) =>
-                    item.id === enrollment.employeeId,
+                  (item) => item.id === enrollment.employeeId,
                 );
                 const course = TRAINING_COURSES.find(
                   (item) => item.id === enrollment.courseId,
@@ -676,47 +513,30 @@ export function TrainingEnrollmentsWorkspace() {
                   <button
                     key={enrollment.id}
                     type="button"
-                    onClick={() =>
-                      setSelectedEnrollmentId(
-                        enrollment.id,
-                      )
-                    }
+                    onClick={() => setSelectedEnrollmentId(enrollment.id)}
                     className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div className="flex items-start justify-between gap-3">
                       <div>
-                        <p className="text-sm font-semibold">
-                          {employee.name}
-                        </p>
+                        <p className="text-sm font-semibold">{employee.name}</p>
 
-                        <p className="mt-1 text-xs text-text-muted">
-                          {course.title}
-                        </p>
+                        <p className="mt-1 text-xs text-text-muted">{course.title}</p>
                       </div>
 
                       <Badge
                         variant={
-                          TRAINING_ENROLLMENT_STATUS_CONFIG[
-                            enrollment.status
-                          ].badgeVariant
+                          TRAINING_ENROLLMENT_STATUS_CONFIG[enrollment.status]
+                            .badgeVariant
                         }
                       >
-                        {
-                          TRAINING_ENROLLMENT_STATUS_CONFIG[
-                            enrollment.status
-                          ].label
-                        }
+                        {TRAINING_ENROLLMENT_STATUS_CONFIG[enrollment.status].label}
                       </Badge>
                     </div>
 
                     <div className="mt-3">
                       <ProgressBar
                         value={enrollment.progress}
-                        tone={
-                          enrollment.status === "overdue"
-                            ? "danger"
-                            : "warning"
-                        }
+                        tone={enrollment.status === "overdue" ? "danger" : "warning"}
                       />
                     </div>
 
@@ -736,14 +556,8 @@ export function TrainingEnrollmentsWorkspace() {
       </section>
 
       <Drawer
-        open={Boolean(
-          selectedEnrollment &&
-            selectedEmployee &&
-            selectedCourse,
-        )}
-        onClose={() =>
-          setSelectedEnrollmentId(null)
-        }
+        open={Boolean(selectedEnrollment && selectedEmployee && selectedCourse)}
+        onClose={() => setSelectedEnrollmentId(null)}
         title="Training enrollment"
         description={
           selectedEmployee
@@ -757,24 +571,14 @@ export function TrainingEnrollmentsWorkspace() {
                 <>
                   <Button
                     variant="outline"
-                    onClick={() =>
-                      updateStatus(
-                        selectedEnrollment.id,
-                        "cancelled",
-                      )
-                    }
+                    onClick={() => updateStatus(selectedEnrollment.id, "cancelled")}
                   >
                     <X />
                     Cancel assignment
                   </Button>
 
                   <Button
-                    onClick={() =>
-                      updateStatus(
-                        selectedEnrollment.id,
-                        "in_progress",
-                      )
-                    }
+                    onClick={() => updateStatus(selectedEnrollment.id, "in_progress")}
                   >
                     <Play />
                     Start training
@@ -782,30 +586,18 @@ export function TrainingEnrollmentsWorkspace() {
                 </>
               )}
 
-              {["in_progress", "overdue"].includes(
-                selectedEnrollment.status,
-              ) && (
+              {["in_progress", "overdue"].includes(selectedEnrollment.status) && (
                 <>
                   <Button
                     variant="outline"
-                    onClick={() =>
-                      updateStatus(
-                        selectedEnrollment.id,
-                        "cancelled",
-                      )
-                    }
+                    onClick={() => updateStatus(selectedEnrollment.id, "cancelled")}
                   >
                     <X />
                     Cancel assignment
                   </Button>
 
                   <Button
-                    onClick={() =>
-                      updateStatus(
-                        selectedEnrollment.id,
-                        "completed",
-                      )
-                    }
+                    onClick={() => updateStatus(selectedEnrollment.id, "completed")}
                   >
                     <CheckCircle2 />
                     Mark completed
@@ -814,14 +606,7 @@ export function TrainingEnrollmentsWorkspace() {
               )}
 
               {selectedEnrollment.status === "cancelled" && (
-                <Button
-                  onClick={() =>
-                    updateStatus(
-                      selectedEnrollment.id,
-                      "assigned",
-                    )
-                  }
-                >
+                <Button onClick={() => updateStatus(selectedEnrollment.id, "assigned")}>
                   <RotateCcw />
                   Reopen assignment
                 </Button>
@@ -830,146 +615,117 @@ export function TrainingEnrollmentsWorkspace() {
           ) : undefined
         }
       >
-        {selectedEnrollment &&
-          selectedEmployee &&
-          selectedCourse && (
-            <div className="space-y-6">
-              <section className="rounded-card border border-border">
-                <div className="flex items-start justify-between gap-4 border-b border-border p-5">
-                  <div>
-                    <h3 className="font-bold">
-                      {selectedCourse.title}
-                    </h3>
+        {selectedEnrollment && selectedEmployee && selectedCourse && (
+          <div className="space-y-6">
+            <section className="rounded-card border border-border">
+              <div className="flex items-start justify-between gap-4 border-b border-border p-5">
+                <div>
+                  <h3 className="font-bold">{selectedCourse.title}</h3>
 
-                    <p className="mt-1 text-xs text-text-muted">
-                      {selectedCourse.code} Â· Assigned {formatDate(selectedEnrollment.assignedDate)}
-                    </p>
-                  </div>
-
-                  <Badge
-                    variant={
-                      TRAINING_ENROLLMENT_STATUS_CONFIG[
-                        selectedEnrollment.status
-                      ].badgeVariant
-                    }
-                  >
-                    {
-                      TRAINING_ENROLLMENT_STATUS_CONFIG[
-                        selectedEnrollment.status
-                      ].label
-                    }
-                  </Badge>
+                  <p className="mt-1 text-xs text-text-muted">
+                    {selectedCourse.code} Â· Assigned{" "}
+                    {formatDate(selectedEnrollment.assignedDate)}
+                  </p>
                 </div>
 
-                <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Employee branch
-                    </dt>
-                    <dd className="mt-1 text-sm font-semibold">
-                      {selectedEmployee.branchName}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Due date
-                    </dt>
-                    <dd className="mt-1 text-sm font-semibold">
-                      {formatDate(selectedEnrollment.dueDate)}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Started date
-                    </dt>
-                    <dd className="mt-1 text-sm font-semibold">
-                      {selectedEnrollment.startedAt
-                        ? formatDate(selectedEnrollment.startedAt)
-                        : "Not started"}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Completed date
-                    </dt>
-                    <dd className="mt-1 text-sm font-semibold">
-                      {selectedEnrollment.completedAt
-                        ? formatDate(selectedEnrollment.completedAt)
-                        : "Not completed"}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Score
-                    </dt>
-                    <dd className="mt-1 text-sm font-semibold">
-                      {selectedEnrollment.score !== undefined
-                        ? `${selectedEnrollment.score}%`
-                        : "Not scored"}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Attempts
-                    </dt>
-                    <dd className="mt-1 text-sm font-semibold">
-                      {selectedEnrollment.attempts}
-                    </dd>
-                  </div>
-                </dl>
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold">
-                  Completion progress
-                </h3>
-
-                <ProgressBar
-                  className="mt-4"
-                  value={selectedEnrollment.progress}
-                  tone={
-                    selectedEnrollment.status === "overdue"
-                      ? "danger"
-                      : selectedEnrollment.status === "completed"
-                        ? "success"
-                        : "info"
+                <Badge
+                  variant={
+                    TRAINING_ENROLLMENT_STATUS_CONFIG[selectedEnrollment.status]
+                      .badgeVariant
                   }
-                />
-              </section>
+                >
+                  {TRAINING_ENROLLMENT_STATUS_CONFIG[selectedEnrollment.status].label}
+                </Badge>
+              </div>
 
-              {selectedEnrollment.certificateId && (
-                <div className="flex items-center gap-3 rounded-control bg-success-muted p-4 text-success">
-                  <Award className="size-5" />
-
-                  <div>
-                    <p className="text-sm font-semibold">
-                      Certificate issued
-                    </p>
-
-                    <p className="mt-1 text-xs">
-                      {selectedEnrollment.certificateId}
-                    </p>
-                  </div>
+              <dl className="grid gap-5 p-5 sm:grid-cols-2">
+                <div>
+                  <dt className="text-xs text-text-muted">Employee branch</dt>
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedEmployee.branchName}
+                  </dd>
                 </div>
-              )}
 
-              <section>
-                <h3 className="text-sm font-bold">
-                  Assignment note
-                </h3>
+                <div>
+                  <dt className="text-xs text-text-muted">Due date</dt>
+                  <dd className="mt-1 text-sm font-semibold">
+                    {formatDate(selectedEnrollment.dueDate)}
+                  </dd>
+                </div>
 
-                <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                  {selectedEnrollment.note ||
-                    "No assignment note has been added."}
-                </p>
-              </section>
-            </div>
-          )}
+                <div>
+                  <dt className="text-xs text-text-muted">Started date</dt>
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedEnrollment.startedAt
+                      ? formatDate(selectedEnrollment.startedAt)
+                      : "Not started"}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Completed date</dt>
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedEnrollment.completedAt
+                      ? formatDate(selectedEnrollment.completedAt)
+                      : "Not completed"}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Score</dt>
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedEnrollment.score !== undefined
+                      ? `${selectedEnrollment.score}%`
+                      : "Not scored"}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Attempts</dt>
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedEnrollment.attempts}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-bold">Completion progress</h3>
+
+              <ProgressBar
+                className="mt-4"
+                value={selectedEnrollment.progress}
+                tone={
+                  selectedEnrollment.status === "overdue"
+                    ? "danger"
+                    : selectedEnrollment.status === "completed"
+                      ? "success"
+                      : "info"
+                }
+              />
+            </section>
+
+            {selectedEnrollment.certificateId && (
+              <div className="flex items-center gap-3 rounded-control bg-success-muted p-4 text-success">
+                <Award className="size-5" />
+
+                <div>
+                  <p className="text-sm font-semibold">Certificate issued</p>
+
+                  <p className="mt-1 text-xs">{selectedEnrollment.certificateId}</p>
+                </div>
+              </div>
+            )}
+
+            <section>
+              <h3 className="text-sm font-bold">Assignment note</h3>
+
+              <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
+                {selectedEnrollment.note || "No assignment note has been added."}
+              </p>
+            </section>
+          </div>
+        )}
       </Drawer>
 
       <Drawer
@@ -980,11 +736,7 @@ export function TrainingEnrollmentsWorkspace() {
       >
         <TrainingEnrollmentForm
           courses={TRAINING_COURSES}
-          selectedBranchId={
-            selectedBranch.isAggregate
-              ? "all"
-              : selectedBranch.id
-          }
+          selectedBranchId={selectedBranch.isAggregate ? "all" : selectedBranch.id}
           onCancel={() => setCreateOpen(false)}
           onSave={saveEnrollment}
         />

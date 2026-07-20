@@ -6,8 +6,6 @@ type PortalLayoutProps = {
   children: ReactNode;
 };
 
-export default function PortalLayout({
-  children,
-}: PortalLayoutProps) {
+export default function PortalLayout({ children }: PortalLayoutProps) {
   return <AdminShell>{children}</AdminShell>;
 }

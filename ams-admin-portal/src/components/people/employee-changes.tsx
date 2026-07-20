@@ -1,11 +1,11 @@
 "use client";
 
-import { getEmployeeChangeTypeToneStyle, getPeopleMetricToneStyle } from "@/config/people-metrics";
-
 import {
-  useMemo,
-  useState,
-} from "react";
+  getEmployeeChangeTypeToneStyle,
+  getPeopleMetricToneStyle,
+} from "@/config/people-metrics";
+
+import { useMemo, useState } from "react";
 import {
   ArrowRight,
   Check,
@@ -45,56 +45,33 @@ import { useBranchScope } from "@/context/branch-scope-context";
 import { EMPLOYEE_CHANGES } from "@/data/employee-changes";
 import { EMPLOYEES } from "@/data/employees";
 import { formatDate } from "@/lib/date";
-import type {
-  EmployeeChange,
-  EmployeeChangeStatus,
-} from "@/types/employee-change";
+import type { EmployeeChange, EmployeeChangeStatus } from "@/types/employee-change";
 
 export function EmployeeChanges() {
   const { selectedBranch } = useBranchScope();
 
-  const [changes, setChanges] =
-    useState<EmployeeChange[]>(
-      EMPLOYEE_CHANGES,
-    );
+  const [changes, setChanges] = useState<EmployeeChange[]>(EMPLOYEE_CHANGES);
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [typeFilter, setTypeFilter] =
-    useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
 
-  const [statusFilter, setStatusFilter] =
-    useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  const [
-    selectedChangeId,
-    setSelectedChangeId,
-  ] = useState<string | null>(null);
+  const [selectedChangeId, setSelectedChangeId] = useState<string | null>(null);
 
-  const [createOpen, setCreateOpen] =
-    useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const visibleChanges = useMemo(() => {
-    const query = searchQuery
-      .trim()
-      .toLowerCase();
+    const query = searchQuery.trim().toLowerCase();
 
     return changes.filter((change) => {
-      const employee = EMPLOYEES.find(
-        (item) =>
-          item.id === change.employeeId,
-      );
+      const employee = EMPLOYEES.find((item) => item.id === change.employeeId);
 
-      const typeConfig =
-        EMPLOYEE_CHANGE_TYPE_CONFIG[
-          change.type
-        ];
+      const typeConfig = EMPLOYEE_CHANGE_TYPE_CONFIG[change.type];
 
       const matchesBranch =
-        selectedBranch.isAggregate ||
-        change.branchId ===
-          selectedBranch.id;
+        selectedBranch.isAggregate || change.branchId === selectedBranch.id;
 
       const searchableValue = [
         employee?.name,
@@ -108,90 +85,49 @@ export function EmployeeChanges() {
         .join(" ")
         .toLowerCase();
 
-      const matchesSearch =
-        searchableValue.includes(query);
+      const matchesSearch = searchableValue.includes(query);
 
-      const matchesType =
-        typeFilter === "all" ||
-        change.type === typeFilter;
+      const matchesType = typeFilter === "all" || change.type === typeFilter;
 
-      const matchesStatus =
-        statusFilter === "all" ||
-        change.status === statusFilter;
+      const matchesStatus = statusFilter === "all" || change.status === statusFilter;
 
-      return (
-        matchesBranch &&
-        matchesSearch &&
-        matchesType &&
-        matchesStatus
-      );
+      return matchesBranch && matchesSearch && matchesType && matchesStatus;
     });
-  }, [
-    changes,
-    searchQuery,
-    selectedBranch,
-    statusFilter,
-    typeFilter,
-  ]);
+  }, [changes, searchQuery, selectedBranch, statusFilter, typeFilter]);
 
-  const selectedChange =
-    changes.find(
-      (change) =>
-        change.id === selectedChangeId,
-    ) ?? null;
+  const selectedChange = changes.find((change) => change.id === selectedChangeId) ?? null;
 
-  const selectedEmployee =
-    selectedChange
-      ? EMPLOYEES.find(
-          (employee) =>
-            employee.id ===
-            selectedChange.employeeId,
-        )
-      : null;
+  const selectedEmployee = selectedChange
+    ? EMPLOYEES.find((employee) => employee.id === selectedChange.employeeId)
+    : null;
 
   const metrics = [
     {
       label: "Pending approval",
-      value: visibleChanges.filter(
-        (change) =>
-          change.status === "pending",
-      ).length,
+      value: visibleChanges.filter((change) => change.status === "pending").length,
       icon: Clock3,
     },
     {
       label: "Scheduled",
       value: visibleChanges.filter(
-        (change) =>
-          change.status === "scheduled" ||
-          change.status === "approved",
+        (change) => change.status === "scheduled" || change.status === "approved",
       ).length,
       icon: ArrowRight,
     },
     {
       label: "Completed",
-      value: visibleChanges.filter(
-        (change) =>
-          change.status === "completed",
-      ).length,
+      value: visibleChanges.filter((change) => change.status === "completed").length,
       icon: Check,
     },
     {
       label: "Drafts",
-      value: visibleChanges.filter(
-        (change) =>
-          change.status === "draft",
-      ).length,
+      value: visibleChanges.filter((change) => change.status === "draft").length,
       icon: FilePenLine,
     },
   ];
 
-  function updateChangeStatus(
-    changeId: string,
-    status: EmployeeChangeStatus,
-  ) {
-    const actionDate = new Date()
-      .toISOString()
-      .slice(0, 10);
+  function updateChangeStatus(changeId: string, status: EmployeeChangeStatus) {
+    const actionDate = new Date().toISOString().slice(0, 10);
 
     setChanges((currentChanges) =>
       currentChanges.map((change) => {
@@ -202,37 +138,25 @@ export function EmployeeChanges() {
         return {
           ...change,
           status,
-          approvals: change.approvals.map(
-            (approval) => {
-              if (
-                approval.status !== "pending"
-              ) {
-                return approval;
-              }
+          approvals: change.approvals.map((approval) => {
+            if (approval.status !== "pending") {
+              return approval;
+            }
 
-              return {
-                ...approval,
-                status:
-                  status === "rejected"
-                    ? "rejected"
-                    : "completed",
-                actor: "Maaz",
-                date: actionDate,
-              };
-            },
-          ),
+            return {
+              ...approval,
+              status: status === "rejected" ? "rejected" : "completed",
+              actor: "Maaz",
+              date: actionDate,
+            };
+          }),
         };
       }),
     );
   }
 
-  function createChange(
-    change: EmployeeChange,
-  ) {
-    setChanges((currentChanges) => [
-      change,
-      ...currentChanges,
-    ]);
+  function createChange(change: EmployeeChange) {
+    setChanges((currentChanges) => [change, ...currentChanges]);
 
     setCreateOpen(false);
     setSelectedChangeId(change.id);
@@ -241,25 +165,13 @@ export function EmployeeChanges() {
   return (
     <div className="mx-auto max-w-360">
       <PageHeader
-        eyebrow={
-          EMPLOYEE_CHANGES_COPY.eyebrow
-        }
-        title={
-          EMPLOYEE_CHANGES_COPY.title
-        }
-        description={
-          EMPLOYEE_CHANGES_COPY.description
-        }
+        eyebrow={EMPLOYEE_CHANGES_COPY.eyebrow}
+        title={EMPLOYEE_CHANGES_COPY.title}
+        description={EMPLOYEE_CHANGES_COPY.description}
         actions={
-          <Button
-            onClick={() =>
-              setCreateOpen(true)
-            }
-          >
+          <Button onClick={() => setCreateOpen(true)}>
             <Plus />
-            {
-              EMPLOYEE_CHANGES_COPY.createAction
-            }
+            {EMPLOYEE_CHANGES_COPY.createAction}
           </Button>
         }
       />
@@ -273,19 +185,12 @@ export function EmployeeChanges() {
           const Icon = metric.icon;
 
           return (
-            <Card
-              key={metric.label}
-              className="p-5"
-            >
+            <Card key={metric.label} className="p-5">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-sm font-medium text-text-muted">
-                    {metric.label}
-                  </p>
+                  <p className="text-sm font-medium text-text-muted">{metric.label}</p>
 
-                  <p className="mt-3 text-3xl font-bold tracking-tight">
-                    {metric.value}
-                  </p>
+                  <p className="mt-3 text-3xl font-bold tracking-tight">{metric.value}</p>
                 </div>
 
                 <span
@@ -308,14 +213,8 @@ export function EmployeeChanges() {
 
             <Input
               value={searchQuery}
-              onChange={(event) =>
-                setSearchQuery(
-                  event.target.value,
-                )
-              }
-              placeholder={
-                EMPLOYEE_CHANGES_COPY.searchPlaceholder
-              }
+              onChange={(event) => setSearchQuery(event.target.value)}
+              placeholder={EMPLOYEE_CHANGES_COPY.searchPlaceholder}
               className="pl-9"
             />
           </div>
@@ -323,58 +222,28 @@ export function EmployeeChanges() {
           <div className="grid gap-3 sm:grid-cols-2 lg:w-110">
             <Select
               value={typeFilter}
-              onChange={(event) =>
-                setTypeFilter(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setTypeFilter(event.target.value)}
             >
-              <option value="all">
-                {
-                  EMPLOYEE_CHANGES_COPY.allTypes
-                }
-              </option>
+              <option value="all">{EMPLOYEE_CHANGES_COPY.allTypes}</option>
 
-              {Object.entries(
-                EMPLOYEE_CHANGE_TYPE_CONFIG,
-              ).map(
-                ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(EMPLOYEE_CHANGE_TYPE_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
 
             <Select
               value={statusFilter}
-              onChange={(event) =>
-                setStatusFilter(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setStatusFilter(event.target.value)}
             >
-              <option value="all">
-                {
-                  EMPLOYEE_CHANGES_COPY.allStatuses
-                }
-              </option>
+              <option value="all">{EMPLOYEE_CHANGES_COPY.allStatuses}</option>
 
-              {Object.entries(
-                EMPLOYEE_CHANGE_STATUS_CONFIG,
-              ).map(
-                ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(EMPLOYEE_CHANGE_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
           </div>
         </div>
@@ -383,193 +252,121 @@ export function EmployeeChanges() {
           <Table>
             <TableHeader>
               <TableRow className="bg-canvas">
-                <TableHead>
-                  Employee
-                </TableHead>
+                <TableHead>Employee</TableHead>
 
-                <TableHead>
-                  Change
-                </TableHead>
+                <TableHead>Change</TableHead>
 
-                <TableHead>
-                  Update
-                </TableHead>
+                <TableHead>Update</TableHead>
 
-                <TableHead>
-                  Effective date
-                </TableHead>
+                <TableHead>Effective date</TableHead>
 
-                <TableHead>
-                  Requested by
-                </TableHead>
+                <TableHead>Requested by</TableHead>
 
-                <TableHead>
-                  Status
-                </TableHead>
+                <TableHead>Status</TableHead>
 
-                <TableHead className="w-16">
-                  Actions
-                </TableHead>
+                <TableHead className="w-16">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {visibleChanges.map(
-                (change) => {
-                  const employee =
-                    EMPLOYEES.find(
-                      (item) =>
-                        item.id ===
-                        change.employeeId,
-                    );
+              {visibleChanges.map((change) => {
+                const employee = EMPLOYEES.find((item) => item.id === change.employeeId);
 
-                  if (!employee) {
-                    return null;
-                  }
+                if (!employee) {
+                  return null;
+                }
 
-                  const typeConfig =
-                    EMPLOYEE_CHANGE_TYPE_CONFIG[
-                      change.type
-                    ];
+                const typeConfig = EMPLOYEE_CHANGE_TYPE_CONFIG[change.type];
 
-                  const statusConfig =
-                    EMPLOYEE_CHANGE_STATUS_CONFIG[
-                      change.status
-                    ];
+                const statusConfig = EMPLOYEE_CHANGE_STATUS_CONFIG[change.status];
 
-                  const TypeIcon =
-                    typeConfig.icon;
+                const TypeIcon = typeConfig.icon;
 
-                  return (
-                    <TableRow
-                      key={change.id}
-                      className="cursor-pointer transition hover:bg-canvas"
-                      onClick={() =>
-                        setSelectedChangeId(
-                          change.id,
-                        )
-                      }
-                    >
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar
-                            name={employee.name}
-                            initials={
-                              employee.initials
-                            }
-                          />
+                return (
+                  <TableRow
+                    key={change.id}
+                    className="cursor-pointer transition hover:bg-canvas"
+                    onClick={() => setSelectedChangeId(change.id)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar name={employee.name} initials={employee.initials} />
 
-                          <div>
-                            <p className="font-semibold">
-                              {employee.name}
-                            </p>
+                        <div>
+                          <p className="font-semibold">{employee.name}</p>
 
-                            <p className="mt-1 text-xs text-text-muted">
-                              {
-                                employee.employeeCode
-                              }
-                            </p>
-                          </div>
-                        </div>
-                      </TableCell>
-
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <span
-                            className={`flex size-8 items-center justify-center rounded-control ${getEmployeeChangeTypeToneStyle(
-                              typeConfig.label,
-                            )}`}
-                          >
-                            <TypeIcon className="size-4" />
-                          </span>
-
-                          <span className="font-medium">
-                            {
-                              typeConfig.label
-                            }
-                          </span>
-                        </div>
-                      </TableCell>
-
-                      <TableCell>
-                        <div className="max-w-70">
-                          <p className="truncate text-xs text-text-muted">
-                            {
-                              change.fromValue
-                            }
+                          <p className="mt-1 text-xs text-text-muted">
+                            {employee.employeeCode}
                           </p>
-
-                          <div className="mt-1 flex items-center gap-2">
-                            <ArrowRight className="size-3.5 text-primary" />
-
-                            <p className="truncate font-semibold">
-                              {
-                                change.toValue
-                              }
-                            </p>
-                          </div>
                         </div>
-                      </TableCell>
+                      </div>
+                    </TableCell>
 
-                      <TableCell>
-                        {formatDate(
-                          change.effectiveDate,
-                        )}
-                      </TableCell>
-
-                      <TableCell>
-                        {
-                          change.requestedBy
-                        }
-                      </TableCell>
-
-                      <TableCell>
-                        <Badge
-                          variant={
-                            statusConfig.badgeVariant
-                          }
+                    <TableCell>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`flex size-8 items-center justify-center rounded-control ${getEmployeeChangeTypeToneStyle(
+                            typeConfig.label,
+                          )}`}
                         >
-                          {
-                            statusConfig.label
-                          }
-                        </Badge>
-                      </TableCell>
+                          <TypeIcon className="size-4" />
+                        </span>
 
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Open request for ${employee.name}`}
-                          onClick={(
-                            event,
-                          ) => {
-                            event.stopPropagation();
+                        <span className="font-medium">{typeConfig.label}</span>
+                      </div>
+                    </TableCell>
 
-                            setSelectedChangeId(
-                              change.id,
-                            );
-                          }}
-                        >
-                          <MoreHorizontal />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                },
-              )}
+                    <TableCell>
+                      <div className="max-w-70">
+                        <p className="truncate text-xs text-text-muted">
+                          {change.fromValue}
+                        </p>
+
+                        <div className="mt-1 flex items-center gap-2">
+                          <ArrowRight className="size-3.5 text-primary" />
+
+                          <p className="truncate font-semibold">{change.toValue}</p>
+                        </div>
+                      </div>
+                    </TableCell>
+
+                    <TableCell>{formatDate(change.effectiveDate)}</TableCell>
+
+                    <TableCell>{change.requestedBy}</TableCell>
+
+                    <TableCell>
+                      <Badge variant={statusConfig.badgeVariant}>
+                        {statusConfig.label}
+                      </Badge>
+                    </TableCell>
+
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Open request for ${employee.name}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          setSelectedChangeId(change.id);
+                        }}
+                      >
+                        <MoreHorizontal />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         ) : (
           <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
             <FilePenLine className="size-8 text-text-muted" />
 
-            <h2 className="mt-4 font-bold">
-              No employee changes found
-            </h2>
+            <h2 className="mt-4 font-bold">No employee changes found</h2>
 
             <p className="mt-2 text-sm text-text-muted">
-              Change the filters or create
-              a new request.
+              Change the filters or create a new request.
             </p>
           </div>
         )}
@@ -577,9 +374,7 @@ export function EmployeeChanges() {
 
       <Drawer
         open={Boolean(selectedChange)}
-        onClose={() =>
-          setSelectedChangeId(null)
-        }
+        onClose={() => setSelectedChangeId(null)}
         title="Change request"
         description={
           selectedEmployee
@@ -587,30 +382,17 @@ export function EmployeeChanges() {
             : undefined
         }
         footer={
-          selectedChange?.status ===
-          "pending" ? (
+          selectedChange?.status === "pending" ? (
             <div className="flex justify-end gap-3">
               <Button
                 variant="outline"
-                onClick={() =>
-                  updateChangeStatus(
-                    selectedChange.id,
-                    "rejected",
-                  )
-                }
+                onClick={() => updateChangeStatus(selectedChange.id, "rejected")}
               >
                 <X />
                 Reject
               </Button>
 
-              <Button
-                onClick={() =>
-                  updateChangeStatus(
-                    selectedChange.id,
-                    "approved",
-                  )
-                }
-              >
+              <Button onClick={() => updateChangeStatus(selectedChange.id, "approved")}>
                 <Check />
                 Approve change
               </Button>
@@ -622,92 +404,62 @@ export function EmployeeChanges() {
           <div className="space-y-6">
             <section className="rounded-card border border-border">
               <div className="border-b border-border px-5 py-4">
-                <h3 className="font-bold">
-                  Change summary
-                </h3>
+                <h3 className="font-bold">Change summary</h3>
               </div>
 
               <dl className="grid gap-5 p-5 sm:grid-cols-2">
                 <div>
-                  <dt className="text-xs font-medium text-text-muted">
-                    Change type
-                  </dt>
+                  <dt className="text-xs font-medium text-text-muted">Change type</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {
-                      EMPLOYEE_CHANGE_TYPE_CONFIG[
-                        selectedChange.type
-                      ].label
-                    }
+                    {EMPLOYEE_CHANGE_TYPE_CONFIG[selectedChange.type].label}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs font-medium text-text-muted">
-                    Effective date
-                  </dt>
+                  <dt className="text-xs font-medium text-text-muted">Effective date</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(
-                      selectedChange.effectiveDate,
-                    )}
+                    {formatDate(selectedChange.effectiveDate)}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs font-medium text-text-muted">
-                    Current value
-                  </dt>
+                  <dt className="text-xs font-medium text-text-muted">Current value</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {
-                      selectedChange.fromValue
-                    }
+                    {selectedChange.fromValue}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs font-medium text-text-muted">
-                    New value
-                  </dt>
+                  <dt className="text-xs font-medium text-text-muted">New value</dt>
 
                   <dd className="mt-1 text-sm font-semibold text-primary">
-                    {
-                      selectedChange.toValue
-                    }
+                    {selectedChange.toValue}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs font-medium text-text-muted">
-                    Requested by
-                  </dt>
+                  <dt className="text-xs font-medium text-text-muted">Requested by</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {
-                      selectedChange.requestedBy
-                    }
+                    {selectedChange.requestedBy}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs font-medium text-text-muted">
-                    Request date
-                  </dt>
+                  <dt className="text-xs font-medium text-text-muted">Request date</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(
-                      selectedChange.requestedAt,
-                    )}
+                    {formatDate(selectedChange.requestedAt)}
                   </dd>
                 </div>
               </dl>
             </section>
 
             <section>
-              <h3 className="text-sm font-bold">
-                Reason
-              </h3>
+              <h3 className="text-sm font-bold">Reason</h3>
 
               <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
                 {selectedChange.reason}
@@ -715,64 +467,37 @@ export function EmployeeChanges() {
             </section>
 
             <section>
-              <h3 className="text-sm font-bold">
-                Approval flow
-              </h3>
+              <h3 className="text-sm font-bold">Approval flow</h3>
 
               <div className="mt-3 space-y-3">
-                {selectedChange.approvals
-                  .length > 0 ? (
-                  selectedChange.approvals.map(
-                    (approval) => {
-                      const config =
-                        APPROVAL_STATUS_CONFIG[
-                          approval.status
-                        ];
+                {selectedChange.approvals.length > 0 ? (
+                  selectedChange.approvals.map((approval) => {
+                    const config = APPROVAL_STATUS_CONFIG[approval.status];
 
-                      return (
-                        <div
-                          key={
-                            approval.label
-                          }
-                          className="flex items-start justify-between gap-4 rounded-control border border-border p-4"
-                        >
-                          <div>
-                            <p className="text-sm font-semibold">
-                              {
-                                approval.label
-                              }
+                    return (
+                      <div
+                        key={approval.label}
+                        className="flex items-start justify-between gap-4 rounded-control border border-border p-4"
+                      >
+                        <div>
+                          <p className="text-sm font-semibold">{approval.label}</p>
+
+                          {approval.actor && (
+                            <p className="mt-1 text-xs text-text-muted">
+                              {approval.actor}
+
+                              {approval.date ? ` Â· ${formatDate(approval.date)}` : ""}
                             </p>
-
-                            {approval.actor && (
-                              <p className="mt-1 text-xs text-text-muted">
-                                {
-                                  approval.actor
-                                }
-
-                                {approval.date
-                                  ? ` Â· ${formatDate(
-                                      approval.date,
-                                    )}`
-                                  : ""}
-                              </p>
-                            )}
-                          </div>
-
-                          <Badge
-                            variant={
-                              config.badgeVariant
-                            }
-                          >
-                            {config.label}
-                          </Badge>
+                          )}
                         </div>
-                      );
-                    },
-                  )
+
+                        <Badge variant={config.badgeVariant}>{config.label}</Badge>
+                      </div>
+                    );
+                  })
                 ) : (
                   <p className="rounded-control bg-canvas p-4 text-sm text-text-muted">
-                    This draft has not entered
-                    the approval flow.
+                    This draft has not entered the approval flow.
                   </p>
                 )}
               </div>
@@ -783,16 +508,12 @@ export function EmployeeChanges() {
 
       <Drawer
         open={createOpen}
-        onClose={() =>
-          setCreateOpen(false)
-        }
+        onClose={() => setCreateOpen(false)}
         title="New change request"
         description="Submit an employee record change for approval."
       >
         <EmployeeChangeForm
-          onCancel={() =>
-            setCreateOpen(false)
-          }
+          onCancel={() => setCreateOpen(false)}
           onCreate={createChange}
         />
       </Drawer>

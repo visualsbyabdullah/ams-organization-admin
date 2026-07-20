@@ -1,17 +1,9 @@
-import {
-  CalendarCheck2,
-  Clock3,
-  UserCheck,
-  UserX,
-} from "lucide-react";
+import { CalendarCheck2, Clock3, UserCheck, UserX } from "lucide-react";
 
 import { CHART_COLORS } from "@/config/charts";
 import type { DashboardDataset } from "@/types/dashboard";
 
-export const DASHBOARD_DATA: Record<
-  string,
-  DashboardDataset
-> = {
+export const DASHBOARD_DATA: Record<string, DashboardDataset> = {
   all: {
     metrics: [
       {
@@ -110,8 +102,7 @@ export const DASHBOARD_DATA: Record<
       },
     ],
     comparisonTitle: "Branch attendance",
-    comparisonDescription:
-      "Attendance rate by organization branch",
+    comparisonDescription: "Attendance rate by organization branch",
     comparisonData: [
       {
         name: "Islamabad",
@@ -244,8 +235,7 @@ export const DASHBOARD_DATA: Record<
       },
     ],
     comparisonTitle: "Department attendance",
-    comparisonDescription:
-      "Attendance rate across Islamabad departments",
+    comparisonDescription: "Attendance rate across Islamabad departments",
     comparisonData: [
       {
         name: "HR",
@@ -386,8 +376,7 @@ export const DASHBOARD_DATA: Record<
       },
     ],
     comparisonTitle: "Department attendance",
-    comparisonDescription:
-      "Attendance rate across Lahore departments",
+    comparisonDescription: "Attendance rate across Lahore departments",
     comparisonData: [
       {
         name: "Sales",
@@ -524,8 +513,7 @@ export const DASHBOARD_DATA: Record<
       },
     ],
     comparisonTitle: "Department attendance",
-    comparisonDescription:
-      "Attendance rate across Karachi departments",
+    comparisonDescription: "Attendance rate across Karachi departments",
     comparisonData: [
       {
         name: "Operations",

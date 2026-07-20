@@ -1,15 +1,6 @@
-﻿export type TimesheetStatus =
-  | "draft"
-  | "submitted"
-  | "approved"
-  | "rejected"
-  | "locked";
+﻿export type TimesheetStatus = "draft" | "submitted" | "approved" | "rejected" | "locked";
 
-export type TimesheetDayStatus =
-  | "worked"
-  | "leave"
-  | "weekend"
-  | "missing";
+export type TimesheetDayStatus = "worked" | "leave" | "weekend" | "missing";
 
 export type TimesheetDay = {
   date: string;

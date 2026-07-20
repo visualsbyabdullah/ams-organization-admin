@@ -1,9 +1,6 @@
 ﻿"use client";
 
-import {
-  useMemo,
-  useState,
-} from "react";
+import { useMemo, useState } from "react";
 import {
   AlertTriangle,
   Check,
@@ -55,284 +52,162 @@ import type {
   AttendanceExceptionType,
 } from "@/types/attendance-exception";
 
-function formatImpact(
-  minutes: number,
-) {
+function formatImpact(minutes: number) {
   if (minutes <= 0) {
     return "Not calculated";
   }
 
-  const hours = Math.floor(
-    minutes / 60,
-  );
+  const hours = Math.floor(minutes / 60);
 
-  const remainingMinutes =
-    minutes % 60;
+  const remainingMinutes = minutes % 60;
 
   if (hours === 0) {
     return `${remainingMinutes}m`;
   }
 
-  return remainingMinutes > 0
-    ? `${hours}h ${remainingMinutes}m`
-    : `${hours}h`;
+  return remainingMinutes > 0 ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
 }
 
 export function AttendanceExceptionsWorkspace() {
-  const {
-    selectedBranch,
-    selectedBranchId,
-  } = useBranchScope();
+  const { selectedBranch, selectedBranchId } = useBranchScope();
 
-  const [
-    exceptions,
-    setExceptions,
-  ] = useState<
-    AttendanceException[]
-  >(ATTENDANCE_EXCEPTIONS);
+  const [exceptions, setExceptions] =
+    useState<AttendanceException[]>(ATTENDANCE_EXCEPTIONS);
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [typeFilter, setTypeFilter] =
-    useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
 
-  const [statusFilter, setStatusFilter] =
-    useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  const [
-    severityFilter,
-    setSeverityFilter,
-  ] = useState("all");
+  const [severityFilter, setSeverityFilter] = useState("all");
 
-  const [
-    selectedExceptionId,
-    setSelectedExceptionId,
-  ] = useState<string | null>(null);
+  const [selectedExceptionId, setSelectedExceptionId] = useState<string | null>(null);
 
-  const [createOpen, setCreateOpen] =
-    useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
-  const scopedExceptions =
-    useMemo(
-      () =>
-        exceptions.filter(
-          (exception) =>
-            selectedBranch.isAggregate ||
-            exception.branchId ===
-              selectedBranch.id,
-        ),
-      [
-        exceptions,
-        selectedBranch,
-      ],
-    );
+  const scopedExceptions = useMemo(
+    () =>
+      exceptions.filter(
+        (exception) =>
+          selectedBranch.isAggregate || exception.branchId === selectedBranch.id,
+      ),
+    [exceptions, selectedBranch],
+  );
 
-  const visibleExceptions =
-    useMemo(() => {
-      const query = searchQuery
-        .trim()
+  const visibleExceptions = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    return scopedExceptions.filter((exception) => {
+      const employee = EMPLOYEES.find((item) => item.id === exception.employeeId);
+
+      if (!employee) {
+        return false;
+      }
+
+      const typeConfig = ATTENDANCE_EXCEPTION_TYPE_CONFIG[exception.type];
+
+      const searchableValue = [
+        employee.name,
+        employee.employeeCode,
+        employee.department,
+        employee.designation,
+        typeConfig.label,
+        exception.reason,
+      ]
+        .join(" ")
         .toLowerCase();
 
-      return scopedExceptions.filter(
-        (exception) => {
-          const employee =
-            EMPLOYEES.find(
-              (item) =>
-                item.id ===
-                exception.employeeId,
-            );
+      const matchesSearch = searchableValue.includes(query);
 
-          if (!employee) {
-            return false;
-          }
+      const matchesType = typeFilter === "all" || exception.type === typeFilter;
 
-          const typeConfig =
-            ATTENDANCE_EXCEPTION_TYPE_CONFIG[
-              exception.type
-            ];
+      const matchesStatus = statusFilter === "all" || exception.status === statusFilter;
 
-          const searchableValue = [
-            employee.name,
-            employee.employeeCode,
-            employee.department,
-            employee.designation,
-            typeConfig.label,
-            exception.reason,
-          ]
-            .join(" ")
-            .toLowerCase();
+      const matchesSeverity =
+        severityFilter === "all" || exception.severity === severityFilter;
 
-          const matchesSearch =
-            searchableValue.includes(
-              query,
-            );
-
-          const matchesType =
-            typeFilter === "all" ||
-            exception.type ===
-              typeFilter;
-
-          const matchesStatus =
-            statusFilter === "all" ||
-            exception.status ===
-              statusFilter;
-
-          const matchesSeverity =
-            severityFilter === "all" ||
-            exception.severity ===
-              severityFilter;
-
-          return (
-            matchesSearch &&
-            matchesType &&
-            matchesStatus &&
-            matchesSeverity
-          );
-        },
-      );
-    }, [
-      scopedExceptions,
-      searchQuery,
-      severityFilter,
-      statusFilter,
-      typeFilter,
-    ]);
+      return matchesSearch && matchesType && matchesStatus && matchesSeverity;
+    });
+  }, [scopedExceptions, searchQuery, severityFilter, statusFilter, typeFilter]);
 
   const selectedException =
-    exceptions.find(
-      (exception) =>
-        exception.id ===
-        selectedExceptionId,
-    ) ?? null;
+    exceptions.find((exception) => exception.id === selectedExceptionId) ?? null;
 
-  const selectedEmployee =
-    selectedException
-      ? EMPLOYEES.find(
-          (employee) =>
-            employee.id ===
-            selectedException.employeeId,
-        )
-      : null;
+  const selectedEmployee = selectedException
+    ? EMPLOYEES.find((employee) => employee.id === selectedException.employeeId)
+    : null;
 
   const metrics = [
     {
       label: "Open exceptions",
-      value: scopedExceptions.filter(
-        (exception) =>
-          exception.status === "open",
-      ).length,
+      value: scopedExceptions.filter((exception) => exception.status === "open").length,
       detail: selectedBranch.name,
       icon: ShieldAlert,
       tone: "danger" as const,
     },
     {
       label: "Under review",
-      value: scopedExceptions.filter(
-        (exception) =>
-          exception.status ===
-          "under_review",
-      ).length,
-      detail:
-        "Waiting for administrator action",
+      value: scopedExceptions.filter((exception) => exception.status === "under_review")
+        .length,
+      detail: "Waiting for administrator action",
       icon: Clock3,
       tone: "warning" as const,
     },
     {
       label: "High severity",
       value: scopedExceptions.filter(
-        (exception) =>
-          exception.severity ===
-            "high" &&
-          exception.status !==
-            "resolved",
+        (exception) => exception.severity === "high" && exception.status !== "resolved",
       ).length,
-      detail:
-        "Priority attendance cases",
+      detail: "Priority attendance cases",
       icon: AlertTriangle,
       tone: "danger" as const,
     },
     {
       label: "Resolved",
-      value: scopedExceptions.filter(
-        (exception) =>
-          exception.status ===
-          "resolved",
-      ).length,
-      detail:
-        "Completed exception reviews",
+      value: scopedExceptions.filter((exception) => exception.status === "resolved")
+        .length,
+      detail: "Completed exception reviews",
       icon: CheckCircle2,
       tone: "success" as const,
     },
   ];
 
-  function createException(
-    exception: AttendanceException,
-  ) {
-    setExceptions(
-      (currentExceptions) => [
-        exception,
-        ...currentExceptions,
-      ],
-    );
+  function createException(exception: AttendanceException) {
+    setExceptions((currentExceptions) => [exception, ...currentExceptions]);
 
     setCreateOpen(false);
-    setSelectedExceptionId(
-      exception.id,
-    );
+    setSelectedExceptionId(exception.id);
   }
 
-  function updateStatus(
-    exceptionId: string,
-    status: AttendanceExceptionStatus,
-  ) {
-    setExceptions(
-      (currentExceptions) =>
-        currentExceptions.map(
-          (exception) =>
-            exception.id ===
-            exceptionId
-              ? {
-                  ...exception,
-                  status,
-                  reviewer:
-                    status === "open"
-                      ? undefined
-                      : CURRENT_ADMIN.name,
-                  resolvedAt:
-                    status === "resolved"
-                      ? new Date()
-                          .toISOString()
-                          .slice(0, 10)
-                      : exception.resolvedAt,
-                }
-              : exception,
-        ),
+  function updateStatus(exceptionId: string, status: AttendanceExceptionStatus) {
+    setExceptions((currentExceptions) =>
+      currentExceptions.map((exception) =>
+        exception.id === exceptionId
+          ? {
+              ...exception,
+              status,
+              reviewer: status === "open" ? undefined : CURRENT_ADMIN.name,
+              resolvedAt:
+                status === "resolved"
+                  ? new Date().toISOString().slice(0, 10)
+                  : exception.resolvedAt,
+            }
+          : exception,
+      ),
     );
   }
 
   return (
     <div className="mx-auto max-w-360">
       <PageHeader
-        eyebrow={
-          ATTENDANCE_EXCEPTIONS_COPY.eyebrow
-        }
-        title={
-          ATTENDANCE_EXCEPTIONS_COPY.title
-        }
-        description={
-          ATTENDANCE_EXCEPTIONS_COPY.description
-        }
+        eyebrow={ATTENDANCE_EXCEPTIONS_COPY.eyebrow}
+        title={ATTENDANCE_EXCEPTIONS_COPY.title}
+        description={ATTENDANCE_EXCEPTIONS_COPY.description}
         actions={
-          <Button
-            onClick={() =>
-              setCreateOpen(true)
-            }
-          >
+          <Button onClick={() => setCreateOpen(true)}>
             <Plus />
-            {
-              ATTENDANCE_EXCEPTIONS_COPY.createAction
-            }
+            {ATTENDANCE_EXCEPTIONS_COPY.createAction}
           </Button>
         }
       />
@@ -343,25 +218,16 @@ export function AttendanceExceptionsWorkspace() {
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
       <Card className="mt-6">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {
-              ATTENDANCE_EXCEPTIONS_COPY.tableTitle
-            }
-          </h2>
+          <h2 className="text-lg font-bold">{ATTENDANCE_EXCEPTIONS_COPY.tableTitle}</h2>
 
           <p className="mt-1 text-sm text-text-muted">
-            {
-              ATTENDANCE_EXCEPTIONS_COPY.tableDescription
-            }
+            {ATTENDANCE_EXCEPTIONS_COPY.tableDescription}
           </p>
 
           <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1fr)_13rem_13rem_12rem]">
@@ -370,68 +236,34 @@ export function AttendanceExceptionsWorkspace() {
 
               <Input
                 value={searchQuery}
-                onChange={(event) =>
-                  setSearchQuery(
-                    event.target.value,
-                  )
-                }
-                placeholder={
-                  ATTENDANCE_EXCEPTIONS_COPY.searchPlaceholder
-                }
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder={ATTENDANCE_EXCEPTIONS_COPY.searchPlaceholder}
                 className="pl-9"
               />
             </div>
 
             <Select
               value={typeFilter}
-              onChange={(event) =>
-                setTypeFilter(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setTypeFilter(event.target.value)}
             >
-              <option value="all">
-                {
-                  ATTENDANCE_EXCEPTIONS_COPY.allTypes
-                }
-              </option>
+              <option value="all">{ATTENDANCE_EXCEPTIONS_COPY.allTypes}</option>
 
-              {Object.entries(
-                ATTENDANCE_EXCEPTION_TYPE_CONFIG,
-              ).map(
-                ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(ATTENDANCE_EXCEPTION_TYPE_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
 
             <Select
               value={statusFilter}
-              onChange={(event) =>
-                setStatusFilter(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setStatusFilter(event.target.value)}
             >
-              <option value="all">
-                {
-                  ATTENDANCE_EXCEPTIONS_COPY.allStatuses
-                }
-              </option>
+              <option value="all">{ATTENDANCE_EXCEPTIONS_COPY.allStatuses}</option>
 
-              {Object.entries(
-                ATTENDANCE_EXCEPTION_STATUS_CONFIG,
-              ).map(
+              {Object.entries(ATTENDANCE_EXCEPTION_STATUS_CONFIG).map(
                 ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
+                  <option key={value} value={value}>
                     {config.label}
                   </option>
                 ),
@@ -440,26 +272,13 @@ export function AttendanceExceptionsWorkspace() {
 
             <Select
               value={severityFilter}
-              onChange={(event) =>
-                setSeverityFilter(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setSeverityFilter(event.target.value)}
             >
-              <option value="all">
-                {
-                  ATTENDANCE_EXCEPTIONS_COPY.allSeverities
-                }
-              </option>
+              <option value="all">{ATTENDANCE_EXCEPTIONS_COPY.allSeverities}</option>
 
-              {Object.entries(
-                ATTENDANCE_EXCEPTION_SEVERITY_CONFIG,
-              ).map(
+              {Object.entries(ATTENDANCE_EXCEPTION_SEVERITY_CONFIG).map(
                 ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
+                  <option key={value} value={value}>
                     {config.label}
                   </option>
                 ),
@@ -468,233 +287,136 @@ export function AttendanceExceptionsWorkspace() {
           </div>
         </div>
 
-        {visibleExceptions.length >
-        0 ? (
+        {visibleExceptions.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow className="bg-canvas">
-                <TableHead>
-                  Employee
-                </TableHead>
+                <TableHead>Employee</TableHead>
 
-                <TableHead>
-                  Exception
-                </TableHead>
+                <TableHead>Exception</TableHead>
 
-                <TableHead>
-                  Date
-                </TableHead>
+                <TableHead>Date</TableHead>
 
-                <TableHead>
-                  Impact
-                </TableHead>
+                <TableHead>Impact</TableHead>
 
-                <TableHead>
-                  Severity
-                </TableHead>
+                <TableHead>Severity</TableHead>
 
-                <TableHead>
-                  Source
-                </TableHead>
+                <TableHead>Source</TableHead>
 
-                <TableHead>
-                  Status
-                </TableHead>
+                <TableHead>Status</TableHead>
 
-                <TableHead className="w-16">
-                  Actions
-                </TableHead>
+                <TableHead className="w-16">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {visibleExceptions.map(
-                (exception) => {
-                  const employee =
-                    EMPLOYEES.find(
-                      (item) =>
-                        item.id ===
-                        exception.employeeId,
-                    );
+              {visibleExceptions.map((exception) => {
+                const employee = EMPLOYEES.find(
+                  (item) => item.id === exception.employeeId,
+                );
 
-                  if (!employee) {
-                    return null;
-                  }
+                if (!employee) {
+                  return null;
+                }
 
-                  const typeConfig =
-                    ATTENDANCE_EXCEPTION_TYPE_CONFIG[
-                      exception.type
-                    ];
+                const typeConfig = ATTENDANCE_EXCEPTION_TYPE_CONFIG[exception.type];
 
-                  const severityConfig =
-                    ATTENDANCE_EXCEPTION_SEVERITY_CONFIG[
-                      exception.severity
-                    ];
+                const severityConfig =
+                  ATTENDANCE_EXCEPTION_SEVERITY_CONFIG[exception.severity];
 
-                  const sourceConfig =
-                    ATTENDANCE_EXCEPTION_SOURCE_CONFIG[
-                      exception.source
-                    ];
+                const sourceConfig = ATTENDANCE_EXCEPTION_SOURCE_CONFIG[exception.source];
 
-                  const statusConfig =
-                    ATTENDANCE_EXCEPTION_STATUS_CONFIG[
-                      exception.status
-                    ];
+                const statusConfig = ATTENDANCE_EXCEPTION_STATUS_CONFIG[exception.status];
 
-                  return (
-                    <TableRow
-                      key={exception.id}
-                      className="cursor-pointer transition hover:bg-canvas"
-                      onClick={() =>
-                        setSelectedExceptionId(
-                          exception.id,
-                        )
-                      }
-                    >
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar
-                            name={
-                              employee.name
-                            }
-                            initials={
-                              employee.initials
-                            }
-                          />
+                return (
+                  <TableRow
+                    key={exception.id}
+                    className="cursor-pointer transition hover:bg-canvas"
+                    onClick={() => setSelectedExceptionId(exception.id)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar name={employee.name} initials={employee.initials} />
 
-                          <div>
-                            <p className="font-semibold">
-                              {
-                                employee.name
-                              }
-                            </p>
+                        <div>
+                          <p className="font-semibold">{employee.name}</p>
 
-                            <p className="mt-1 text-xs text-text-muted">
-                              {
-                                employee.employeeCode
-                              }{" "}
-                              ·{" "}
-                              {
-                                employee.department
-                              }
-                            </p>
-                          </div>
-                        </div>
-                      </TableCell>
-
-                      <TableCell>
-                        <div className="max-w-64">
-                          <Badge
-                            variant={
-                              typeConfig.badgeVariant
-                            }
-                          >
-                            {
-                              typeConfig.label
-                            }
-                          </Badge>
-
-                          <p className="mt-2 line-clamp-1 text-xs text-text-muted">
-                            {exception.reason}
+                          <p className="mt-1 text-xs text-text-muted">
+                            {employee.employeeCode} · {employee.department}
                           </p>
                         </div>
-                      </TableCell>
+                      </div>
+                    </TableCell>
 
-                      <TableCell>
-                        {formatDate(
-                          exception.date,
-                        )}
-                      </TableCell>
-
-                      <TableCell>
-                        {formatImpact(
-                          exception.impactMinutes,
-                        )}
-                      </TableCell>
-
-                      <TableCell>
-                        <Badge
-                          variant={
-                            severityConfig.badgeVariant
-                          }
-                        >
-                          {
-                            severityConfig.label
-                          }
+                    <TableCell>
+                      <div className="max-w-64">
+                        <Badge variant={typeConfig.badgeVariant}>
+                          {typeConfig.label}
                         </Badge>
-                      </TableCell>
 
-                      <TableCell>
-                        <Badge
-                          variant={
-                            sourceConfig.badgeVariant
-                          }
-                        >
-                          {
-                            sourceConfig.label
-                          }
-                        </Badge>
-                      </TableCell>
+                        <p className="mt-2 line-clamp-1 text-xs text-text-muted">
+                          {exception.reason}
+                        </p>
+                      </div>
+                    </TableCell>
 
-                      <TableCell>
-                        <Badge
-                          variant={
-                            statusConfig.badgeVariant
-                          }
-                        >
-                          {
-                            statusConfig.label
-                          }
-                        </Badge>
-                      </TableCell>
+                    <TableCell>{formatDate(exception.date)}</TableCell>
 
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Review exception for ${employee.name}`}
-                          onClick={(
-                            event,
-                          ) => {
-                            event.stopPropagation();
+                    <TableCell>{formatImpact(exception.impactMinutes)}</TableCell>
 
-                            setSelectedExceptionId(
-                              exception.id,
-                            );
-                          }}
-                        >
-                          <MoreHorizontal />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                },
-              )}
+                    <TableCell>
+                      <Badge variant={severityConfig.badgeVariant}>
+                        {severityConfig.label}
+                      </Badge>
+                    </TableCell>
+
+                    <TableCell>
+                      <Badge variant={sourceConfig.badgeVariant}>
+                        {sourceConfig.label}
+                      </Badge>
+                    </TableCell>
+
+                    <TableCell>
+                      <Badge variant={statusConfig.badgeVariant}>
+                        {statusConfig.label}
+                      </Badge>
+                    </TableCell>
+
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Review exception for ${employee.name}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
+
+                          setSelectedExceptionId(exception.id);
+                        }}
+                      >
+                        <MoreHorizontal />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         ) : (
           <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
             <CheckCircle2 className="size-8 text-text-muted" />
 
-            <h3 className="mt-4 font-bold">
-              No exceptions found
-            </h3>
+            <h3 className="mt-4 font-bold">No exceptions found</h3>
 
             <p className="mt-2 text-sm text-text-muted">
-              Change the filters or create a
-              new attendance exception.
+              Change the filters or create a new attendance exception.
             </p>
           </div>
         )}
       </Card>
 
       <Drawer
-        open={Boolean(
-          selectedException,
-        )}
-        onClose={() =>
-          setSelectedExceptionId(null)
-        }
+        open={Boolean(selectedException)}
+        onClose={() => setSelectedExceptionId(null)}
         title="Attendance exception"
         description={
           selectedEmployee
@@ -704,85 +426,44 @@ export function AttendanceExceptionsWorkspace() {
         footer={
           selectedException ? (
             <div className="flex flex-wrap justify-end gap-3">
-              {selectedException.status ===
-                "open" && (
+              {selectedException.status === "open" && (
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    updateStatus(
-                      selectedException.id,
-                      "under_review",
-                    )
-                  }
+                  onClick={() => updateStatus(selectedException.id, "under_review")}
                 >
                   <Clock3 />
                   Start review
                 </Button>
               )}
 
-              {[
-                "open",
-                "under_review",
-              ].includes(
-                selectedException.status,
-              ) && (
+              {["open", "under_review"].includes(selectedException.status) && (
                 <>
                   <Button
                     variant="outline"
-                    onClick={() =>
-                      updateStatus(
-                        selectedException.id,
-                        "rejected",
-                      )
-                    }
+                    onClick={() => updateStatus(selectedException.id, "rejected")}
                   >
                     <X />
                     Reject
                   </Button>
 
-                  <Button
-                    onClick={() =>
-                      updateStatus(
-                        selectedException.id,
-                        "approved",
-                      )
-                    }
-                  >
+                  <Button onClick={() => updateStatus(selectedException.id, "approved")}>
                     <Check />
                     Approve correction
                   </Button>
                 </>
               )}
 
-              {selectedException.status ===
-                "approved" && (
-                <Button
-                  onClick={() =>
-                    updateStatus(
-                      selectedException.id,
-                      "resolved",
-                    )
-                  }
-                >
+              {selectedException.status === "approved" && (
+                <Button onClick={() => updateStatus(selectedException.id, "resolved")}>
                   <CheckCircle2 />
                   Mark resolved
                 </Button>
               )}
 
-              {[
-                "rejected",
-                "resolved",
-              ].includes(
-                selectedException.status,
-              ) && (
+              {["rejected", "resolved"].includes(selectedException.status) && (
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    updateStatus(
-                      selectedException.id,
-                      "open",
-                    )
-                  }
+                  onClick={() => updateStatus(selectedException.id, "open")}
                 >
                   <RotateCcw />
                   Reopen
@@ -792,192 +473,135 @@ export function AttendanceExceptionsWorkspace() {
           ) : undefined
         }
       >
-        {selectedException &&
-          selectedEmployee && (
-            <div className="space-y-6">
-              <section className="rounded-card border border-border">
-                <div className="flex items-start justify-between gap-4 border-b border-border p-5">
-                  <div>
-                    <h3 className="font-bold">
-                      {
-                        ATTENDANCE_EXCEPTION_TYPE_CONFIG[
-                          selectedException.type
-                        ].label
-                      }
-                    </h3>
+        {selectedException && selectedEmployee && (
+          <div className="space-y-6">
+            <section className="rounded-card border border-border">
+              <div className="flex items-start justify-between gap-4 border-b border-border p-5">
+                <div>
+                  <h3 className="font-bold">
+                    {ATTENDANCE_EXCEPTION_TYPE_CONFIG[selectedException.type].label}
+                  </h3>
 
-                    <p className="mt-1 text-xs text-text-muted">
-                      Detected{" "}
-                      {
-                        selectedException.detectedAt
-                      }
-                    </p>
-                  </div>
-
-                  <Badge
-                    variant={
-                      ATTENDANCE_EXCEPTION_STATUS_CONFIG[
-                        selectedException.status
-                      ].badgeVariant
-                    }
-                  >
-                    {
-                      ATTENDANCE_EXCEPTION_STATUS_CONFIG[
-                        selectedException.status
-                      ].label
-                    }
-                  </Badge>
-                </div>
-
-                <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Attendance date
-                    </dt>
-
-                    <dd className="mt-1 text-sm font-semibold">
-                      {formatDate(
-                        selectedException.date,
-                      )}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Branch
-                    </dt>
-
-                    <dd className="mt-1 text-sm font-semibold">
-                      {
-                        selectedEmployee.branchName
-                      }
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Severity
-                    </dt>
-
-                    <dd className="mt-1">
-                      <Badge
-                        variant={
-                          ATTENDANCE_EXCEPTION_SEVERITY_CONFIG[
-                            selectedException.severity
-                          ].badgeVariant
-                        }
-                      >
-                        {
-                          ATTENDANCE_EXCEPTION_SEVERITY_CONFIG[
-                            selectedException.severity
-                          ].label
-                        }
-                      </Badge>
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Time impact
-                    </dt>
-
-                    <dd className="mt-1 text-sm font-semibold">
-                      {formatImpact(
-                        selectedException.impactMinutes,
-                      )}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Source
-                    </dt>
-
-                    <dd className="mt-1 text-sm font-semibold">
-                      {
-                        ATTENDANCE_EXCEPTION_SOURCE_CONFIG[
-                          selectedException.source
-                        ].label
-                      }
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Reviewer
-                    </dt>
-
-                    <dd className="mt-1 text-sm font-semibold">
-                      {selectedException.reviewer ||
-                        "Not assigned"}
-                    </dd>
-                  </div>
-                </dl>
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold">
-                  Exception reason
-                </h3>
-
-                <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                  {
-                    selectedException.reason
-                  }
-                </p>
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold">
-                  Employee note
-                </h3>
-
-                <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                  {selectedException.employeeNote ||
-                    "No employee note was submitted."}
-                </p>
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold">
-                  Administrator note
-                </h3>
-
-                <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                  {selectedException.adminNote ||
-                    "No administrator note has been added."}
-                </p>
-              </section>
-
-              {selectedException.resolvedAt && (
-                <div className="rounded-control bg-success-muted p-4">
-                  <p className="text-sm font-semibold text-success">
-                    Resolved on{" "}
-                    {formatDate(
-                      selectedException.resolvedAt,
-                    )}
+                  <p className="mt-1 text-xs text-text-muted">
+                    Detected {selectedException.detectedAt}
                   </p>
                 </div>
-              )}
-            </div>
-          )}
+
+                <Badge
+                  variant={
+                    ATTENDANCE_EXCEPTION_STATUS_CONFIG[selectedException.status]
+                      .badgeVariant
+                  }
+                >
+                  {ATTENDANCE_EXCEPTION_STATUS_CONFIG[selectedException.status].label}
+                </Badge>
+              </div>
+
+              <dl className="grid gap-5 p-5 sm:grid-cols-2">
+                <div>
+                  <dt className="text-xs text-text-muted">Attendance date</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {formatDate(selectedException.date)}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Branch</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedEmployee.branchName}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Severity</dt>
+
+                  <dd className="mt-1">
+                    <Badge
+                      variant={
+                        ATTENDANCE_EXCEPTION_SEVERITY_CONFIG[selectedException.severity]
+                          .badgeVariant
+                      }
+                    >
+                      {
+                        ATTENDANCE_EXCEPTION_SEVERITY_CONFIG[selectedException.severity]
+                          .label
+                      }
+                    </Badge>
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Time impact</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {formatImpact(selectedException.impactMinutes)}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Source</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {ATTENDANCE_EXCEPTION_SOURCE_CONFIG[selectedException.source].label}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Reviewer</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedException.reviewer || "Not assigned"}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-bold">Exception reason</h3>
+
+              <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
+                {selectedException.reason}
+              </p>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-bold">Employee note</h3>
+
+              <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
+                {selectedException.employeeNote || "No employee note was submitted."}
+              </p>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-bold">Administrator note</h3>
+
+              <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
+                {selectedException.adminNote || "No administrator note has been added."}
+              </p>
+            </section>
+
+            {selectedException.resolvedAt && (
+              <div className="rounded-control bg-success-muted p-4">
+                <p className="text-sm font-semibold text-success">
+                  Resolved on {formatDate(selectedException.resolvedAt)}
+                </p>
+              </div>
+            )}
+          </div>
+        )}
       </Drawer>
 
       <Drawer
         open={createOpen}
-        onClose={() =>
-          setCreateOpen(false)
-        }
+        onClose={() => setCreateOpen(false)}
         title="Create attendance exception"
         description="Create a manual exception for an employee attendance record."
       >
         <AttendanceExceptionForm
-          selectedBranchId={
-            selectedBranchId
-          }
-          onCancel={() =>
-            setCreateOpen(false)
-          }
+          selectedBranchId={selectedBranchId}
+          onCancel={() => setCreateOpen(false)}
           onCreate={createException}
         />
       </Drawer>

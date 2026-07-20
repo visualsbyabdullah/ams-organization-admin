@@ -13,9 +13,7 @@ export function PeopleTabs() {
     <nav className="flex gap-1 overflow-x-auto border-b border-border">
       {PEOPLE_TABS.map((tab) => {
         const isActive =
-          tab.href === "/people"
-            ? pathname === "/people"
-            : pathname.startsWith(tab.href);
+          tab.href === "/people" ? pathname === "/people" : pathname.startsWith(tab.href);
 
         return (
           <Link

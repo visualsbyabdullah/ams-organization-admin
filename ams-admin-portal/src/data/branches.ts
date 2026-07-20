@@ -1,7 +1,4 @@
-import type {
-  BranchOption,
-  BranchRecord,
-} from "@/types/branch";
+import type { BranchOption, BranchRecord } from "@/types/branch";
 
 export const BRANCHES: BranchRecord[] = [
   {
@@ -10,35 +7,25 @@ export const BRANCHES: BranchRecord[] = [
     name: "Islamabad Branch",
     status: "active",
     city: "Islamabad",
-    province:
-      "Islamabad Capital Territory",
+    province: "Islamabad Capital Territory",
     country: "Pakistan",
-    addressLine:
-      "Blue Area, Jinnah Avenue",
+    addressLine: "Blue Area, Jinnah Avenue",
     postalCode: "44000",
     latitude: 33.6844,
     longitude: 73.0479,
     timezone: "Asia/Karachi",
     phone: "+92 51 000 0000",
-    email:
-      "islamabad@ams.example",
+    email: "islamabad@ams.example",
     managerName: "Ayesha Khan",
     employeeCount: 108,
     capacity: 140,
     workingHoursStart: "09:00",
     workingHoursEnd: "18:00",
-    workingDays: [
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-    ],
+    workingDays: ["monday", "tuesday", "wednesday", "thursday", "friday"],
     attendanceEnabled: true,
     payrollEnabled: true,
     remoteWorkEnabled: true,
-    note:
-      "Primary organization branch and administrative office.",
+    note: "Primary organization branch and administrative office.",
     createdAt: "2025-01-10",
     updatedAt: "2026-07-15",
     updatedBy: "Maaz",
@@ -51,8 +38,7 @@ export const BRANCHES: BranchRecord[] = [
     city: "Lahore",
     province: "Punjab",
     country: "Pakistan",
-    addressLine:
-      "Gulberg III, Main Boulevard",
+    addressLine: "Gulberg III, Main Boulevard",
     postalCode: "54660",
     latitude: 31.5204,
     longitude: 74.3587,
@@ -64,19 +50,11 @@ export const BRANCHES: BranchRecord[] = [
     capacity: 125,
     workingHoursStart: "09:00",
     workingHoursEnd: "18:00",
-    workingDays: [
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-      "saturday",
-    ],
+    workingDays: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"],
     attendanceEnabled: true,
     payrollEnabled: true,
     remoteWorkEnabled: false,
-    note:
-      "Regional operations and customer-support branch.",
+    note: "Regional operations and customer-support branch.",
     createdAt: "2025-03-18",
     updatedAt: "2026-07-13",
     updatedBy: "Maaz",
@@ -89,8 +67,7 @@ export const BRANCHES: BranchRecord[] = [
     city: "Karachi",
     province: "Sindh",
     country: "Pakistan",
-    addressLine:
-      "Shahrah-e-Faisal",
+    addressLine: "Shahrah-e-Faisal",
     postalCode: "75350",
     latitude: 24.8607,
     longitude: 67.0011,
@@ -102,18 +79,11 @@ export const BRANCHES: BranchRecord[] = [
     capacity: 110,
     workingHoursStart: "09:00",
     workingHoursEnd: "18:00",
-    workingDays: [
-      "monday",
-      "tuesday",
-      "wednesday",
-      "thursday",
-      "friday",
-    ],
+    workingDays: ["monday", "tuesday", "wednesday", "thursday", "friday"],
     attendanceEnabled: true,
     payrollEnabled: true,
     remoteWorkEnabled: true,
-    note:
-      "South-region branch supporting operations and finance.",
+    note: "South-region branch supporting operations and finance.",
     createdAt: "2025-06-02",
     updatedAt: "2026-07-12",
     updatedBy: "Maaz",

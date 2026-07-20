@@ -11,11 +11,7 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 import { formatPKR } from "@/lib/currency";
 
 export type PayrollBranchComparisonPoint = {
@@ -29,15 +25,10 @@ type PayrollRunsBranchChartProps = {
   data: PayrollBranchComparisonPoint[];
 };
 
-export function PayrollRunsBranchChart({
-  data,
-}: PayrollRunsBranchChartProps) {
+export function PayrollRunsBranchChart({ data }: PayrollRunsBranchChartProps) {
   return (
     <div className="h-72 w-full [&_*:focus]:outline-none [&_svg]:outline-none">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart
           accessibilityLayer={false}
           data={data}
@@ -67,21 +58,12 @@ export function PayrollRunsBranchChart({
             tickLine={false}
             tick={CHART_AXIS_STYLE}
             width={72}
-            tickFormatter={(value) =>
-              formatPKR(
-                Number(value),
-                true,
-              )
-            }
+            tickFormatter={(value) => formatPKR(Number(value), true)}
           />
 
           <Tooltip
-            contentStyle={
-              CHART_TOOLTIP_STYLE
-            }
-            formatter={(value) =>
-              formatPKR(Number(value))
-            }
+            contentStyle={CHART_TOOLTIP_STYLE}
+            formatter={(value) => formatPKR(Number(value))}
             cursor={{
               fill: "var(--ams-surface-muted)",
             }}
@@ -99,9 +81,7 @@ export function PayrollRunsBranchChart({
           <Bar
             dataKey="gross"
             name="Gross payroll"
-            fill={
-              CHART_COLORS.primary
-            }
+            fill={CHART_COLORS.primary}
             radius={[5, 5, 0, 0]}
             maxBarSize={42}
           />
@@ -109,9 +89,7 @@ export function PayrollRunsBranchChart({
           <Bar
             dataKey="deductions"
             name="Deductions"
-            fill={
-              CHART_COLORS.absent
-            }
+            fill={CHART_COLORS.absent}
             radius={[5, 5, 0, 0]}
             maxBarSize={42}
           />
@@ -119,9 +97,7 @@ export function PayrollRunsBranchChart({
           <Bar
             dataKey="net"
             name="Net payroll"
-            fill={
-              CHART_COLORS.present
-            }
+            fill={CHART_COLORS.present}
             radius={[5, 5, 0, 0]}
             maxBarSize={42}
           />

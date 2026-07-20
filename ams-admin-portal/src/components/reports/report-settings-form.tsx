@@ -36,15 +36,11 @@ export function ReportSettingsForm({
   onSave,
 }: ReportSettingsFormProps) {
   const [name, setName] = useState(settings?.name ?? "");
-  const [scope, setScope] = useState<ReportScope>(
-    settings?.scope ?? "organization",
-  );
+  const [scope, setScope] = useState<ReportScope>(settings?.scope ?? "organization");
   const [branchId, setBranchId] = useState(
     settings?.branchId ?? (selectedBranchId === "all" ? "" : selectedBranchId),
   );
-  const [status, setStatus] = useState<ReportSettingsStatus>(
-    settings?.status ?? "draft",
-  );
+  const [status, setStatus] = useState<ReportSettingsStatus>(settings?.status ?? "draft");
   const [defaultFormat, setDefaultFormat] = useState<ReportFormat>(
     settings?.defaultFormat ?? "xlsx",
   );
@@ -60,8 +56,9 @@ export function ReportSettingsForm({
   const [allowPayrollDataExport, setAllowPayrollDataExport] = useState(
     settings?.allowPayrollDataExport ?? true,
   );
-  const [requireReasonForPayrollExport, setRequireReasonForPayrollExport] =
-    useState(settings?.requireReasonForPayrollExport ?? true);
+  const [requireReasonForPayrollExport, setRequireReasonForPayrollExport] = useState(
+    settings?.requireReasonForPayrollExport ?? true,
+  );
   const [scheduledReportsEnabled, setScheduledReportsEnabled] = useState(
     settings?.scheduledReportsEnabled ?? true,
   );
@@ -71,16 +68,17 @@ export function ReportSettingsForm({
   const [notifyOnCompletion, setNotifyOnCompletion] = useState(
     settings?.notifyOnCompletion ?? true,
   );
-  const [includeOrganizationBranding, setIncludeOrganizationBranding] =
-    useState(settings?.includeOrganizationBranding ?? true);
+  const [includeOrganizationBranding, setIncludeOrganizationBranding] = useState(
+    settings?.includeOrganizationBranding ?? true,
+  );
   const [note, setNote] = useState(settings?.note ?? "");
   const [submitted, setSubmitted] = useState(false);
 
   const isValid = Boolean(
     name.trim() &&
-      (scope === "organization" || branchId) &&
-      Number(retentionDays) > 0 &&
-      Number(maximumRowsPerExport) > 0,
+    (scope === "organization" || branchId) &&
+    Number(retentionDays) > 0 &&
+    Number(maximumRowsPerExport) > 0,
   );
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -119,50 +117,43 @@ export function ReportSettingsForm({
   const switches = [
     {
       label: "Employee data exports",
-      description:
-        "Allow employee profile and workforce data to be exported.",
+      description: "Allow employee profile and workforce data to be exported.",
       checked: allowEmployeeDataExport,
       setChecked: setAllowEmployeeDataExport,
     },
     {
       label: "Payroll data exports",
-      description:
-        "Allow payroll, tax, loan and net-pay information to be exported.",
+      description: "Allow payroll, tax, loan and net-pay information to be exported.",
       checked: allowPayrollDataExport,
       setChecked: setAllowPayrollDataExport,
     },
     {
       label: "Require payroll export reason",
-      description:
-        "Require a business reason before payroll data is exported.",
+      description: "Require a business reason before payroll data is exported.",
       checked: requireReasonForPayrollExport,
       setChecked: setRequireReasonForPayrollExport,
     },
     {
       label: "Scheduled reports",
-      description:
-        "Allow recurring report generation and automatic delivery.",
+      description: "Allow recurring report generation and automatic delivery.",
       checked: scheduledReportsEnabled,
       setChecked: setScheduledReportsEnabled,
     },
     {
       label: "External recipients",
-      description:
-        "Allow scheduled reports outside the organization domain.",
+      description: "Allow scheduled reports outside the organization domain.",
       checked: externalRecipientsAllowed,
       setChecked: setExternalRecipientsAllowed,
     },
     {
       label: "Completion notifications",
-      description:
-        "Notify the requester after report processing is completed.",
+      description: "Notify the requester after report processing is completed.",
       checked: notifyOnCompletion,
       setChecked: setNotifyOnCompletion,
     },
     {
       label: "Organization branding",
-      description:
-        "Include organization branding in supported report formats.",
+      description: "Include organization branding in supported report formats.",
       checked: includeOrganizationBranding,
       setChecked: setIncludeOrganizationBranding,
     },
@@ -188,17 +179,13 @@ export function ReportSettingsForm({
           <Select
             id="reportSettingsStatus"
             value={status}
-            onChange={(event) =>
-              setStatus(event.target.value as ReportSettingsStatus)
-            }
+            onChange={(event) => setStatus(event.target.value as ReportSettingsStatus)}
           >
-            {Object.entries(REPORT_SETTINGS_STATUS_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(REPORT_SETTINGS_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
@@ -206,9 +193,7 @@ export function ReportSettingsForm({
           <Select
             id="reportSettingsScope"
             value={scope}
-            onChange={(event) =>
-              setScope(event.target.value as ReportScope)
-            }
+            onChange={(event) => setScope(event.target.value as ReportScope)}
           >
             {Object.entries(REPORT_SCOPE_CONFIG).map(([value, config]) => (
               <option key={value} value={value}>
@@ -230,27 +215,20 @@ export function ReportSettingsForm({
               onChange={(event) => setBranchId(event.target.value)}
             >
               <option value="">Select branch</option>
-              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map(
-                (branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </option>
-                ),
-              )}
+              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
             </Select>
           </FormField>
         )}
 
-        <FormField
-          label="Default export format"
-          htmlFor="reportSettingsFormat"
-        >
+        <FormField label="Default export format" htmlFor="reportSettingsFormat">
           <Select
             id="reportSettingsFormat"
             value={defaultFormat}
-            onChange={(event) =>
-              setDefaultFormat(event.target.value as ReportFormat)
-            }
+            onChange={(event) => setDefaultFormat(event.target.value as ReportFormat)}
           >
             {Object.entries(REPORT_FORMAT_CONFIG).map(([value, config]) => (
               <option key={value} value={value}>
@@ -274,10 +252,7 @@ export function ReportSettingsForm({
           />
         </FormField>
 
-        <FormField
-          label="Maximum rows per export"
-          htmlFor="reportSettingsRows"
-        >
+        <FormField label="Maximum rows per export" htmlFor="reportSettingsRows">
           <Input
             id="reportSettingsRows"
             type="number"
@@ -298,9 +273,7 @@ export function ReportSettingsForm({
             >
               <div>
                 <p className="text-sm font-semibold">{item.label}</p>
-                <p className="mt-1 text-xs text-text-muted">
-                  {item.description}
-                </p>
+                <p className="mt-1 text-xs text-text-muted">{item.description}</p>
               </div>
 
               <Switch
@@ -313,11 +286,7 @@ export function ReportSettingsForm({
         </div>
       </section>
 
-      <FormField
-        label="Internal note"
-        htmlFor="reportSettingsNote"
-        optional
-      >
+      <FormField label="Internal note" htmlFor="reportSettingsNote" optional>
         <Textarea
           id="reportSettingsNote"
           value={note}
@@ -330,9 +299,7 @@ export function ReportSettingsForm({
         <Button type="button" variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">
-          {settings ? "Save settings" : "Create settings"}
-        </Button>
+        <Button type="submit">{settings ? "Save settings" : "Create settings"}</Button>
       </div>
     </form>
   );

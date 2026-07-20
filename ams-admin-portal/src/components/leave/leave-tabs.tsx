@@ -13,11 +13,7 @@ export function LeaveTabs() {
     <nav className="flex gap-1 overflow-x-auto border-b border-border">
       {LEAVE_TABS.map((tab) => {
         const active =
-          tab.href === "/leave"
-            ? pathname === "/leave"
-            : pathname.startsWith(
-                tab.href,
-              );
+          tab.href === "/leave" ? pathname === "/leave" : pathname.startsWith(tab.href);
 
         return (
           <Link

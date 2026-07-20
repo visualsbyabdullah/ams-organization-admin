@@ -1,10 +1,6 @@
 ﻿"use client";
 
-import {
-  type MouseEvent,
-  useMemo,
-  useState,
-} from "react";
+import { type MouseEvent, useMemo, useState } from "react";
 import {
   Archive,
   Award,
@@ -20,10 +16,7 @@ import {
 } from "lucide-react";
 
 import { MetricCard } from "@/components/dashboard/metric-card";
-import {
-  DataTable,
-  type DataTableColumn,
-} from "@/components/shared/data-table";
+import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { TrainingSettingsForm } from "@/components/training/training-settings-form";
 import { TrainingTabs } from "@/components/training/training-tabs";
@@ -42,38 +35,24 @@ import { useBranchScope } from "@/context/branch-scope-context";
 import { CURRENT_ADMIN } from "@/data/current-admin";
 import { TRAINING_SETTINGS } from "@/data/training";
 import { formatDate } from "@/lib/date";
-import type {
-  TrainingSettings,
-  TrainingSettingsStatus,
-} from "@/types/training";
+import type { TrainingSettings, TrainingSettingsStatus } from "@/types/training";
 
 type EditorMode = "create" | "edit" | null;
 
 export function TrainingSettingsWorkspace() {
-  const {
-    selectedBranch,
-    selectedBranchId,
-  } = useBranchScope();
+  const { selectedBranch, selectedBranchId } = useBranchScope();
 
-  const [settings, setSettings] =
-    useState<TrainingSettings[]>(
-      TRAINING_SETTINGS,
-    );
+  const [settings, setSettings] = useState<TrainingSettings[]>(TRAINING_SETTINGS);
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [statusFilter, setStatusFilter] =
-    useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  const [scopeFilter, setScopeFilter] =
-    useState("all");
+  const [scopeFilter, setScopeFilter] = useState("all");
 
-  const [selectedSettingsId, setSelectedSettingsId] =
-    useState<string | null>(null);
+  const [selectedSettingsId, setSelectedSettingsId] = useState<string | null>(null);
 
-  const [editorMode, setEditorMode] =
-    useState<EditorMode>(null);
+  const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
   const scopedSettings = useMemo(
     () =>
@@ -87,9 +66,7 @@ export function TrainingSettingsWorkspace() {
   );
 
   const visibleSettings = useMemo(() => {
-    const query = searchQuery
-      .trim()
-      .toLowerCase();
+    const query = searchQuery.trim().toLowerCase();
 
     return scopedSettings.filter((item) => {
       const searchableValue = [
@@ -104,50 +81,33 @@ export function TrainingSettingsWorkspace() {
 
       return (
         searchableValue.includes(query) &&
-        (statusFilter === "all" ||
-          item.status === statusFilter) &&
-        (scopeFilter === "all" ||
-          item.scope === scopeFilter)
+        (statusFilter === "all" || item.status === statusFilter) &&
+        (scopeFilter === "all" || item.scope === scopeFilter)
       );
     });
-  }, [
-    scopedSettings,
-    scopeFilter,
-    searchQuery,
-    statusFilter,
-  ]);
+  }, [scopedSettings, scopeFilter, searchQuery, statusFilter]);
 
   const selectedSettings =
-    settings.find(
-      (item) => item.id === selectedSettingsId,
-    ) ?? null;
+    settings.find((item) => item.id === selectedSettingsId) ?? null;
 
   const organizationDefault =
-    settings.find(
-      (item) =>
-        item.scope === "organization" &&
-        item.status === "active",
-    ) ?? null;
+    settings.find((item) => item.scope === "organization" && item.status === "active") ??
+    null;
 
   const branchOverride = selectedBranch.isAggregate
     ? null
-    : settings.find(
+    : (settings.find(
         (item) =>
           item.scope === "branch" &&
           item.branchId === selectedBranch.id &&
           item.status === "active",
-      ) ?? null;
+      ) ?? null);
 
-  const effectiveSettings =
-    branchOverride ?? organizationDefault;
+  const effectiveSettings = branchOverride ?? organizationDefault;
 
-  const activeSettings = scopedSettings.filter(
-    (item) => item.status === "active",
-  );
+  const activeSettings = scopedSettings.filter((item) => item.status === "active");
 
-  const branchOverrides = scopedSettings.filter(
-    (item) => item.scope === "branch",
-  );
+  const branchOverrides = scopedSettings.filter((item) => item.scope === "branch");
 
   const metrics = [
     {
@@ -173,9 +133,7 @@ export function TrainingSettingsWorkspace() {
     },
     {
       label: "Certificate automation",
-      value: effectiveSettings?.autoIssueCertificates
-        ? "Enabled"
-        : "Disabled",
+      value: effectiveSettings?.autoIssueCertificates ? "Enabled" : "Disabled",
       detail: "Effective certification rule",
       icon: Award,
       tone: effectiveSettings?.autoIssueCertificates
@@ -184,14 +142,11 @@ export function TrainingSettingsWorkspace() {
     },
   ];
 
-  const columns = useMemo<
-    DataTableColumn<TrainingSettings>[]
-  >(
+  const columns = useMemo<DataTableColumn<TrainingSettings>[]>(
     () => [
       {
         id: "settings",
-        header:
-          TRAINING_COPY.settings.columns.settings,
+        header: TRAINING_COPY.settings.columns.settings,
         cell: (item) => (
           <div className="flex items-center gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-control bg-info-muted text-info">
@@ -203,9 +158,7 @@ export function TrainingSettingsWorkspace() {
             </span>
 
             <div>
-              <p className="font-semibold">
-                {item.name}
-              </p>
+              <p className="font-semibold">{item.name}</p>
 
               <p className="mt-1 text-xs text-text-muted">
                 {item.branchName ?? "All organization branches"}
@@ -218,77 +171,41 @@ export function TrainingSettingsWorkspace() {
         id: "scope",
         header: TRAINING_COPY.settings.columns.scope,
         cell: (item) => (
-          <Badge
-            variant={
-              TRAINING_SETTINGS_SCOPE_CONFIG[
-                item.scope
-              ].badgeVariant
-            }
-          >
-            {
-              TRAINING_SETTINGS_SCOPE_CONFIG[
-                item.scope
-              ].label
-            }
+          <Badge variant={TRAINING_SETTINGS_SCOPE_CONFIG[item.scope].badgeVariant}>
+            {TRAINING_SETTINGS_SCOPE_CONFIG[item.scope].label}
           </Badge>
         ),
       },
       {
         id: "dueDays",
-        header:
-          TRAINING_COPY.settings.columns.dueDays,
-        cell: (item) =>
-          `${item.defaultDueDays} days`,
+        header: TRAINING_COPY.settings.columns.dueDays,
+        cell: (item) => `${item.defaultDueDays} days`,
       },
       {
         id: "reminder",
-        header:
-          TRAINING_COPY.settings.columns.reminder,
-        cell: (item) =>
-          `${item.reminderDaysBeforeDue} days before`,
+        header: TRAINING_COPY.settings.columns.reminder,
+        cell: (item) => `${item.reminderDaysBeforeDue} days before`,
       },
       {
         id: "completionTarget",
-        header:
-          TRAINING_COPY.settings.columns.completionTarget,
-        cell: (item) =>
-          `${item.mandatoryCompletionTarget}%`,
+        header: TRAINING_COPY.settings.columns.completionTarget,
+        cell: (item) => `${item.mandatoryCompletionTarget}%`,
       },
       {
         id: "certificates",
-        header:
-          TRAINING_COPY.settings.columns.certificates,
+        header: TRAINING_COPY.settings.columns.certificates,
         cell: (item) => (
-          <Badge
-            variant={
-              item.autoIssueCertificates
-                ? "success"
-                : "neutral"
-            }
-          >
-            {item.autoIssueCertificates
-              ? "Automatic"
-              : "Manual"}
+          <Badge variant={item.autoIssueCertificates ? "success" : "neutral"}>
+            {item.autoIssueCertificates ? "Automatic" : "Manual"}
           </Badge>
         ),
       },
       {
         id: "status",
-        header:
-          TRAINING_COPY.settings.columns.status,
+        header: TRAINING_COPY.settings.columns.status,
         cell: (item) => (
-          <Badge
-            variant={
-              TRAINING_SETTINGS_STATUS_CONFIG[
-                item.status
-              ].badgeVariant
-            }
-          >
-            {
-              TRAINING_SETTINGS_STATUS_CONFIG[
-                item.status
-              ].label
-            }
+          <Badge variant={TRAINING_SETTINGS_STATUS_CONFIG[item.status].badgeVariant}>
+            {TRAINING_SETTINGS_STATUS_CONFIG[item.status].label}
           </Badge>
         ),
       },
@@ -296,19 +213,13 @@ export function TrainingSettingsWorkspace() {
     [],
   );
 
-  function saveSettings(
-    nextSettings: TrainingSettings,
-  ) {
+  function saveSettings(nextSettings: TrainingSettings) {
     setSettings((currentSettings) => {
-      const exists = currentSettings.some(
-        (item) => item.id === nextSettings.id,
-      );
+      const exists = currentSettings.some((item) => item.id === nextSettings.id);
 
       return exists
         ? currentSettings.map((item) =>
-            item.id === nextSettings.id
-              ? nextSettings
-              : item,
+            item.id === nextSettings.id ? nextSettings : item,
           )
         : [nextSettings, ...currentSettings];
     });
@@ -317,40 +228,28 @@ export function TrainingSettingsWorkspace() {
     setEditorMode(null);
   }
 
-  function duplicateSettings(
-    item: TrainingSettings,
-  ) {
+  function duplicateSettings(item: TrainingSettings) {
     const duplicate: TrainingSettings = {
       ...item,
       id: crypto.randomUUID(),
       name: `${item.name} Copy`,
       status: "draft",
-      updatedAt: new Date()
-        .toISOString()
-        .slice(0, 10),
+      updatedAt: new Date().toISOString().slice(0, 10),
       updatedBy: CURRENT_ADMIN.name,
     };
 
-    setSettings((currentSettings) => [
-      duplicate,
-      ...currentSettings,
-    ]);
+    setSettings((currentSettings) => [duplicate, ...currentSettings]);
     setSelectedSettingsId(duplicate.id);
   }
 
-  function updateStatus(
-    settingsId: string,
-    status: TrainingSettingsStatus,
-  ) {
+  function updateStatus(settingsId: string, status: TrainingSettingsStatus) {
     setSettings((currentSettings) =>
       currentSettings.map((item) =>
         item.id === settingsId
           ? {
               ...item,
               status,
-              updatedAt: new Date()
-                .toISOString()
-                .slice(0, 10),
+              updatedAt: new Date().toISOString().slice(0, 10),
               updatedBy: CURRENT_ADMIN.name,
             }
           : item,
@@ -366,13 +265,11 @@ export function TrainingSettingsWorkspace() {
         },
         {
           label: "Manager approval",
-          enabled:
-            effectiveSettings.managerApprovalRequired,
+          enabled: effectiveSettings.managerApprovalRequired,
         },
         {
           label: "Automatic certificates",
-          enabled:
-            effectiveSettings.autoIssueCertificates,
+          enabled: effectiveSettings.autoIssueCertificates,
         },
       ]
     : [];
@@ -402,19 +299,14 @@ export function TrainingSettingsWorkspace() {
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <Card className="order-1 overflow-hidden">
           <div className="border-b border-border p-5">
-            <h2 className="text-lg font-bold">
-              {TRAINING_COPY.settings.registerTitle}
-            </h2>
+            <h2 className="text-lg font-bold">{TRAINING_COPY.settings.registerTitle}</h2>
 
             <p className="mt-1 text-sm text-text-muted">
               {TRAINING_COPY.settings.registerDescription}
@@ -426,29 +318,19 @@ export function TrainingSettingsWorkspace() {
 
                 <Input
                   value={searchQuery}
-                  onChange={(event) =>
-                    setSearchQuery(event.target.value)
-                  }
-                  placeholder={
-                    TRAINING_COPY.settings.searchPlaceholder
-                  }
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder={TRAINING_COPY.settings.searchPlaceholder}
                   className="pl-9"
                 />
               </div>
 
               <Select
                 value={scopeFilter}
-                onChange={(event) =>
-                  setScopeFilter(event.target.value)
-                }
+                onChange={(event) => setScopeFilter(event.target.value)}
               >
-                <option value="all">
-                  {TRAINING_COPY.settings.allScopes}
-                </option>
+                <option value="all">{TRAINING_COPY.settings.allScopes}</option>
 
-                {Object.entries(
-                  TRAINING_SETTINGS_SCOPE_CONFIG,
-                ).map(([value, config]) => (
+                {Object.entries(TRAINING_SETTINGS_SCOPE_CONFIG).map(([value, config]) => (
                   <option key={value} value={value}>
                     {config.label}
                   </option>
@@ -457,21 +339,17 @@ export function TrainingSettingsWorkspace() {
 
               <Select
                 value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(event.target.value)
-                }
+                onChange={(event) => setStatusFilter(event.target.value)}
               >
-                <option value="all">
-                  {TRAINING_COPY.settings.allStatuses}
-                </option>
+                <option value="all">{TRAINING_COPY.settings.allStatuses}</option>
 
-                {Object.entries(
-                  TRAINING_SETTINGS_STATUS_CONFIG,
-                ).map(([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ))}
+                {Object.entries(TRAINING_SETTINGS_STATUS_CONFIG).map(
+                  ([value, config]) => (
+                    <option key={value} value={value}>
+                      {config.label}
+                    </option>
+                  ),
+                )}
               </Select>
             </div>
           </div>
@@ -480,16 +358,12 @@ export function TrainingSettingsWorkspace() {
             rows={visibleSettings}
             columns={columns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) =>
-              setSelectedSettingsId(item.id)
-            }
+            onRowClick={(item) => setSelectedSettingsId(item.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <Settings2 className="size-8 text-text-muted" />
 
-                <h3 className="mt-4 font-bold">
-                  {TRAINING_COPY.settings.emptyTitle}
-                </h3>
+                <h3 className="mt-4 font-bold">{TRAINING_COPY.settings.emptyTitle}</h3>
 
                 <p className="mt-2 text-sm text-text-muted">
                   {TRAINING_COPY.settings.emptyDescription}
@@ -519,22 +393,16 @@ export function TrainingSettingsWorkspace() {
           {effectiveSettings ? (
             <div className="mt-5 space-y-3">
               <div className="rounded-control border border-border p-4">
-                <p className="text-sm font-bold">
-                  {effectiveSettings.name}
-                </p>
+                <p className="text-sm font-bold">{effectiveSettings.name}</p>
 
                 <p className="mt-1 text-xs text-text-muted">
-                  {branchOverride
-                    ? "Active branch override"
-                    : "Organization default"}
+                  {branchOverride ? "Active branch override" : "Organization default"}
                 </p>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="rounded-control bg-canvas p-4">
-                  <p className="text-xs text-text-muted">
-                    Completion window
-                  </p>
+                  <p className="text-xs text-text-muted">Completion window</p>
 
                   <p className="mt-1 text-sm font-bold">
                     {effectiveSettings.defaultDueDays} days
@@ -542,9 +410,7 @@ export function TrainingSettingsWorkspace() {
                 </div>
 
                 <div className="rounded-control bg-canvas p-4">
-                  <p className="text-xs text-text-muted">
-                    Reminder
-                  </p>
+                  <p className="text-xs text-text-muted">Reminder</p>
 
                   <p className="mt-1 text-sm font-bold">
                     {effectiveSettings.reminderDaysBeforeDue} days
@@ -552,9 +418,7 @@ export function TrainingSettingsWorkspace() {
                 </div>
 
                 <div className="rounded-control bg-canvas p-4">
-                  <p className="text-xs text-text-muted">
-                    Completion target
-                  </p>
+                  <p className="text-xs text-text-muted">Completion target</p>
 
                   <p className="mt-1 text-sm font-bold">
                     {effectiveSettings.mandatoryCompletionTarget}%
@@ -562,9 +426,7 @@ export function TrainingSettingsWorkspace() {
                 </div>
 
                 <div className="rounded-control bg-canvas p-4">
-                  <p className="text-xs text-text-muted">
-                    Expiry reminder
-                  </p>
+                  <p className="text-xs text-text-muted">Expiry reminder</p>
 
                   <p className="mt-1 text-sm font-bold">
                     {effectiveSettings.certificationExpiryReminderDays} days
@@ -578,20 +440,10 @@ export function TrainingSettingsWorkspace() {
                     key={control.label}
                     className="flex items-center justify-between rounded-control border border-border px-4 py-3"
                   >
-                    <span className="text-sm font-medium">
-                      {control.label}
-                    </span>
+                    <span className="text-sm font-medium">{control.label}</span>
 
-                    <Badge
-                      variant={
-                        control.enabled
-                          ? "success"
-                          : "neutral"
-                      }
-                    >
-                      {control.enabled
-                        ? "Enabled"
-                        : "Disabled"}
+                    <Badge variant={control.enabled ? "success" : "neutral"}>
+                      {control.enabled ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
                 ))}
@@ -615,9 +467,7 @@ export function TrainingSettingsWorkspace() {
             <div className="flex flex-wrap justify-end gap-3">
               <Button
                 variant="outline"
-                onClick={() =>
-                  duplicateSettings(selectedSettings)
-                }
+                onClick={() => duplicateSettings(selectedSettings)}
               >
                 <Copy />
                 Duplicate
@@ -626,12 +476,7 @@ export function TrainingSettingsWorkspace() {
               {selectedSettings.status === "active" && (
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    updateStatus(
-                      selectedSettings.id,
-                      "archived",
-                    )
-                  }
+                  onClick={() => updateStatus(selectedSettings.id, "archived")}
                 >
                   <Archive />
                   Archive
@@ -641,21 +486,14 @@ export function TrainingSettingsWorkspace() {
               {selectedSettings.status !== "active" && (
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    updateStatus(
-                      selectedSettings.id,
-                      "active",
-                    )
-                  }
+                  onClick={() => updateStatus(selectedSettings.id, "active")}
                 >
                   <CheckCircle2 />
                   Activate
                 </Button>
               )}
 
-              <Button
-                onClick={() => setEditorMode("edit")}
-              >
+              <Button onClick={() => setEditorMode("edit")}>
                 <FilePenLine />
                 Edit settings
               </Button>
@@ -668,80 +506,61 @@ export function TrainingSettingsWorkspace() {
             <section className="rounded-card border border-border">
               <div className="flex items-start justify-between gap-4 border-b border-border p-5">
                 <div>
-                  <h3 className="font-bold">
-                    {selectedSettings.name}
-                  </h3>
+                  <h3 className="font-bold">{selectedSettings.name}</h3>
 
                   <p className="mt-1 text-xs text-text-muted">
-                    Updated by {selectedSettings.updatedBy} on {formatDate(selectedSettings.updatedAt)}
+                    Updated by {selectedSettings.updatedBy} on{" "}
+                    {formatDate(selectedSettings.updatedAt)}
                   </p>
                 </div>
 
                 <Badge
                   variant={
-                    TRAINING_SETTINGS_STATUS_CONFIG[
-                      selectedSettings.status
-                    ].badgeVariant
+                    TRAINING_SETTINGS_STATUS_CONFIG[selectedSettings.status].badgeVariant
                   }
                 >
-                  {
-                    TRAINING_SETTINGS_STATUS_CONFIG[
-                      selectedSettings.status
-                    ].label
-                  }
+                  {TRAINING_SETTINGS_STATUS_CONFIG[selectedSettings.status].label}
                 </Badge>
               </div>
 
               <dl className="grid gap-5 p-5 sm:grid-cols-2">
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Scope
-                  </dt>
+                  <dt className="text-xs text-text-muted">Scope</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {TRAINING_SETTINGS_SCOPE_CONFIG[selectedSettings.scope].label}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Branch
-                  </dt>
+                  <dt className="text-xs text-text-muted">Branch</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSettings.branchName ?? "All organization branches"}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Default completion window
-                  </dt>
+                  <dt className="text-xs text-text-muted">Default completion window</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSettings.defaultDueDays} days
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Due-date reminder
-                  </dt>
+                  <dt className="text-xs text-text-muted">Due-date reminder</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSettings.reminderDaysBeforeDue} days before
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Certificate expiry reminder
-                  </dt>
+                  <dt className="text-xs text-text-muted">Certificate expiry reminder</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSettings.certificationExpiryReminderDays} days before
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Mandatory completion target
-                  </dt>
+                  <dt className="text-xs text-text-muted">Mandatory completion target</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSettings.mandatoryCompletionTarget}%
                   </dd>
@@ -750,46 +569,31 @@ export function TrainingSettingsWorkspace() {
             </section>
 
             <section>
-              <h3 className="text-sm font-bold">
-                Learning controls
-              </h3>
+              <h3 className="text-sm font-bold">Learning controls</h3>
 
               <div className="mt-3 space-y-3">
                 {[
                   {
                     label: "Self-enrollment",
-                    enabled:
-                      selectedSettings.allowSelfEnrollment,
+                    enabled: selectedSettings.allowSelfEnrollment,
                   },
                   {
                     label: "Manager approval",
-                    enabled:
-                      selectedSettings.managerApprovalRequired,
+                    enabled: selectedSettings.managerApprovalRequired,
                   },
                   {
                     label: "Automatic certificates",
-                    enabled:
-                      selectedSettings.autoIssueCertificates,
+                    enabled: selectedSettings.autoIssueCertificates,
                   },
                 ].map((control) => (
                   <div
                     key={control.label}
                     className="flex items-center justify-between rounded-control border border-border p-4"
                   >
-                    <span className="text-sm font-semibold">
-                      {control.label}
-                    </span>
+                    <span className="text-sm font-semibold">{control.label}</span>
 
-                    <Badge
-                      variant={
-                        control.enabled
-                          ? "success"
-                          : "neutral"
-                      }
-                    >
-                      {control.enabled
-                        ? "Enabled"
-                        : "Disabled"}
+                    <Badge variant={control.enabled ? "success" : "neutral"}>
+                      {control.enabled ? "Enabled" : "Disabled"}
                     </Badge>
                   </div>
                 ))}
@@ -797,13 +601,10 @@ export function TrainingSettingsWorkspace() {
             </section>
 
             <section>
-              <h3 className="text-sm font-bold">
-                Internal note
-              </h3>
+              <h3 className="text-sm font-bold">Internal note</h3>
 
               <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                {selectedSettings.note ||
-                  "No training settings note has been added."}
+                {selectedSettings.note || "No training settings note has been added."}
               </p>
             </section>
           </div>
@@ -814,24 +615,14 @@ export function TrainingSettingsWorkspace() {
         open={editorMode !== null}
         onClose={() => setEditorMode(null)}
         title={
-          editorMode === "create"
-            ? "Add training settings"
-            : "Edit training settings"
+          editorMode === "create" ? "Add training settings" : "Edit training settings"
         }
         description="Configure assignment windows, reminders, approvals and certification rules."
       >
         {editorMode && (
           <TrainingSettingsForm
-            key={
-              editorMode === "create"
-                ? "new-training-settings"
-                : selectedSettings?.id
-            }
-            settings={
-              editorMode === "edit"
-                ? selectedSettings ?? undefined
-                : undefined
-            }
+            key={editorMode === "create" ? "new-training-settings" : selectedSettings?.id}
+            settings={editorMode === "edit" ? (selectedSettings ?? undefined) : undefined}
             selectedBranchId={selectedBranchId}
             onCancel={() => setEditorMode(null)}
             onSave={saveSettings}

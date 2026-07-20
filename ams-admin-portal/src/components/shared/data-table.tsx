@@ -44,10 +44,7 @@ export function DataTable<T>({
       <TableHeader>
         <TableRow className="bg-canvas">
           {columns.map((column) => (
-            <TableHead
-              key={column.id}
-              className={column.headClassName}
-            >
+            <TableHead key={column.id} className={column.headClassName}>
               {column.header}
             </TableHead>
           ))}
@@ -58,22 +55,14 @@ export function DataTable<T>({
         {rows.map((row) => (
           <TableRow
             key={getRowKey(row)}
-            onClick={
-              onRowClick
-                ? () => onRowClick(row)
-                : undefined
-            }
+            onClick={onRowClick ? () => onRowClick(row) : undefined}
             className={cn(
-              onRowClick &&
-                "cursor-pointer transition hover:bg-canvas",
+              onRowClick && "cursor-pointer transition hover:bg-canvas",
               rowClassName,
             )}
           >
             {columns.map((column) => (
-              <TableCell
-                key={column.id}
-                className={column.className}
-              >
+              <TableCell key={column.id} className={column.className}>
                 {column.cell(row)}
               </TableCell>
             ))}

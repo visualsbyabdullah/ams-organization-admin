@@ -5,92 +5,88 @@
   DepartmentAttendancePoint,
 } from "@/types/attendance";
 
-export const ATTENDANCE_RECORDS: AttendanceRecord[] =
-  [
-    {
-      id: "attendance-001",
-      employeeId: "emp-001",
-      branchId: "islamabad",
-      date: "2026-07-16",
-      scheduledStart: "09:00",
-      scheduledEnd: "18:00",
-      checkIn: "08:54",
-      checkOut: "17:58",
-      status: "present",
-      workedMinutes: 544,
-      note: "",
-    },
-    {
-      id: "attendance-002",
-      employeeId: "emp-002",
-      branchId: "lahore",
-      date: "2026-07-16",
-      scheduledStart: "09:00",
-      scheduledEnd: "18:00",
-      checkIn: "09:19",
-      checkOut: "18:06",
-      status: "late",
-      workedMinutes: 527,
-      note: "Traffic delay reported.",
-    },
-    {
-      id: "attendance-003",
-      employeeId: "emp-003",
-      branchId: "islamabad",
-      date: "2026-07-16",
-      scheduledStart: "09:00",
-      scheduledEnd: "18:00",
-      checkIn: "",
-      checkOut: "",
-      status: "on_leave",
-      workedMinutes: 0,
-      note: "Approved annual leave.",
-    },
-    {
-      id: "attendance-004",
-      employeeId: "emp-004",
-      branchId: "karachi",
-      date: "2026-07-16",
-      scheduledStart: "08:00",
-      scheduledEnd: "17:00",
-      checkIn: "07:52",
-      checkOut: "",
-      status: "missing_checkout",
-      workedMinutes: 0,
-      note: "",
-    },
-    {
-      id: "attendance-005",
-      employeeId: "emp-005",
-      branchId: "lahore",
-      date: "2026-07-16",
-      scheduledStart: "09:00",
-      scheduledEnd: "18:00",
-      checkIn: "08:58",
-      checkOut: "18:02",
-      status: "present",
-      workedMinutes: 544,
-      note: "",
-    },
-    {
-      id: "attendance-006",
-      employeeId: "emp-006",
-      branchId: "islamabad",
-      date: "2026-07-16",
-      scheduledStart: "09:00",
-      scheduledEnd: "18:00",
-      checkIn: "",
-      checkOut: "",
-      status: "absent",
-      workedMinutes: 0,
-      note: "No attendance or leave record.",
-    },
-  ];
+export const ATTENDANCE_RECORDS: AttendanceRecord[] = [
+  {
+    id: "attendance-001",
+    employeeId: "emp-001",
+    branchId: "islamabad",
+    date: "2026-07-16",
+    scheduledStart: "09:00",
+    scheduledEnd: "18:00",
+    checkIn: "08:54",
+    checkOut: "17:58",
+    status: "present",
+    workedMinutes: 544,
+    note: "",
+  },
+  {
+    id: "attendance-002",
+    employeeId: "emp-002",
+    branchId: "lahore",
+    date: "2026-07-16",
+    scheduledStart: "09:00",
+    scheduledEnd: "18:00",
+    checkIn: "09:19",
+    checkOut: "18:06",
+    status: "late",
+    workedMinutes: 527,
+    note: "Traffic delay reported.",
+  },
+  {
+    id: "attendance-003",
+    employeeId: "emp-003",
+    branchId: "islamabad",
+    date: "2026-07-16",
+    scheduledStart: "09:00",
+    scheduledEnd: "18:00",
+    checkIn: "",
+    checkOut: "",
+    status: "on_leave",
+    workedMinutes: 0,
+    note: "Approved annual leave.",
+  },
+  {
+    id: "attendance-004",
+    employeeId: "emp-004",
+    branchId: "karachi",
+    date: "2026-07-16",
+    scheduledStart: "08:00",
+    scheduledEnd: "17:00",
+    checkIn: "07:52",
+    checkOut: "",
+    status: "missing_checkout",
+    workedMinutes: 0,
+    note: "",
+  },
+  {
+    id: "attendance-005",
+    employeeId: "emp-005",
+    branchId: "lahore",
+    date: "2026-07-16",
+    scheduledStart: "09:00",
+    scheduledEnd: "18:00",
+    checkIn: "08:58",
+    checkOut: "18:02",
+    status: "present",
+    workedMinutes: 544,
+    note: "",
+  },
+  {
+    id: "attendance-006",
+    employeeId: "emp-006",
+    branchId: "islamabad",
+    date: "2026-07-16",
+    scheduledStart: "09:00",
+    scheduledEnd: "18:00",
+    checkIn: "",
+    checkOut: "",
+    status: "absent",
+    workedMinutes: 0,
+    note: "No attendance or leave record.",
+  },
+];
 
-export const ATTENDANCE_SUMMARIES: Record<
-  string,
-  AttendanceSummary
-> = {
+export const ATTENDANCE_SUMMARIES: Record<string, AttendanceSummary> = {
   all: {
     scheduled: 252,
     present: 214,
@@ -125,10 +121,7 @@ export const ATTENDANCE_SUMMARIES: Record<
   },
 };
 
-export const ATTENDANCE_TRENDS: Record<
-  string,
-  AttendanceTrendPoint[]
-> = {
+export const ATTENDANCE_TRENDS: Record<string, AttendanceTrendPoint[]> = {
   all: [
     {
       day: "Mon",
@@ -307,10 +300,7 @@ export const ATTENDANCE_TRENDS: Record<
   ],
 };
 
-export const DEPARTMENT_ATTENDANCE: Record<
-  string,
-  DepartmentAttendancePoint[]
-> = {
+export const DEPARTMENT_ATTENDANCE: Record<string, DepartmentAttendancePoint[]> = {
   all: [
     {
       name: "Operations",

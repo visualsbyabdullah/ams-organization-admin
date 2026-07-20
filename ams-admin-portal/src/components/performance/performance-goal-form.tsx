@@ -30,7 +30,9 @@ type Props = {
 
 export function PerformanceGoalForm({ goal, selectedBranchId, onCancel, onSave }: Props) {
   const branches = useMemo(() => BRANCH_OPTIONS.filter((item) => !item.isAggregate), []);
-  const initialBranchId = goal?.branchId ?? (selectedBranchId === "all" ? branches[0]?.id ?? "" : selectedBranchId);
+  const initialBranchId =
+    goal?.branchId ??
+    (selectedBranchId === "all" ? (branches[0]?.id ?? "") : selectedBranchId);
   const [title, setTitle] = useState(goal?.title ?? "");
   const [description, setDescription] = useState(goal?.description ?? "");
   const [branchId, setBranchId] = useState(initialBranchId);
@@ -49,7 +51,15 @@ export function PerformanceGoalForm({ goal, selectedBranchId, onCancel, onSave }
   const [submitted, setSubmitted] = useState(false);
 
   const employees = EMPLOYEES.filter((employee) => employee.branchId === branchId);
-  const valid = Boolean(title.trim() && description.trim() && branchId && department.trim() && ownerName.trim() && startDate && dueDate);
+  const valid = Boolean(
+    title.trim() &&
+    description.trim() &&
+    branchId &&
+    department.trim() &&
+    ownerName.trim() &&
+    startDate &&
+    dueDate,
+  );
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -79,50 +89,175 @@ export function PerformanceGoalForm({ goal, selectedBranchId, onCancel, onSave }
   return (
     <form onSubmit={handleSubmit} className="space-y-7">
       <div className="grid gap-5 sm:grid-cols-2">
-        <FormField label="Goal title" htmlFor="performanceGoalTitle" error={submitted && !title.trim() ? "Enter a goal title" : undefined}>
-          <Input id="performanceGoalTitle" value={title} onChange={(event) => setTitle(event.target.value)} />
+        <FormField
+          label="Goal title"
+          htmlFor="performanceGoalTitle"
+          error={submitted && !title.trim() ? "Enter a goal title" : undefined}
+        >
+          <Input
+            id="performanceGoalTitle"
+            value={title}
+            onChange={(event) => setTitle(event.target.value)}
+          />
         </FormField>
         <FormField label="Goal level" htmlFor="performanceGoalLevel">
-          <Select id="performanceGoalLevel" value={level} onChange={(event) => setLevel(event.target.value as PerformanceGoalLevel)}>
-            {Object.entries(PERFORMANCE_GOAL_LEVEL_CONFIG).map(([value, config]) => <option key={value} value={value}>{config.label}</option>)}
+          <Select
+            id="performanceGoalLevel"
+            value={level}
+            onChange={(event) => setLevel(event.target.value as PerformanceGoalLevel)}
+          >
+            {Object.entries(PERFORMANCE_GOAL_LEVEL_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
         <FormField label="Branch" htmlFor="performanceGoalBranch">
-          <Select id="performanceGoalBranch" value={branchId} onChange={(event) => { setBranchId(event.target.value); setEmployeeId(""); }}>
-            {branches.map((branch) => <option key={branch.id} value={branch.id}>{branch.name}</option>)}
+          <Select
+            id="performanceGoalBranch"
+            value={branchId}
+            onChange={(event) => {
+              setBranchId(event.target.value);
+              setEmployeeId("");
+            }}
+          >
+            {branches.map((branch) => (
+              <option key={branch.id} value={branch.id}>
+                {branch.name}
+              </option>
+            ))}
           </Select>
         </FormField>
         <FormField label="Employee" htmlFor="performanceGoalEmployee" optional>
-          <Select id="performanceGoalEmployee" value={employeeId} onChange={(event) => setEmployeeId(event.target.value)}>
+          <Select
+            id="performanceGoalEmployee"
+            value={employeeId}
+            onChange={(event) => setEmployeeId(event.target.value)}
+          >
             <option value="">No individual employee</option>
-            {employees.map((employee) => <option key={employee.id} value={employee.id}>{employee.name} â€” {employee.employeeCode}</option>)}
+            {employees.map((employee) => (
+              <option key={employee.id} value={employee.id}>
+                {employee.name} â€” {employee.employeeCode}
+              </option>
+            ))}
           </Select>
         </FormField>
-        <FormField label="Department" htmlFor="performanceGoalDepartment" error={submitted && !department.trim() ? "Enter a department" : undefined}>
-          <Input id="performanceGoalDepartment" value={department} onChange={(event) => setDepartment(event.target.value)} />
+        <FormField
+          label="Department"
+          htmlFor="performanceGoalDepartment"
+          error={submitted && !department.trim() ? "Enter a department" : undefined}
+        >
+          <Input
+            id="performanceGoalDepartment"
+            value={department}
+            onChange={(event) => setDepartment(event.target.value)}
+          />
         </FormField>
-        <FormField label="Owner" htmlFor="performanceGoalOwner" error={submitted && !ownerName.trim() ? "Enter a goal owner" : undefined}>
-          <Input id="performanceGoalOwner" value={ownerName} onChange={(event) => setOwnerName(event.target.value)} />
+        <FormField
+          label="Owner"
+          htmlFor="performanceGoalOwner"
+          error={submitted && !ownerName.trim() ? "Enter a goal owner" : undefined}
+        >
+          <Input
+            id="performanceGoalOwner"
+            value={ownerName}
+            onChange={(event) => setOwnerName(event.target.value)}
+          />
         </FormField>
         <FormField label="Status" htmlFor="performanceGoalStatus">
-          <Select id="performanceGoalStatus" value={status} onChange={(event) => setStatus(event.target.value as PerformanceGoalStatus)}>
-            {Object.entries(PERFORMANCE_GOAL_STATUS_CONFIG).map(([value, config]) => <option key={value} value={value}>{config.label}</option>)}
+          <Select
+            id="performanceGoalStatus"
+            value={status}
+            onChange={(event) => setStatus(event.target.value as PerformanceGoalStatus)}
+          >
+            {Object.entries(PERFORMANCE_GOAL_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
-        <FormField label="Weight" htmlFor="performanceGoalWeight"><Input id="performanceGoalWeight" type="number" min="0" max="100" value={weight} onChange={(event) => setWeight(event.target.value)} /></FormField>
-        <FormField label="Start date" htmlFor="performanceGoalStart"><Input id="performanceGoalStart" type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} /></FormField>
-        <FormField label="Due date" htmlFor="performanceGoalDue"><Input id="performanceGoalDue" type="date" value={dueDate} onChange={(event) => setDueDate(event.target.value)} /></FormField>
-        <FormField label="Progress" htmlFor="performanceGoalProgress"><Input id="performanceGoalProgress" type="number" min="0" max="100" value={progress} onChange={(event) => setProgress(event.target.value)} /></FormField>
-        <FormField label="Unit" htmlFor="performanceGoalUnit"><Input id="performanceGoalUnit" value={unit} onChange={(event) => setUnit(event.target.value)} /></FormField>
-        <FormField label="Current value" htmlFor="performanceGoalCurrent"><Input id="performanceGoalCurrent" type="number" min="0" value={currentValue} onChange={(event) => setCurrentValue(event.target.value)} /></FormField>
-        <FormField label="Target value" htmlFor="performanceGoalTarget"><Input id="performanceGoalTarget" type="number" min="0" value={targetValue} onChange={(event) => setTargetValue(event.target.value)} /></FormField>
+        <FormField label="Weight" htmlFor="performanceGoalWeight">
+          <Input
+            id="performanceGoalWeight"
+            type="number"
+            min="0"
+            max="100"
+            value={weight}
+            onChange={(event) => setWeight(event.target.value)}
+          />
+        </FormField>
+        <FormField label="Start date" htmlFor="performanceGoalStart">
+          <Input
+            id="performanceGoalStart"
+            type="date"
+            value={startDate}
+            onChange={(event) => setStartDate(event.target.value)}
+          />
+        </FormField>
+        <FormField label="Due date" htmlFor="performanceGoalDue">
+          <Input
+            id="performanceGoalDue"
+            type="date"
+            value={dueDate}
+            onChange={(event) => setDueDate(event.target.value)}
+          />
+        </FormField>
+        <FormField label="Progress" htmlFor="performanceGoalProgress">
+          <Input
+            id="performanceGoalProgress"
+            type="number"
+            min="0"
+            max="100"
+            value={progress}
+            onChange={(event) => setProgress(event.target.value)}
+          />
+        </FormField>
+        <FormField label="Unit" htmlFor="performanceGoalUnit">
+          <Input
+            id="performanceGoalUnit"
+            value={unit}
+            onChange={(event) => setUnit(event.target.value)}
+          />
+        </FormField>
+        <FormField label="Current value" htmlFor="performanceGoalCurrent">
+          <Input
+            id="performanceGoalCurrent"
+            type="number"
+            min="0"
+            value={currentValue}
+            onChange={(event) => setCurrentValue(event.target.value)}
+          />
+        </FormField>
+        <FormField label="Target value" htmlFor="performanceGoalTarget">
+          <Input
+            id="performanceGoalTarget"
+            type="number"
+            min="0"
+            value={targetValue}
+            onChange={(event) => setTargetValue(event.target.value)}
+          />
+        </FormField>
       </div>
-      <FormField label="Goal description" htmlFor="performanceGoalDescription" error={submitted && !description.trim() ? "Enter a goal description" : undefined}>
-        <Textarea id="performanceGoalDescription" value={description} onChange={(event) => setDescription(event.target.value)} />
+      <FormField
+        label="Goal description"
+        htmlFor="performanceGoalDescription"
+        error={submitted && !description.trim() ? "Enter a goal description" : undefined}
+      >
+        <Textarea
+          id="performanceGoalDescription"
+          value={description}
+          onChange={(event) => setDescription(event.target.value)}
+        />
       </FormField>
       <div className="flex justify-end gap-3 border-t border-border pt-5">
-        <Button type="button" variant="ghost" onClick={onCancel}>{PERFORMANCE_COPY.actions.cancel}</Button>
-        <Button type="submit">{goal ? PERFORMANCE_COPY.actions.save : PERFORMANCE_COPY.actions.addGoal}</Button>
+        <Button type="button" variant="ghost" onClick={onCancel}>
+          {PERFORMANCE_COPY.actions.cancel}
+        </Button>
+        <Button type="submit">
+          {goal ? PERFORMANCE_COPY.actions.save : PERFORMANCE_COPY.actions.addGoal}
+        </Button>
       </div>
     </form>
   );

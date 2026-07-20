@@ -10,12 +10,7 @@ export const PAYROLL_ADJUSTMENT_TYPE_CONFIG: Record<
   {
     label: string;
     direction: PayrollAdjustmentDirection;
-    badgeVariant:
-      | "info"
-      | "success"
-      | "warning"
-      | "danger"
-      | "neutral";
+    badgeVariant: "info" | "success" | "warning" | "danger" | "neutral";
   }
 > = {
   bonus: {
@@ -64,12 +59,7 @@ export const PAYROLL_ADJUSTMENT_STATUS_CONFIG: Record<
   PayrollAdjustmentStatus,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "warning"
-      | "success"
-      | "danger"
-      | "info";
+    badgeVariant: "neutral" | "warning" | "success" | "danger" | "info";
   }
 > = {
   draft: {
@@ -98,9 +88,7 @@ export const PAYROLL_ADJUSTMENT_DIRECTION_CONFIG: Record<
   PayrollAdjustmentDirection,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "danger";
+    badgeVariant: "success" | "danger";
   }
 > = {
   earning: {
@@ -153,14 +141,11 @@ export const PAYROLL_ADJUSTMENTS_COPY = {
   tableDescription:
     "Review payroll adjustments within the selected branch and processing period.",
   attentionTitle: "Approval queue",
-  attentionDescription:
-    "Adjustments waiting for finance or administrator approval.",
-  searchPlaceholder:
-    "Search employee, ID, department, adjustment or reason",
+  attentionDescription: "Adjustments waiting for finance or administrator approval.",
+  searchPlaceholder: "Search employee, ID, department, adjustment or reason",
   allTypes: "All adjustment types",
   allStatuses: "All statuses",
   allDirections: "Earnings and deductions",
   emptyTitle: "No payroll adjustments found",
-  emptyDescription:
-    "Change the selected filters or create a new payroll adjustment.",
+  emptyDescription: "Change the selected filters or create a new payroll adjustment.",
 } as const;

@@ -1,25 +1,12 @@
-﻿import type {
-  EmployeeLoanType,
-} from "@/types/loan";
+﻿import type { EmployeeLoanType } from "@/types/loan";
 
-export type LoanPolicyStatus =
-  | "active"
-  | "draft"
-  | "archived";
+export type LoanPolicyStatus = "active" | "draft" | "archived";
 
-export type LoanPolicyScope =
-  | "organization"
-  | "branch";
+export type LoanPolicyScope = "organization" | "branch";
 
-export type LoanInterestMode =
-  | "interest_free"
-  | "flat_rate"
-  | "reducing_balance";
+export type LoanInterestMode = "interest_free" | "flat_rate" | "reducing_balance";
 
-export type LoanApprovalMode =
-  | "manager_finance_admin"
-  | "finance_admin"
-  | "admin_only";
+export type LoanApprovalMode = "manager_finance_admin" | "finance_admin" | "admin_only";
 
 export type LoanPolicy = {
   id: string;

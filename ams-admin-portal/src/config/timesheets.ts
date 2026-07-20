@@ -1,17 +1,10 @@
-﻿import type {
-  TimesheetStatus,
-} from "@/types/timesheet";
+﻿import type { TimesheetStatus } from "@/types/timesheet";
 
 export const TIMESHEET_STATUS_CONFIG: Record<
   TimesheetStatus,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "warning"
-      | "success"
-      | "danger"
-      | "info";
+    badgeVariant: "neutral" | "warning" | "success" | "danger" | "info";
   }
 > = {
   draft: {
@@ -82,15 +75,12 @@ export const TIMESHEET_COPY = {
   description:
     "Review weekly working hours, overtime, breaks and missing time entries before payroll.",
   export: "Export timesheets",
-  searchPlaceholder:
-    "Search employee, ID, department or designation",
+  searchPlaceholder: "Search employee, ID, department or designation",
   allStatuses: "All statuses",
   chartTitle: "Recorded working hours",
-  chartDescription:
-    "Regular and overtime hours across the selected period.",
+  chartDescription: "Regular and overtime hours across the selected period.",
   statusTitle: "Timesheet status",
-  statusDescription:
-    "Approval state of employee timesheets in the current scope.",
+  statusDescription: "Approval state of employee timesheets in the current scope.",
   tableTitle: "Weekly timesheets",
   noResults: "No timesheets found",
 } as const;

@@ -24,13 +24,10 @@ export const LEAVE_REQUESTS_COPY = {
     "Review employee leave requests, verify balances and manage approval decisions.",
   createAction: "New leave request",
   queueTitle: "Approval queue",
-  queueDescription:
-    "Review leave requests within the selected organization scope.",
-  searchPlaceholder:
-    "Search employee, ID, department or reason",
+  queueDescription: "Review leave requests within the selected organization scope.",
+  searchPlaceholder: "Search employee, ID, department or reason",
   allTypes: "All leave types",
   allStatuses: "All statuses",
   emptyTitle: "No leave requests found",
-  emptyDescription:
-    "Change the selected filters or submit a new leave request.",
+  emptyDescription: "Change the selected filters or submit a new leave request.",
 } as const;

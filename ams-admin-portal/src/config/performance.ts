@@ -9,15 +9,9 @@
   PerformanceSettingsStatus,
 } from "@/types/performance";
 
-type BadgeVariant =
-  | "neutral"
-  | "success"
-  | "warning"
-  | "danger"
-  | "info";
+type BadgeVariant = "neutral" | "success" | "warning" | "danger" | "info";
 
-export const PERFORMANCE_REFERENCE_DATE =
-  "2026-07-16";
+export const PERFORMANCE_REFERENCE_DATE = "2026-07-16";
 
 export const PERFORMANCE_TABS = [
   { label: "Overview", href: "/performance" },
@@ -129,8 +123,7 @@ export const PERFORMANCE_COPY = {
   common: {
     eyebrow: "Talent Management",
     exportAction: "Export performance",
-    searchPlaceholder:
-      "Search employee, cycle, department, manager or goal",
+    searchPlaceholder: "Search employee, cycle, department, manager or goal",
   },
   actions: {
     addCycle: "Add review cycle",
@@ -159,22 +152,18 @@ export const PERFORMANCE_COPY = {
     chartDescription:
       "Completed performance-review ratings for the selected organization scope.",
     attentionTitle: "Requires attention",
-    attentionDescription:
-      "Reviews waiting for action and goals currently at risk.",
+    attentionDescription: "Reviews waiting for action and goals currently at risk.",
     recentTitle: "Recent performance reviews",
-    recentDescription:
-      "Latest review activity within the selected organization scope.",
+    recentDescription: "Latest review activity within the selected organization scope.",
   },
   cycles: {
     title: "Review cycles",
     description:
       "Create and manage performance-review periods, deadlines, participation and calibration stages.",
     registerTitle: "Cycle register",
-    registerDescription:
-      "Organization-wide and branch-specific performance cycles.",
+    registerDescription: "Organization-wide and branch-specific performance cycles.",
     emptyTitle: "No review cycles found",
-    emptyDescription:
-      "Change the filters or create a new performance cycle.",
+    emptyDescription: "Change the filters or create a new performance cycle.",
   },
   reviews: {
     title: "Employee reviews",
@@ -184,8 +173,7 @@ export const PERFORMANCE_COPY = {
     registerDescription:
       "Employee-review progress and scores across active and historical cycles.",
     emptyTitle: "No performance reviews found",
-    emptyDescription:
-      "Change the selected filters or review cycle.",
+    emptyDescription: "Change the selected filters or review cycle.",
   },
   goals: {
     title: "Goals and objectives",
@@ -195,21 +183,18 @@ export const PERFORMANCE_COPY = {
     registerDescription:
       "Performance objectives and progress within the selected organization scope.",
     emptyTitle: "No performance goals found",
-    emptyDescription:
-      "Change the filters or add a new performance goal.",
+    emptyDescription: "Change the filters or add a new performance goal.",
   },
   settings: {
     title: "Performance settings",
     description:
       "Configure review frequency, scoring weights, approvals and feedback rules by organization or branch.",
     registerTitle: "Settings register",
-    registerDescription:
-      "Organization defaults and branch-level performance overrides.",
+    registerDescription: "Organization defaults and branch-level performance overrides.",
     effectiveTitle: "Effective configuration",
     effectiveDescription:
       "Performance rules currently applied to the selected branch scope.",
     emptyTitle: "No performance settings found",
-    emptyDescription:
-      "Change the filters or create a new performance configuration.",
+    emptyDescription: "Change the filters or create a new performance configuration.",
   },
 } as const;

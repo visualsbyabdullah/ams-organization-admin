@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  useMemo,
-  useState,
-} from "react";
+import { useMemo, useState } from "react";
 import {
   Ban,
   CheckCircle2,
@@ -39,100 +36,59 @@ import {
 import { useBranchScope } from "@/context/branch-scope-context";
 import { formatPKR } from "@/lib/currency";
 import { formatDate } from "@/lib/date";
-import {
-  buildInvoiceTrend,
-  exportInvoicesToCsv,
-  isInvoiceDueSoon,
-} from "@/lib/invoices";
-import type {
-  Invoice,
-  InvoicePaymentValues,
-} from "@/types/invoice";
+import { buildInvoiceTrend, exportInvoicesToCsv, isInvoiceDueSoon } from "@/lib/invoices";
+import type { Invoice, InvoicePaymentValues } from "@/types/invoice";
 
 export function InvoiceOverview() {
-  const {
-    selectedBranch,
-    selectedBranchId,
-  } = useBranchScope();
+  const { selectedBranch, selectedBranchId } = useBranchScope();
 
-  const {
-    invoices,
-    saveInvoice,
-    updateInvoiceStatus,
-    recordInvoicePayment,
-  } = useInvoiceRecords();
+  const { invoices, saveInvoice, updateInvoiceStatus, recordInvoicePayment } =
+    useInvoiceRecords();
 
-  const [selectedInvoiceId, setSelectedInvoiceId] =
-    useState<string | null>(null);
+  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);
 
-  const [createOpen, setCreateOpen] =
-    useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
-  const [paymentOpen, setPaymentOpen] =
-    useState(false);
+  const [paymentOpen, setPaymentOpen] = useState(false);
 
   const scopedInvoices = useMemo(
     () =>
       invoices.filter(
-        (invoice) =>
-          selectedBranch.isAggregate ||
-          invoice.branchId === selectedBranch.id,
+        (invoice) => selectedBranch.isAggregate || invoice.branchId === selectedBranch.id,
       ),
     [invoices, selectedBranch],
   );
 
   const selectedInvoice =
-    invoices.find(
-      (invoice) =>
-        invoice.id === selectedInvoiceId,
-    ) ?? null;
+    invoices.find((invoice) => invoice.id === selectedInvoiceId) ?? null;
 
-  const referencePeriod =
-    INVOICE_REFERENCE_DATE.slice(0, 7);
+  const referencePeriod = INVOICE_REFERENCE_DATE.slice(0, 7);
 
-  const currentPeriodInvoices =
-    scopedInvoices.filter(
-      (invoice) =>
-        invoice.issueDate.startsWith(
-          referencePeriod,
-        ) && invoice.status !== "void",
-    );
+  const currentPeriodInvoices = scopedInvoices.filter(
+    (invoice) =>
+      invoice.issueDate.startsWith(referencePeriod) && invoice.status !== "void",
+  );
 
-  const billedAmount =
-    currentPeriodInvoices.reduce(
-      (total, invoice) =>
-        total + invoice.totalAmount,
-      0,
-    );
+  const billedAmount = currentPeriodInvoices.reduce(
+    (total, invoice) => total + invoice.totalAmount,
+    0,
+  );
 
-  const collectedAmount =
-    currentPeriodInvoices.reduce(
-      (total, invoice) =>
-        total + invoice.paidAmount,
-      0,
-    );
+  const collectedAmount = currentPeriodInvoices.reduce(
+    (total, invoice) => total + invoice.paidAmount,
+    0,
+  );
 
-  const outstandingAmount =
-    scopedInvoices
-      .filter(
-        (invoice) =>
-          !["void", "draft"].includes(
-            invoice.status,
-          ),
-      )
-      .reduce(
-        (total, invoice) =>
-          total + invoice.balanceAmount,
-        0,
-      );
+  const outstandingAmount = scopedInvoices
+    .filter((invoice) => !["void", "draft"].includes(invoice.status))
+    .reduce((total, invoice) => total + invoice.balanceAmount, 0);
 
   const overdueInvoices = scopedInvoices.filter(
     (invoice) => invoice.status === "overdue",
   );
 
   const overdueAmount = overdueInvoices.reduce(
-    (total, invoice) =>
-      total + invoice.balanceAmount,
+    (total, invoice) => total + invoice.balanceAmount,
     0,
   );
 
@@ -140,33 +96,18 @@ export function InvoiceOverview() {
     .filter(
       (invoice) =>
         invoice.status === "overdue" ||
-        (["sent", "partially_paid"].includes(
-          invoice.status,
-        ) &&
-          isInvoiceDueSoon(
-            invoice.dueDate,
-            INVOICE_REFERENCE_DATE,
-          )),
+        (["sent", "partially_paid"].includes(invoice.status) &&
+          isInvoiceDueSoon(invoice.dueDate, INVOICE_REFERENCE_DATE)),
     )
-    .sort((first, second) =>
-      first.dueDate.localeCompare(
-        second.dueDate,
-      ),
-    );
+    .sort((first, second) => first.dueDate.localeCompare(second.dueDate));
 
   const recentInvoices = [...scopedInvoices]
-    .sort((first, second) =>
-      second.issueDate.localeCompare(
-        first.issueDate,
-      ),
-    )
+    .sort((first, second) => second.issueDate.localeCompare(first.issueDate))
     .slice(0, 5);
 
   const trend = buildInvoiceTrend(
     scopedInvoices,
-    Number(
-      INVOICE_REFERENCE_DATE.slice(0, 4),
-    ),
+    Number(INVOICE_REFERENCE_DATE.slice(0, 4)),
   );
 
   const metrics = [
@@ -179,27 +120,17 @@ export function InvoiceOverview() {
     },
     {
       label: "Collected this month",
-      value: formatPKR(
-        collectedAmount,
-        true,
-      ),
+      value: formatPKR(collectedAmount, true),
       detail:
         billedAmount > 0
-          ? `${Math.round(
-              (collectedAmount /
-                billedAmount) *
-                100,
-            )}% collection rate`
+          ? `${Math.round((collectedAmount / billedAmount) * 100)}% collection rate`
           : "No billing recorded",
       icon: CheckCircle2,
       tone: "success" as const,
     },
     {
       label: "Outstanding balance",
-      value: formatPKR(
-        outstandingAmount,
-        true,
-      ),
+      value: formatPKR(outstandingAmount, true),
       detail: "Open client receivables",
       icon: WalletCards,
       tone: "warning" as const,
@@ -216,8 +147,7 @@ export function InvoiceOverview() {
   const columns = useMemo(
     () =>
       createInvoiceColumns({
-        onOpen: (invoice) =>
-          setSelectedInvoiceId(invoice.id),
+        onOpen: (invoice) => setSelectedInvoiceId(invoice.id),
         compact: true,
       }),
     [],
@@ -229,10 +159,7 @@ export function InvoiceOverview() {
     setSelectedInvoiceId(invoice.id);
   }
 
-  function recordPayment(
-    invoiceId: string,
-    values: InvoicePaymentValues,
-  ) {
+  function recordPayment(invoiceId: string, values: InvoicePaymentValues) {
     recordInvoicePayment(invoiceId, values);
     setPaymentOpen(false);
   }
@@ -242,28 +169,15 @@ export function InvoiceOverview() {
       <PageHeader
         eyebrow={INVOICE_COPY.common.eyebrow}
         title={INVOICE_COPY.overview.title}
-        description={
-          INVOICE_COPY.overview.description
-        }
+        description={INVOICE_COPY.overview.description}
         actions={
           <>
-            <Button
-              variant="outline"
-              onClick={() =>
-                exportInvoicesToCsv(
-                  scopedInvoices,
-                )
-              }
-            >
+            <Button variant="outline" onClick={() => exportInvoicesToCsv(scopedInvoices)}>
               <Download />
               {INVOICE_COPY.common.exportAction}
             </Button>
 
-            <Button
-              onClick={() =>
-                setCreateOpen(true)
-              }
-            >
+            <Button onClick={() => setCreateOpen(true)}>
               <Plus />
               {INVOICE_COPY.common.createAction}
             </Button>
@@ -277,22 +191,14 @@ export function InvoiceOverview() {
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
         <ChartCard
-          title={
-            INVOICE_COPY.overview.chartTitle
-          }
-          description={
-            INVOICE_COPY.overview
-              .chartDescription
-          }
+          title={INVOICE_COPY.overview.chartTitle}
+          description={INVOICE_COPY.overview.chartDescription}
         >
           <InvoiceRevenueChart data={trend} />
         </ChartCard>
@@ -305,75 +211,49 @@ export function InvoiceOverview() {
 
             <div>
               <h2 className="text-lg font-bold">
-                {
-                  INVOICE_COPY.overview
-                    .attentionTitle
-                }
+                {INVOICE_COPY.overview.attentionTitle}
               </h2>
 
               <p className="mt-1 text-sm text-text-muted">
-                {
-                  INVOICE_COPY.overview
-                    .attentionDescription
-                }
+                {INVOICE_COPY.overview.attentionDescription}
               </p>
             </div>
           </div>
 
           <div className="mt-5 space-y-3">
             {attentionInvoices.length > 0 ? (
-              attentionInvoices.map(
-                (invoice) => (
-                  <button
-                    key={invoice.id}
-                    type="button"
-                    onClick={() =>
-                      setSelectedInvoiceId(
-                        invoice.id,
-                      )
-                    }
-                    className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
-                  >
-                    <div className="flex items-start justify-between gap-3">
-                      <div>
-                        <p className="text-sm font-semibold">
-                          {invoice.clientName}
-                        </p>
+              attentionInvoices.map((invoice) => (
+                <button
+                  key={invoice.id}
+                  type="button"
+                  onClick={() => setSelectedInvoiceId(invoice.id)}
+                  className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-sm font-semibold">{invoice.clientName}</p>
 
-                        <p className="mt-1 text-xs text-text-muted">
-                          {invoice.invoiceNumber}
-                        </p>
-                      </div>
-
-                      <Badge
-                        variant={
-                          INVOICE_STATUS_CONFIG[
-                            invoice.status
-                          ].badgeVariant
-                        }
-                      >
-                        {
-                          INVOICE_STATUS_CONFIG[
-                            invoice.status
-                          ].label
-                        }
-                      </Badge>
+                      <p className="mt-1 text-xs text-text-muted">
+                        {invoice.invoiceNumber}
+                      </p>
                     </div>
 
-                    <div className="mt-3 flex items-center justify-between gap-3">
-                      <strong className="text-sm">
-                        {formatPKR(
-                          invoice.balanceAmount,
-                        )}
-                      </strong>
+                    <Badge variant={INVOICE_STATUS_CONFIG[invoice.status].badgeVariant}>
+                      {INVOICE_STATUS_CONFIG[invoice.status].label}
+                    </Badge>
+                  </div>
 
-                      <span className="text-xs text-text-muted">
-                        Due {formatDate(invoice.dueDate)}
-                      </span>
-                    </div>
-                  </button>
-                ),
-              )
+                  <div className="mt-3 flex items-center justify-between gap-3">
+                    <strong className="text-sm">
+                      {formatPKR(invoice.balanceAmount)}
+                    </strong>
+
+                    <span className="text-xs text-text-muted">
+                      Due {formatDate(invoice.dueDate)}
+                    </span>
+                  </div>
+                </button>
+              ))
             ) : (
               <div className="rounded-control bg-success-muted p-4 text-sm font-medium text-success">
                 No invoices currently require collection follow-up.
@@ -385,15 +265,10 @@ export function InvoiceOverview() {
 
       <Card className="mt-6 overflow-hidden">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {INVOICE_COPY.overview.recentTitle}
-          </h2>
+          <h2 className="text-lg font-bold">{INVOICE_COPY.overview.recentTitle}</h2>
 
           <p className="mt-1 text-sm text-text-muted">
-            {
-              INVOICE_COPY.overview
-                .recentDescription
-            }
+            {INVOICE_COPY.overview.recentDescription}
           </p>
         </div>
 
@@ -401,22 +276,15 @@ export function InvoiceOverview() {
           rows={recentInvoices}
           columns={columns}
           getRowKey={(invoice) => invoice.id}
-          onRowClick={(invoice) =>
-            setSelectedInvoiceId(invoice.id)
-          }
+          onRowClick={(invoice) => setSelectedInvoiceId(invoice.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <ReceiptText className="size-8 text-text-muted" />
 
-              <h3 className="mt-4 font-bold">
-                {INVOICE_COPY.common.emptyTitle}
-              </h3>
+              <h3 className="mt-4 font-bold">{INVOICE_COPY.common.emptyTitle}</h3>
 
               <p className="mt-2 text-sm text-text-muted">
-                {
-                  INVOICE_COPY.common
-                    .emptyDescription
-                }
+                {INVOICE_COPY.common.emptyDescription}
               </p>
             </div>
           }
@@ -438,69 +306,34 @@ export function InvoiceOverview() {
         footer={
           selectedInvoice ? (
             <div className="flex flex-wrap justify-end gap-3">
-              {selectedInvoice.status ===
-                "draft" && (
-                <Button
-                  onClick={() =>
-                    updateInvoiceStatus(
-                      selectedInvoice.id,
-                      "sent",
-                    )
-                  }
-                >
+              {selectedInvoice.status === "draft" && (
+                <Button onClick={() => updateInvoiceStatus(selectedInvoice.id, "sent")}>
                   <Send />
                   {INVOICE_COPY.actions.send}
                 </Button>
               )}
 
-              {[
-                "sent",
-                "partially_paid",
-                "overdue",
-              ].includes(
-                selectedInvoice.status,
-              ) && (
+              {["sent", "partially_paid", "overdue"].includes(selectedInvoice.status) && (
                 <>
                   <Button
                     variant="outline"
-                    onClick={() =>
-                      updateInvoiceStatus(
-                        selectedInvoice.id,
-                        "void",
-                      )
-                    }
+                    onClick={() => updateInvoiceStatus(selectedInvoice.id, "void")}
                   >
                     <Ban />
-                    {
-                      INVOICE_COPY.actions
-                        .markVoid
-                    }
+                    {INVOICE_COPY.actions.markVoid}
                   </Button>
 
-                  <Button
-                    onClick={() =>
-                      setPaymentOpen(true)
-                    }
-                  >
+                  <Button onClick={() => setPaymentOpen(true)}>
                     <CircleDollarSign />
-                    {
-                      INVOICE_COPY.actions
-                        .recordPayment
-                    }
+                    {INVOICE_COPY.actions.recordPayment}
                   </Button>
                 </>
               )}
 
-              {selectedInvoice.status ===
-                "void" && (
+              {selectedInvoice.status === "void" && (
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    updateInvoiceStatus(
-                      selectedInvoice.id,
-                      "draft",
-                    )
-                  }
+                  onClick={() => updateInvoiceStatus(selectedInvoice.id, "draft")}
                 >
                   <ReceiptText />
                   {INVOICE_COPY.actions.reopen}
@@ -510,11 +343,7 @@ export function InvoiceOverview() {
           ) : undefined
         }
       >
-        {selectedInvoice && (
-          <InvoiceDetails
-            invoice={selectedInvoice}
-          />
-        )}
+        {selectedInvoice && <InvoiceDetails invoice={selectedInvoice} />}
       </Drawer>
 
       <Drawer
@@ -525,17 +354,13 @@ export function InvoiceOverview() {
       >
         <InvoiceForm
           selectedBranchId={selectedBranchId}
-          onCancel={() =>
-            setCreateOpen(false)
-          }
+          onCancel={() => setCreateOpen(false)}
           onSave={saveAndOpen}
         />
       </Drawer>
 
       <Drawer
-        open={Boolean(
-          paymentOpen && selectedInvoice,
-        )}
+        open={Boolean(paymentOpen && selectedInvoice)}
         onClose={() => setPaymentOpen(false)}
         title="Record invoice payment"
         description={
@@ -548,9 +373,7 @@ export function InvoiceOverview() {
           <InvoicePaymentForm
             key={`${selectedInvoice.id}-${selectedInvoice.balanceAmount}`}
             invoice={selectedInvoice}
-            onCancel={() =>
-              setPaymentOpen(false)
-            }
+            onCancel={() => setPaymentOpen(false)}
             onSubmit={recordPayment}
           />
         )}

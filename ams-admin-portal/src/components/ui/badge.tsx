@@ -8,16 +8,11 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        neutral:
-          "bg-surface-muted text-text-muted",
-        success:
-          "bg-success-muted text-success",
-        warning:
-          "bg-warning-muted text-warning",
-        danger:
-          "bg-danger-muted text-danger",
-        info:
-          "bg-info-muted text-info",
+        neutral: "bg-surface-muted text-text-muted",
+        success: "bg-success-muted text-success",
+        warning: "bg-warning-muted text-warning",
+        danger: "bg-danger-muted text-danger",
+        info: "bg-info-muted text-info",
       },
     },
     defaultVariants: {
@@ -26,22 +21,8 @@ const badgeVariants = cva(
   },
 );
 
-type BadgeProps =
-  HTMLAttributes<HTMLSpanElement> &
-  VariantProps<typeof badgeVariants>;
+type BadgeProps = HTMLAttributes<HTMLSpanElement> & VariantProps<typeof badgeVariants>;
 
-export function Badge({
-  className,
-  variant,
-  ...props
-}: BadgeProps) {
-  return (
-    <span
-      className={cn(
-        badgeVariants({ variant }),
-        className,
-      )}
-      {...props}
-    />
-  );
+export function Badge({ className, variant, ...props }: BadgeProps) {
+  return <span className={cn(badgeVariants({ variant }), className)} {...props} />;
 }

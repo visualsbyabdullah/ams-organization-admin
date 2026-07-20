@@ -11,18 +11,11 @@
   DocumentVisibility,
 } from "@/types/document";
 
-type BadgeVariant =
-  | "neutral"
-  | "info"
-  | "warning"
-  | "success"
-  | "danger";
+type BadgeVariant = "neutral" | "info" | "warning" | "success" | "danger";
 
-export const DOCUMENT_REFERENCE_DATE =
-  "2026-07-16";
+export const DOCUMENT_REFERENCE_DATE = "2026-07-16";
 
-export const DOCUMENT_NUMBER_PREFIX =
-  "DOC";
+export const DOCUMENT_NUMBER_PREFIX = "DOC";
 
 export const DOCUMENT_DEFAULT_REJECTION_REASON =
   "Verification was rejected by the organization administrator.";
@@ -162,23 +155,19 @@ export const DOCUMENT_VISIBILITY_CONFIG: Record<
 > = {
   private: {
     label: "Administrators only",
-    description:
-      "Visible only to authorized organization administrators.",
+    description: "Visible only to authorized organization administrators.",
   },
   employee: {
     label: "Employee and administrators",
-    description:
-      "Visible to the document owner and authorized administrators.",
+    description: "Visible to the document owner and authorized administrators.",
   },
   managers: {
     label: "Employee, managers and administrators",
-    description:
-      "Visible to the employee, reporting managers and administrators.",
+    description: "Visible to the employee, reporting managers and administrators.",
   },
   organization: {
     label: "Organization-wide",
-    description:
-      "Visible to all employees within the applicable organization scope.",
+    description: "Visible to all employees within the applicable organization scope.",
   },
 };
 
@@ -362,70 +351,57 @@ export const DOCUMENTS_COPY = {
     description:
       "Manage employee, branch and organization documents, verification, expiry and document requests.",
     chartTitle: "Document activity",
-    chartDescription:
-      "Uploaded, verified and expired documents during the current year.",
+    chartDescription: "Uploaded, verified and expired documents during the current year.",
     attentionTitle: "Requires attention",
     attentionDescription:
       "Documents awaiting verification or approaching an expiry deadline.",
     recentTitle: "Recent documents",
-    recentDescription:
-      "Latest documents within the selected organization scope.",
+    recentDescription: "Latest documents within the selected organization scope.",
     emptyTitle: "No documents found",
-    emptyDescription:
-      "Upload a document or select another branch scope.",
+    emptyDescription: "Upload a document or select another branch scope.",
   },
   library: {
     title: "Document library",
     description:
       "Search, verify and manage employee, branch and organization document records.",
     registerTitle: "Document register",
-    registerDescription:
-      "Central document index for the selected organization scope.",
-    searchPlaceholder:
-      "Search title, document number, file, employee, branch or tag",
+    registerDescription: "Central document index for the selected organization scope.",
+    searchPlaceholder: "Search title, document number, file, employee, branch or tag",
     allStatuses: "All document statuses",
     allCategories: "All document categories",
     allOwners: "All owners",
     emptyTitle: "No documents match the filters",
-    emptyDescription:
-      "Change the filters or upload a new document.",
+    emptyDescription: "Change the filters or upload a new document.",
   },
   requests: {
     title: "Document requests",
     description:
       "Request missing employee documents, track submissions and close verification requirements.",
     registerTitle: "Request register",
-    registerDescription:
-      "Open and historical employee document requests.",
+    registerDescription: "Open and historical employee document requests.",
     queueTitle: "Submission queue",
-    queueDescription:
-      "Open, overdue and submitted requests requiring follow-up.",
-    searchPlaceholder:
-      "Search employee, request, category or note",
+    queueDescription: "Open, overdue and submitted requests requiring follow-up.",
+    searchPlaceholder: "Search employee, request, category or note",
     allStatuses: "All request statuses",
     allCategories: "All request categories",
     emptyTitle: "No document requests found",
-    emptyDescription:
-      "Change the filters or create a new employee document request.",
+    emptyDescription: "Change the filters or create a new employee document request.",
   },
   templates: {
     title: "Document templates",
     description:
       "Manage reusable HR letters, certificates, agreements and policy document templates.",
     registerTitle: "Template library",
-    registerDescription:
-      "Organization defaults and branch-specific document templates.",
+    registerDescription: "Organization defaults and branch-specific document templates.",
     coverageTitle: "Template coverage",
     coverageDescription:
       "Published templates available within the selected organization scope.",
-    searchPlaceholder:
-      "Search template, code, category, branch or variable",
+    searchPlaceholder: "Search template, code, category, branch or variable",
     allStatuses: "All template statuses",
     allCategories: "All template categories",
     allScopes: "Organization and branch",
     emptyTitle: "No document templates found",
-    emptyDescription:
-      "Change the filters or add a reusable document template.",
+    emptyDescription: "Change the filters or add a reusable document template.",
   },
   settings: {
     title: "Document settings",
@@ -437,12 +413,10 @@ export const DOCUMENTS_COPY = {
     effectiveTitle: "Effective settings",
     effectiveDescription:
       "Controls currently applied within the selected organization scope.",
-    searchPlaceholder:
-      "Search settings, branch or file extension",
+    searchPlaceholder: "Search settings, branch or file extension",
     allStatuses: "All settings statuses",
     allScopes: "Organization and branch",
     emptyTitle: "No document settings found",
-    emptyDescription:
-      "Change the filters or create document settings.",
+    emptyDescription: "Change the filters or create document settings.",
   },
 } as const;

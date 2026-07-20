@@ -1,10 +1,6 @@
 ﻿"use client";
 
-import {
-  type MouseEvent,
-  useMemo,
-  useState,
-} from "react";
+import { type MouseEvent, useMemo, useState } from "react";
 import {
   Award,
   BookOpenCheck,
@@ -19,10 +15,7 @@ import {
 
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
-import {
-  DataTable,
-  type DataTableColumn,
-} from "@/components/shared/data-table";
+import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { TrainingActivityChart } from "@/components/training/training-activity-chart";
@@ -52,32 +45,18 @@ import {
   downloadTrainingCsv,
   formatTrainingDuration,
 } from "@/lib/training";
-import type {
-  TrainingCourse,
-  TrainingEnrollment,
-} from "@/types/training";
+import type { TrainingCourse, TrainingEnrollment } from "@/types/training";
 
 export function TrainingOverview() {
-  const {
-    selectedBranch,
-    selectedBranchId,
-  } = useBranchScope();
+  const { selectedBranch, selectedBranchId } = useBranchScope();
 
-  const [courses, setCourses] =
-    useState<TrainingCourse[]>(
-      TRAINING_COURSES,
-    );
+  const [courses, setCourses] = useState<TrainingCourse[]>(TRAINING_COURSES);
 
-  const [enrollments] =
-    useState<TrainingEnrollment[]>(
-      TRAINING_ENROLLMENTS,
-    );
+  const [enrollments] = useState<TrainingEnrollment[]>(TRAINING_ENROLLMENTS);
 
-  const [createOpen, setCreateOpen] =
-    useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
-  const [selectedEnrollmentId, setSelectedEnrollmentId] =
-    useState<string | null>(null);
+  const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
 
   const scopedCourses = useMemo(
     () =>
@@ -94,37 +73,26 @@ export function TrainingOverview() {
     () =>
       enrollments.filter(
         (enrollment) =>
-          selectedBranch.isAggregate ||
-          enrollment.branchId === selectedBranch.id,
+          selectedBranch.isAggregate || enrollment.branchId === selectedBranch.id,
       ),
     [enrollments, selectedBranch],
   );
 
-  const activeEnrollments = scopedEnrollments.filter(
-    (enrollment) =>
-      [
-        "assigned",
-        "in_progress",
-        "overdue",
-      ].includes(enrollment.status),
+  const activeEnrollments = scopedEnrollments.filter((enrollment) =>
+    ["assigned", "in_progress", "overdue"].includes(enrollment.status),
   );
 
   const completedEnrollments = scopedEnrollments.filter(
-    (enrollment) =>
-      enrollment.status === "completed",
+    (enrollment) => enrollment.status === "completed",
   );
 
   const overdueEnrollments = scopedEnrollments.filter(
-    (enrollment) =>
-      enrollment.status === "overdue",
+    (enrollment) => enrollment.status === "overdue",
   );
 
   const completionRate = calculateCompletionRate(
     completedEnrollments.length,
-    scopedEnrollments.filter(
-      (enrollment) =>
-        enrollment.status !== "cancelled",
-    ).length,
+    scopedEnrollments.filter((enrollment) => enrollment.status !== "cancelled").length,
   );
 
   const publishedCourses = scopedCourses.filter(
@@ -135,35 +103,20 @@ export function TrainingOverview() {
     (session) =>
       session.status === "scheduled" &&
       session.sessionDate >= TRAINING_REFERENCE_DATE &&
-      (selectedBranch.isAggregate ||
-        session.branchId === selectedBranch.id),
+      (selectedBranch.isAggregate || session.branchId === selectedBranch.id),
   )
-    .sort((first, second) =>
-      first.sessionDate.localeCompare(
-        second.sessionDate,
-      ),
-    )
+    .sort((first, second) => first.sessionDate.localeCompare(second.sessionDate))
     .slice(0, 4);
 
   const selectedEnrollment =
-    enrollments.find(
-      (enrollment) =>
-        enrollment.id === selectedEnrollmentId,
-    ) ?? null;
+    enrollments.find((enrollment) => enrollment.id === selectedEnrollmentId) ?? null;
 
   const selectedEmployee = selectedEnrollment
-    ? EMPLOYEES.find(
-        (employee) =>
-          employee.id ===
-          selectedEnrollment.employeeId,
-      )
+    ? EMPLOYEES.find((employee) => employee.id === selectedEnrollment.employeeId)
     : null;
 
   const selectedCourse = selectedEnrollment
-    ? courses.find(
-        (course) =>
-          course.id === selectedEnrollment.courseId,
-      )
+    ? courses.find((course) => course.id === selectedEnrollment.courseId)
     : null;
 
   const metrics = [
@@ -197,18 +150,13 @@ export function TrainingOverview() {
     },
   ];
 
-  const columns = useMemo<
-    DataTableColumn<TrainingEnrollment>[]
-  >(
+  const columns = useMemo<DataTableColumn<TrainingEnrollment>[]>(
     () => [
       {
         id: "employee",
         header: "Employee",
         cell: (enrollment) => {
-          const employee = EMPLOYEES.find(
-            (item) =>
-              item.id === enrollment.employeeId,
-          );
+          const employee = EMPLOYEES.find((item) => item.id === enrollment.employeeId);
 
           if (!employee) {
             return "Employee unavailable";
@@ -216,15 +164,10 @@ export function TrainingOverview() {
 
           return (
             <div className="flex items-center gap-3">
-              <Avatar
-                name={employee.name}
-                initials={employee.initials}
-              />
+              <Avatar name={employee.name} initials={employee.initials} />
 
               <div>
-                <p className="font-semibold">
-                  {employee.name}
-                </p>
+                <p className="font-semibold">{employee.name}</p>
 
                 <p className="mt-1 text-xs text-text-muted">
                   {employee.employeeCode} Â· {employee.department}
@@ -238,15 +181,11 @@ export function TrainingOverview() {
         id: "course",
         header: "Course",
         cell: (enrollment) => {
-          const course = courses.find(
-            (item) => item.id === enrollment.courseId,
-          );
+          const course = courses.find((item) => item.id === enrollment.courseId);
 
           return course ? (
             <div>
-              <p className="font-semibold">
-                {course.title}
-              </p>
+              <p className="font-semibold">{course.title}</p>
 
               <p className="mt-1 text-xs text-text-muted">
                 {course.code} Â· {formatTrainingDuration(course.durationHours)}
@@ -260,8 +199,7 @@ export function TrainingOverview() {
       {
         id: "due",
         header: "Due date",
-        cell: (enrollment) =>
-          formatDate(enrollment.dueDate),
+        cell: (enrollment) => formatDate(enrollment.dueDate),
       },
       {
         id: "progress",
@@ -285,17 +223,9 @@ export function TrainingOverview() {
         header: "Status",
         cell: (enrollment) => (
           <Badge
-            variant={
-              TRAINING_ENROLLMENT_STATUS_CONFIG[
-                enrollment.status
-              ].badgeVariant
-            }
+            variant={TRAINING_ENROLLMENT_STATUS_CONFIG[enrollment.status].badgeVariant}
           >
-            {
-              TRAINING_ENROLLMENT_STATUS_CONFIG[
-                enrollment.status
-              ].label
-            }
+            {TRAINING_ENROLLMENT_STATUS_CONFIG[enrollment.status].label}
           </Badge>
         ),
       },
@@ -304,10 +234,7 @@ export function TrainingOverview() {
   );
 
   function saveCourse(course: TrainingCourse) {
-    setCourses((currentCourses) => [
-      course,
-      ...currentCourses,
-    ]);
+    setCourses((currentCourses) => [course, ...currentCourses]);
     setCreateOpen(false);
   }
 
@@ -324,12 +251,8 @@ export function TrainingOverview() {
         "Status",
       ],
       scopedEnrollments.map((enrollment) => {
-        const employee = EMPLOYEES.find(
-          (item) => item.id === enrollment.employeeId,
-        );
-        const course = courses.find(
-          (item) => item.id === enrollment.courseId,
-        );
+        const employee = EMPLOYEES.find((item) => item.id === enrollment.employeeId);
+        const course = courses.find((item) => item.id === enrollment.courseId);
 
         return [
           employee?.name ?? "",
@@ -338,9 +261,7 @@ export function TrainingOverview() {
           enrollment.assignedDate,
           enrollment.dueDate,
           enrollment.progress,
-          TRAINING_ENROLLMENT_STATUS_CONFIG[
-            enrollment.status
-          ].label,
+          TRAINING_ENROLLMENT_STATUS_CONFIG[enrollment.status].label,
         ];
       }),
     );
@@ -351,22 +272,15 @@ export function TrainingOverview() {
       <PageHeader
         eyebrow={TRAINING_COPY.eyebrow}
         title={TRAINING_COPY.overview.title}
-        description={
-          TRAINING_COPY.overview.description
-        }
+        description={TRAINING_COPY.overview.description}
         actions={
           <>
-            <Button
-              variant="outline"
-              onClick={exportData}
-            >
+            <Button variant="outline" onClick={exportData}>
               <Download />
               {TRAINING_COPY.overview.exportAction}
             </Button>
 
-            <Button
-              onClick={() => setCreateOpen(true)}
-            >
+            <Button onClick={() => setCreateOpen(true)}>
               <Plus />
               {TRAINING_COPY.overview.createAction}
             </Button>
@@ -380,25 +294,17 @@ export function TrainingOverview() {
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
         <ChartCard
           title={TRAINING_COPY.overview.chartTitle}
-          description={
-            TRAINING_COPY.overview.chartDescription
-          }
+          description={TRAINING_COPY.overview.chartDescription}
         >
           <TrainingActivityChart
-            data={
-              TRAINING_TRENDS[selectedBranchId] ??
-              TRAINING_TRENDS.all
-            }
+            data={TRAINING_TRENDS[selectedBranchId] ?? TRAINING_TRENDS.all}
           />
         </ChartCard>
 
@@ -422,9 +328,7 @@ export function TrainingOverview() {
           <div className="mt-5 space-y-3">
             {upcomingSessions.length > 0 ? (
               upcomingSessions.map((session) => {
-                const course = courses.find(
-                  (item) => item.id === session.courseId,
-                );
+                const course = courses.find((item) => item.id === session.courseId);
 
                 return (
                   <div
@@ -442,9 +346,7 @@ export function TrainingOverview() {
                         </p>
                       </div>
 
-                      <Badge variant="info">
-                        {formatDate(session.sessionDate)}
-                      </Badge>
+                      <Badge variant="info">{formatDate(session.sessionDate)}</Badge>
                     </div>
 
                     <div className="mt-3 flex items-center justify-between gap-3 text-xs text-text-muted">
@@ -470,9 +372,7 @@ export function TrainingOverview() {
 
       <Card className="mt-6 overflow-hidden">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {TRAINING_COPY.overview.registerTitle}
-          </h2>
+          <h2 className="text-lg font-bold">{TRAINING_COPY.overview.registerTitle}</h2>
 
           <p className="mt-1 text-sm text-text-muted">
             {TRAINING_COPY.overview.registerDescription}
@@ -482,21 +382,13 @@ export function TrainingOverview() {
         <DataTable
           rows={activeEnrollments}
           columns={columns}
-          getRowKey={(enrollment) =>
-            enrollment.id
-          }
-          onRowClick={(enrollment) =>
-            setSelectedEnrollmentId(
-              enrollment.id,
-            )
-          }
+          getRowKey={(enrollment) => enrollment.id}
+          onRowClick={(enrollment) => setSelectedEnrollmentId(enrollment.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <GraduationCap className="size-8 text-text-muted" />
 
-              <h3 className="mt-4 font-bold">
-                {TRAINING_COPY.overview.emptyTitle}
-              </h3>
+              <h3 className="mt-4 font-bold">{TRAINING_COPY.overview.emptyTitle}</h3>
 
               <p className="mt-2 text-sm text-text-muted">
                 {TRAINING_COPY.overview.emptyDescription}
@@ -507,14 +399,8 @@ export function TrainingOverview() {
       </Card>
 
       <Drawer
-        open={Boolean(
-          selectedEnrollment &&
-            selectedEmployee &&
-            selectedCourse,
-        )}
-        onClose={() =>
-          setSelectedEnrollmentId(null)
-        }
+        open={Boolean(selectedEnrollment && selectedEmployee && selectedCourse)}
+        onClose={() => setSelectedEnrollmentId(null)}
         title="Training enrollment"
         description={
           selectedEmployee
@@ -522,122 +408,97 @@ export function TrainingOverview() {
             : undefined
         }
       >
-        {selectedEnrollment &&
-          selectedEmployee &&
-          selectedCourse && (
-            <div className="space-y-6">
-              <section className="rounded-card border border-border">
-                <div className="flex items-start justify-between gap-4 border-b border-border p-5">
-                  <div>
-                    <h3 className="font-bold">
-                      {selectedCourse.title}
-                    </h3>
+        {selectedEnrollment && selectedEmployee && selectedCourse && (
+          <div className="space-y-6">
+            <section className="rounded-card border border-border">
+              <div className="flex items-start justify-between gap-4 border-b border-border p-5">
+                <div>
+                  <h3 className="font-bold">{selectedCourse.title}</h3>
 
-                    <p className="mt-1 text-xs text-text-muted">
-                      {selectedCourse.code} Â· Assigned {formatDate(selectedEnrollment.assignedDate)}
-                    </p>
-                  </div>
-
-                  <Badge
-                    variant={
-                      TRAINING_ENROLLMENT_STATUS_CONFIG[
-                        selectedEnrollment.status
-                      ].badgeVariant
-                    }
-                  >
-                    {
-                      TRAINING_ENROLLMENT_STATUS_CONFIG[
-                        selectedEnrollment.status
-                      ].label
-                    }
-                  </Badge>
+                  <p className="mt-1 text-xs text-text-muted">
+                    {selectedCourse.code} Â· Assigned{" "}
+                    {formatDate(selectedEnrollment.assignedDate)}
+                  </p>
                 </div>
 
-                <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Due date
-                    </dt>
-                    <dd className="mt-1 text-sm font-semibold">
-                      {formatDate(selectedEnrollment.dueDate)}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Assigned by
-                    </dt>
-                    <dd className="mt-1 text-sm font-semibold">
-                      {selectedEnrollment.assignedBy}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Attempts
-                    </dt>
-                    <dd className="mt-1 text-sm font-semibold">
-                      {selectedEnrollment.attempts}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Score
-                    </dt>
-                    <dd className="mt-1 text-sm font-semibold">
-                      {selectedEnrollment.score !== undefined
-                        ? `${selectedEnrollment.score}%`
-                        : "Not scored"}
-                    </dd>
-                  </div>
-                </dl>
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold">
-                  Completion progress
-                </h3>
-
-                <ProgressBar
-                  className="mt-4"
-                  value={selectedEnrollment.progress}
-                  tone={
-                    selectedEnrollment.status === "overdue"
-                      ? "danger"
-                      : selectedEnrollment.status === "completed"
-                        ? "success"
-                        : "info"
+                <Badge
+                  variant={
+                    TRAINING_ENROLLMENT_STATUS_CONFIG[selectedEnrollment.status]
+                      .badgeVariant
                   }
-                />
-              </section>
+                >
+                  {TRAINING_ENROLLMENT_STATUS_CONFIG[selectedEnrollment.status].label}
+                </Badge>
+              </div>
 
-              {selectedEnrollment.certificateId && (
-                <div className="flex items-center gap-3 rounded-control bg-success-muted p-4 text-success">
-                  <Award className="size-5" />
-                  <div>
-                    <p className="text-sm font-semibold">
-                      Certificate issued
-                    </p>
-                    <p className="mt-1 text-xs">
-                      {selectedEnrollment.certificateId}
-                    </p>
-                  </div>
+              <dl className="grid gap-5 p-5 sm:grid-cols-2">
+                <div>
+                  <dt className="text-xs text-text-muted">Due date</dt>
+                  <dd className="mt-1 text-sm font-semibold">
+                    {formatDate(selectedEnrollment.dueDate)}
+                  </dd>
                 </div>
-              )}
 
-              <section>
-                <h3 className="text-sm font-bold">
-                  Assignment note
-                </h3>
+                <div>
+                  <dt className="text-xs text-text-muted">Assigned by</dt>
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedEnrollment.assignedBy}
+                  </dd>
+                </div>
 
-                <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                  {selectedEnrollment.note ||
-                    "No assignment note has been added."}
-                </p>
-              </section>
-            </div>
-          )}
+                <div>
+                  <dt className="text-xs text-text-muted">Attempts</dt>
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedEnrollment.attempts}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Score</dt>
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedEnrollment.score !== undefined
+                      ? `${selectedEnrollment.score}%`
+                      : "Not scored"}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-bold">Completion progress</h3>
+
+              <ProgressBar
+                className="mt-4"
+                value={selectedEnrollment.progress}
+                tone={
+                  selectedEnrollment.status === "overdue"
+                    ? "danger"
+                    : selectedEnrollment.status === "completed"
+                      ? "success"
+                      : "info"
+                }
+              />
+            </section>
+
+            {selectedEnrollment.certificateId && (
+              <div className="flex items-center gap-3 rounded-control bg-success-muted p-4 text-success">
+                <Award className="size-5" />
+                <div>
+                  <p className="text-sm font-semibold">Certificate issued</p>
+                  <p className="mt-1 text-xs">{selectedEnrollment.certificateId}</p>
+                </div>
+              </div>
+            )}
+
+            <section>
+              <h3 className="text-sm font-bold">Assignment note</h3>
+
+              <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
+                {selectedEnrollment.note || "No assignment note has been added."}
+              </p>
+            </section>
+          </div>
+        )}
       </Drawer>
 
       <Drawer

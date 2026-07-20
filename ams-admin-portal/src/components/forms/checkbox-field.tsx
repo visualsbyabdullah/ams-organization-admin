@@ -1,19 +1,11 @@
-import type {
-  InputHTMLAttributes,
-  ReactNode,
-} from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
 
-type CheckboxFieldProps =
-  InputHTMLAttributes<HTMLInputElement> & {
-    label: string;
-    description?: ReactNode;
-  };
+type CheckboxFieldProps = InputHTMLAttributes<HTMLInputElement> & {
+  label: string;
+  description?: ReactNode;
+};
 
-export function CheckboxField({
-  label,
-  description,
-  ...props
-}: CheckboxFieldProps) {
+export function CheckboxField({ label, description, ...props }: CheckboxFieldProps) {
   return (
     <label className="flex cursor-pointer items-start gap-3 rounded-control border border-border p-4 transition hover:bg-canvas">
       <input
@@ -23,9 +15,7 @@ export function CheckboxField({
       />
 
       <span>
-        <span className="block text-sm font-semibold">
-          {label}
-        </span>
+        <span className="block text-sm font-semibold">{label}</span>
 
         {description && (
           <span className="mt-1 block text-xs leading-5 text-text-muted">

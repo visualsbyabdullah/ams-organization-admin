@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  type FormEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
 import {
   Bell,
   CheckCircle2,
@@ -64,18 +59,15 @@ const STORAGE_KEY = "ams-governance-state-v1";
 export function GovernanceWorkspace() {
   const { selectedBranch, selectedBranchId } = useBranchScope();
 
-  const [section, setSection] =
-    useState<GovernanceSection>("overview");
-  const [state, setState] =
-    useState<GovernanceState>(GOVERNANCE_INITIAL_STATE);
+  const [section, setSection] = useState<GovernanceSection>("overview");
+  const [state, setState] = useState<GovernanceState>(GOVERNANCE_INITIAL_STATE);
   const [hydrated, setHydrated] = useState(false);
   const [query, setQuery] = useState("");
   const [moduleFilter, setModuleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [requestId, setRequestId] = useState<string | null>(null);
   const [recoveryId, setRecoveryId] = useState<string | null>(null);
-  const [notificationId, setNotificationId] =
-    useState<string | null>(null);
+  const [notificationId, setNotificationId] = useState<string | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [reviewReason, setReviewReason] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -104,18 +96,12 @@ export function GovernanceWorkspace() {
   }, [hydrated, state]);
 
   const requests = useMemo(
-    () =>
-      state.requests.filter((item) =>
-        recordIsInScope(item, selectedBranchId),
-      ),
+    () => state.requests.filter((item) => recordIsInScope(item, selectedBranchId)),
     [selectedBranchId, state.requests],
   );
 
   const recovery = useMemo(
-    () =>
-      state.recovery.filter((item) =>
-        recordIsInScope(item, selectedBranchId),
-      ),
+    () => state.recovery.filter((item) => recordIsInScope(item, selectedBranchId)),
     [selectedBranchId, state.recovery],
   );
 
@@ -130,25 +116,16 @@ export function GovernanceWorkspace() {
     [selectedBranch.name, selectedBranchId, state.notifications],
   );
 
-  const selectedRequest =
-    state.requests.find((item) => item.id === requestId) ?? null;
-  const selectedRecovery =
-    state.recovery.find((item) => item.id === recoveryId) ?? null;
+  const selectedRequest = state.requests.find((item) => item.id === requestId) ?? null;
+  const selectedRecovery = state.recovery.find((item) => item.id === recoveryId) ?? null;
   const selectedNotification =
-    state.notifications.find((item) => item.id === notificationId) ??
-    null;
+    state.notifications.find((item) => item.id === notificationId) ?? null;
 
   const normalizedQuery = query.trim().toLowerCase();
 
   const visibleRequests = requests.filter(
     (item) =>
-      [
-        item.entityName,
-        item.entityId,
-        item.requesterName,
-        item.branchName,
-        item.reason,
-      ]
+      [item.entityName, item.entityId, item.requesterName, item.branchName, item.reason]
         .filter(Boolean)
         .join(" ")
         .toLowerCase()
@@ -187,9 +164,7 @@ export function GovernanceWorkspace() {
       (statusFilter === "all" || item.inAppStatus === statusFilter),
   );
 
-  const pendingCount = requests.filter(
-    (item) => item.status === "pending",
-  ).length;
+  const pendingCount = requests.filter((item) => item.status === "pending").length;
   const expiredCount = recovery.filter(
     (item) => getRecoveryStatus(item) === "expired",
   ).length;
@@ -245,9 +220,7 @@ export function GovernanceWorkspace() {
       id: "module",
       header: "Module",
       cell: (item) => (
-        <Badge variant="info">
-          {GOVERNANCE_MODULE_CONFIG[item.module].label}
-        </Badge>
+        <Badge variant="info">{GOVERNANCE_MODULE_CONFIG[item.module].label}</Badge>
       ),
     },
     {
@@ -271,9 +244,7 @@ export function GovernanceWorkspace() {
       id: "status",
       header: "Status",
       cell: (item) => (
-        <Badge
-          variant={GOVERNANCE_REQUEST_STATUS[item.status].badgeVariant}
-        >
+        <Badge variant={GOVERNANCE_REQUEST_STATUS[item.status].badgeVariant}>
           {GOVERNANCE_REQUEST_STATUS[item.status].label}
         </Badge>
       ),
@@ -315,9 +286,7 @@ export function GovernanceWorkspace() {
       id: "module",
       header: "Module",
       cell: (item) => (
-        <Badge variant="info">
-          {GOVERNANCE_MODULE_CONFIG[item.module].label}
-        </Badge>
+        <Badge variant="info">{GOVERNANCE_MODULE_CONFIG[item.module].label}</Badge>
       ),
     },
     {
@@ -337,9 +306,7 @@ export function GovernanceWorkspace() {
       header: "Retention",
       cell: (item) => {
         const remaining = daysUntil(item.retentionUntil);
-        return remaining > 0
-          ? `${remaining} days remaining`
-          : "Retention expired";
+        return remaining > 0 ? `${remaining} days remaining` : "Retention expired";
       },
     },
     {
@@ -460,8 +427,7 @@ export function GovernanceWorkspace() {
     }
 
     const recoverable =
-      GOVERNANCE_MODULE_CONFIG[selectedRequest.module].mode ===
-      "recoverable";
+      GOVERNANCE_MODULE_CONFIG[selectedRequest.module].mode === "recoverable";
 
     const recoveryRecord = recoverable
       ? createRecoveryRecord(selectedRequest, CURRENT_ADMIN.name)
@@ -481,14 +447,10 @@ export function GovernanceWorkspace() {
             }
           : item,
       ),
-      recovery: recoveryRecord
-        ? [recoveryRecord, ...current.recovery]
-        : current.recovery,
+      recovery: recoveryRecord ? [recoveryRecord, ...current.recovery] : current.recovery,
       notifications: [
         addNotification(
-          recoverable
-            ? "Deletion request approved"
-            : "Protected action approved",
+          recoverable ? "Deletion request approved" : "Protected action approved",
           recoverable
             ? `${selectedRequest.entityName} is hidden and available in Recovery Center for 90 days.`
             : `${selectedRequest.entityName} will use archive, void or reversal instead of hard deletion.`,
@@ -501,9 +463,7 @@ export function GovernanceWorkspace() {
         {
           id: crypto.randomUUID(),
           entityName: selectedRequest.entityName,
-          action: recoverable
-            ? "Approved and hidden"
-            : "Protected action approved",
+          action: recoverable ? "Approved and hidden" : "Protected action approved",
           actorName: CURRENT_ADMIN.name,
           actorRole: "organization_admin",
           createdAt: new Date().toISOString(),
@@ -572,9 +532,7 @@ export function GovernanceWorkspace() {
 
     setState((current) => ({
       ...current,
-      recovery: current.recovery.filter(
-        (item) => item.id !== selectedRecovery.id,
-      ),
+      recovery: current.recovery.filter((item) => item.id !== selectedRecovery.id),
       notifications: [
         addNotification(
           "Record restored",
@@ -613,9 +571,7 @@ export function GovernanceWorkspace() {
 
     setState((current) => ({
       ...current,
-      recovery: current.recovery.filter(
-        (item) => item.id !== selectedRecovery.id,
-      ),
+      recovery: current.recovery.filter((item) => item.id !== selectedRecovery.id),
       notifications: [
         addNotification(
           "Permanent deletion confirmed",
@@ -715,17 +671,11 @@ export function GovernanceWorkspace() {
             </div>
             <div className="space-y-3 p-5" data-governance-recent-activity-cards="true">
               {state.audit.slice(0, 8).map((item) => (
-                <div
-                  key={item.id}
-                  className="rounded-control border border-border p-4"
-                >
+                <div key={item.id} className="rounded-control border border-border p-4">
                   <p className="font-semibold">{item.entityName}</p>
-                  <p className="mt-1 text-sm text-text-muted">
-                    {item.action}
-                  </p>
+                  <p className="mt-1 text-sm text-text-muted">{item.action}</p>
                   <p className="mt-2 text-xs text-text-muted">
-                    {item.actorName} Â·{" "}
-                    {GOVERNANCE_ROLE_CONFIG[item.actorRole].label}
+                    {item.actorName} Â· {GOVERNANCE_ROLE_CONFIG[item.actorRole].label}
                   </p>
                 </div>
               ))}
@@ -1007,13 +957,11 @@ function TableFilters({
             onChange={(event) => setModuleFilter(event.target.value)}
           >
             <option value="all">All modules</option>
-            {Object.entries(GOVERNANCE_MODULE_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(GOVERNANCE_MODULE_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         )}
 
@@ -1060,11 +1008,7 @@ function RequestDetails({
       />
       <InfoRow
         label="Normal-list visibility"
-        value={
-          request.hiddenFromNormalLists
-            ? "Hidden"
-            : "Visible until approval"
-        }
+        value={request.hiddenFromNormalLists ? "Hidden" : "Visible until approval"}
       />
 
       <div className="rounded-control bg-canvas p-4">
@@ -1125,10 +1069,7 @@ function RecoveryDetails({
   return (
     <div className="space-y-5">
       <InfoRow label="Record ID" value={record.entityId} />
-      <InfoRow
-        label="Module"
-        value={GOVERNANCE_MODULE_CONFIG[record.module].label}
-      />
+      <InfoRow label="Module" value={GOVERNANCE_MODULE_CONFIG[record.module].label} />
       <InfoRow
         label="Deleted by"
         value={`${record.deletedBy} Â· ${
@@ -1158,12 +1099,10 @@ function RecoveryDetails({
 
       {confirmOpen && status === "expired" && (
         <div className="space-y-4 rounded-card border border-danger p-5">
-          <h3 className="font-bold text-danger">
-            Manual permanent deletion
-          </h3>
+          <h3 className="font-bold text-danger">Manual permanent deletion</h3>
           <p className="text-sm leading-6 text-text-muted">
-            Type <strong>{GOVERNANCE_COPY.permanentPhrase}</strong>, enter a
-            reason and a six-digit MFA code.
+            Type <strong>{GOVERNANCE_COPY.permanentPhrase}</strong>, enter a reason and a
+            six-digit MFA code.
           </p>
 
           <Textarea
@@ -1182,9 +1121,7 @@ function RecoveryDetails({
             value={mfaCode}
             maxLength={6}
             inputMode="numeric"
-            onChange={(event) =>
-              setMfaCode(event.target.value.replace(/\\D/g, ""))
-            }
+            onChange={(event) => setMfaCode(event.target.value.replace(/\\D/g, ""))}
             placeholder="Six-digit MFA code"
           />
 
@@ -1215,18 +1152,13 @@ function RequestForm({
   const [branchId, setBranchId] = useState(
     selectedBranchId === "all" ? "" : selectedBranchId,
   );
-  const [requesterName, setRequesterName] =
-    useState(CURRENT_ADMIN.name);
-  const [requesterRole, setRequesterRole] =
-    useState<GovernanceRole>("line_manager");
+  const [requesterName, setRequesterName] = useState(CURRENT_ADMIN.name);
+  const [requesterRole, setRequesterRole] = useState<GovernanceRole>("line_manager");
   const [reason, setReason] = useState("");
   const [submitted, setSubmitted] = useState(false);
 
   const valid =
-    entityId.trim() &&
-    entityName.trim() &&
-    requesterName.trim() &&
-    reason.trim();
+    entityId.trim() && entityName.trim() && requesterName.trim() && reason.trim();
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -1263,17 +1195,13 @@ function RequestForm({
           <Select
             id="requestModule"
             value={module}
-            onChange={(event) =>
-              setModule(event.target.value as GovernanceModule)
-            }
+            onChange={(event) => setModule(event.target.value as GovernanceModule)}
           >
-            {Object.entries(GOVERNANCE_MODULE_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(GOVERNANCE_MODULE_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
@@ -1284,24 +1212,18 @@ function RequestForm({
             onChange={(event) => setBranchId(event.target.value)}
           >
             <option value="">Organization-wide</option>
-            {BRANCH_OPTIONS.filter((item) => !item.isAggregate).map(
-              (item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ),
-            )}
+            {BRANCH_OPTIONS.filter((item) => !item.isAggregate).map((item) => (
+              <option key={item.id} value={item.id}>
+                {item.name}
+              </option>
+            ))}
           </Select>
         </FormField>
 
         <FormField
           label="Record ID"
           htmlFor="requestEntityId"
-          error={
-            submitted && !entityId.trim()
-              ? "Enter the record ID"
-              : undefined
-          }
+          error={submitted && !entityId.trim() ? "Enter the record ID" : undefined}
         >
           <Input
             id="requestEntityId"
@@ -1313,11 +1235,7 @@ function RequestForm({
         <FormField
           label="Record name"
           htmlFor="requestEntityName"
-          error={
-            submitted && !entityName.trim()
-              ? "Enter the record name"
-              : undefined
-          }
+          error={submitted && !entityName.trim() ? "Enter the record name" : undefined}
         >
           <Input
             id="requestEntityName"
@@ -1338,17 +1256,13 @@ function RequestForm({
           <Select
             id="requesterRole"
             value={requesterRole}
-            onChange={(event) =>
-              setRequesterRole(event.target.value as GovernanceRole)
-            }
+            onChange={(event) => setRequesterRole(event.target.value as GovernanceRole)}
           >
-            {(["line_manager", "hr_admin", "branch_admin"] as const).map(
-              (role) => (
-                <option key={role} value={role}>
-                  {GOVERNANCE_ROLE_CONFIG[role].label}
-                </option>
-              ),
-            )}
+            {(["line_manager", "hr_admin", "branch_admin"] as const).map((role) => (
+              <option key={role} value={role}>
+                {GOVERNANCE_ROLE_CONFIG[role].label}
+              </option>
+            ))}
           </Select>
         </FormField>
       </div>
@@ -1360,11 +1274,7 @@ function RequestForm({
       <FormField
         label="Deletion request reason"
         htmlFor="requestReason"
-        error={
-          submitted && !reason.trim()
-            ? "A reason is required"
-            : undefined
-        }
+        error={submitted && !reason.trim() ? "A reason is required" : undefined}
       >
         <Textarea
           id="requestReason"
@@ -1414,39 +1324,25 @@ function PolicyWorkspace() {
           <h2 className="text-lg font-bold">Module deletion behavior</h2>
         </div>
         <div className="divide-y divide-border">
-          {Object.entries(GOVERNANCE_MODULE_CONFIG).map(
-            ([module, config]) => (
-              <div
-                key={module}
-                className="grid gap-3 p-5 xl:grid-cols-[12rem_12rem_minmax(0,1fr)]"
-              >
-                <p className="font-semibold">{config.label}</p>
-                <Badge
-                  variant={
-                    config.mode === "recoverable" ? "success" : "warning"
-                  }
-                >
-                  {config.mode.replaceAll("_", " ")}
-                </Badge>
-                <p className="text-sm leading-6 text-text-muted">
-                  {config.description}
-                </p>
-              </div>
-            ),
-          )}
+          {Object.entries(GOVERNANCE_MODULE_CONFIG).map(([module, config]) => (
+            <div
+              key={module}
+              className="grid gap-3 p-5 xl:grid-cols-[12rem_12rem_minmax(0,1fr)]"
+            >
+              <p className="font-semibold">{config.label}</p>
+              <Badge variant={config.mode === "recoverable" ? "success" : "warning"}>
+                {config.mode.replaceAll("_", " ")}
+              </Badge>
+              <p className="text-sm leading-6 text-text-muted">{config.description}</p>
+            </div>
+          ))}
         </div>
       </Card>
     </div>
   );
 }
 
-function InfoRow({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
+function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4 rounded-control border border-border p-4">
       <span className="text-sm text-text-muted">{label}</span>

@@ -8,12 +8,7 @@ export const SHIFT_CATEGORY_CONFIG: Record<
   ShiftCategory,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "info"
-      | "success"
-      | "warning"
-      | "danger";
+    badgeVariant: "neutral" | "info" | "success" | "warning" | "danger";
   }
 > = {
   standard: {
@@ -42,9 +37,7 @@ export const SHIFT_STATUS_CONFIG: Record<
   ShiftStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "neutral";
+    badgeVariant: "success" | "neutral";
   }
 > = {
   active: {
@@ -61,10 +54,7 @@ export const SCHEDULE_STATUS_CONFIG: Record<
   ScheduleAssignmentStatus,
   {
     label: string;
-    badgeVariant:
-      | "info"
-      | "success"
-      | "danger";
+    badgeVariant: "info" | "success" | "danger";
   }
 > = {
   scheduled: {
@@ -127,13 +117,11 @@ export const SCHEDULE_COPY = {
   assignSchedule: "Assign schedule",
   createShift: "Create shift",
   weekLabel: "13 Jul – 19 Jul 2026",
-  searchPlaceholder:
-    "Search employee, ID, department or designation",
+  searchPlaceholder: "Search employee, ID, department or designation",
   allStatuses: "All schedule statuses",
   rosterTitle: "Weekly employee roster",
   rosterDescription:
     "Review employee shift assignments for the selected branch and week.",
   shiftsTitle: "Shift templates",
-  shiftsDescription:
-    "Reusable working schedules available to the organization.",
+  shiftsDescription: "Reusable working schedules available to the organization.",
 } as const;

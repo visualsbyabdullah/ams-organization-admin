@@ -1,9 +1,6 @@
 ﻿"use client";
 
-import {
-  useMemo,
-  useState,
-} from "react";
+import { useMemo, useState } from "react";
 import {
   AlertTriangle,
   CalendarDays,
@@ -36,9 +33,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  ATTENDANCE_STATUS_CONFIG,
-} from "@/config/attendance";
+import { ATTENDANCE_STATUS_CONFIG } from "@/config/attendance";
 import {
   ATTENDANCE_REGISTER_COPY,
   ATTENDANCE_SOURCE_CONFIG,
@@ -50,94 +45,58 @@ import {
 } from "@/data/attendance-register";
 import { EMPLOYEES } from "@/data/employees";
 import { formatDate } from "@/lib/date";
-import type {
-  AttendanceRecord,
-} from "@/types/attendance";
-import type {
-  AttendanceRegisterRecord,
-} from "@/types/attendance-register";
+import type { AttendanceRecord } from "@/types/attendance";
+import type { AttendanceRegisterRecord } from "@/types/attendance-register";
 
-function formatWorkedTime(
-  minutes: number,
-) {
+function formatWorkedTime(minutes: number) {
   if (minutes <= 0) {
     return "—";
   }
 
-  const hours = Math.floor(
-    minutes / 60,
-  );
+  const hours = Math.floor(minutes / 60);
 
-  const remainingMinutes =
-    minutes % 60;
+  const remainingMinutes = minutes % 60;
 
   return `${hours}h ${remainingMinutes}m`;
 }
 
-function formatTotalHours(
-  minutes: number,
-) {
-  const hours = Math.floor(
-    minutes / 60,
-  );
+function formatTotalHours(minutes: number) {
+  const hours = Math.floor(minutes / 60);
 
   return `${hours.toLocaleString()}h`;
 }
 
 export function AttendanceRegister() {
-  const {
-    selectedBranch,
-    selectedBranchId,
-  } = useBranchScope();
+  const { selectedBranch, selectedBranchId } = useBranchScope();
 
-  const [records, setRecords] =
-    useState<
-      AttendanceRegisterRecord[]
-    >(
-      ATTENDANCE_REGISTER_RECORDS,
-    );
+  const [records, setRecords] = useState<AttendanceRegisterRecord[]>(
+    ATTENDANCE_REGISTER_RECORDS,
+  );
 
-  const [selectedDate, setSelectedDate] =
-    useState("2026-07-16");
+  const [selectedDate, setSelectedDate] = useState("2026-07-16");
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [department, setDepartment] =
-    useState("all");
+  const [department, setDepartment] = useState("all");
 
-  const [status, setStatus] =
-    useState("all");
+  const [status, setStatus] = useState("all");
 
-  const [
-    selectedRecordId,
-    setSelectedRecordId,
-  ] = useState<string | null>(null);
+  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
 
-  const [createOpen, setCreateOpen] =
-    useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
 
   const calendarDays = useMemo(
-    () =>
-      getAttendanceCalendar(
-        selectedBranchId,
-      ),
+    () => getAttendanceCalendar(selectedBranchId),
     [selectedBranchId],
   );
 
   const selectedCalendarDay =
-    calendarDays.find(
-      (day) =>
-        day.date === selectedDate,
-    ) ?? calendarDays.at(-1);
+    calendarDays.find((day) => day.date === selectedDate) ?? calendarDays.at(-1);
 
   const branchRecords = useMemo(
     () =>
       records.filter(
-        (record) =>
-          selectedBranch.isAggregate ||
-          record.branchId ===
-            selectedBranch.id,
+        (record) => selectedBranch.isAggregate || record.branchId === selectedBranch.id,
       ),
     [records, selectedBranch],
   );
@@ -148,109 +107,59 @@ export function AttendanceRegister() {
         new Set(
           EMPLOYEES.filter(
             (employee) =>
-              selectedBranch.isAggregate ||
-              employee.branchId ===
-                selectedBranch.id,
-          ).map(
-            (employee) =>
-              employee.department,
-          ),
+              selectedBranch.isAggregate || employee.branchId === selectedBranch.id,
+          ).map((employee) => employee.department),
         ),
       ).sort(),
     [selectedBranch],
   );
 
   const visibleRecords = useMemo(() => {
-    const query = searchQuery
-      .trim()
-      .toLowerCase();
+    const query = searchQuery.trim().toLowerCase();
 
-    return branchRecords.filter(
-      (record) => {
-        const employee =
-          EMPLOYEES.find(
-            (item) =>
-              item.id ===
-              record.employeeId,
-          );
+    return branchRecords.filter((record) => {
+      const employee = EMPLOYEES.find((item) => item.id === record.employeeId);
 
-        if (!employee) {
-          return false;
-        }
+      if (!employee) {
+        return false;
+      }
 
-        const searchableValue = [
-          employee.name,
-          employee.employeeCode,
-          employee.department,
-          employee.designation,
-          employee.email,
-        ]
-          .join(" ")
-          .toLowerCase();
+      const searchableValue = [
+        employee.name,
+        employee.employeeCode,
+        employee.department,
+        employee.designation,
+        employee.email,
+      ]
+        .join(" ")
+        .toLowerCase();
 
-        const matchesDate =
-          record.date === selectedDate;
+      const matchesDate = record.date === selectedDate;
 
-        const matchesSearch =
-          searchableValue.includes(
-            query,
-          );
+      const matchesSearch = searchableValue.includes(query);
 
-        const matchesDepartment =
-          department === "all" ||
-          employee.department ===
-            department;
+      const matchesDepartment =
+        department === "all" || employee.department === department;
 
-        const matchesStatus =
-          status === "all" ||
-          record.status === status;
+      const matchesStatus = status === "all" || record.status === status;
 
-        return (
-          matchesDate &&
-          matchesSearch &&
-          matchesDepartment &&
-          matchesStatus
-        );
-      },
-    );
-  }, [
-    branchRecords,
-    department,
-    searchQuery,
-    selectedDate,
-    status,
-  ]);
+      return matchesDate && matchesSearch && matchesDepartment && matchesStatus;
+    });
+  }, [branchRecords, department, searchQuery, selectedDate, status]);
 
-  const selectedRecord =
-    records.find(
-      (record) =>
-        record.id ===
-        selectedRecordId,
-    ) ?? null;
+  const selectedRecord = records.find((record) => record.id === selectedRecordId) ?? null;
 
-  const totalWorkedMinutes =
-    branchRecords.reduce(
-      (total, record) =>
-        total +
-        record.workedMinutes,
-      0,
-    );
+  const totalWorkedMinutes = branchRecords.reduce(
+    (total, record) => total + record.workedMinutes,
+    0,
+  );
 
-  const exceptionCount =
-    branchRecords.filter(
-      (record) =>
-        record.hasException,
-    ).length;
+  const exceptionCount = branchRecords.filter((record) => record.hasException).length;
 
   const averageAttendanceRate =
     calendarDays.length > 0
       ? Math.round(
-          calendarDays.reduce(
-            (total, day) =>
-              total +
-              day.attendanceRate,
-            0,
-          ) /
+          calendarDays.reduce((total, day) => total + day.attendanceRate, 0) /
             calendarDays.length,
         )
       : 0;
@@ -265,11 +174,8 @@ export function AttendanceRegister() {
     },
     {
       label: "Total worked",
-      value: formatTotalHours(
-        totalWorkedMinutes,
-      ),
-      detail:
-        "Recorded employee hours",
+      value: formatTotalHours(totalWorkedMinutes),
+      detail: "Recorded employee hours",
       icon: Clock3,
       tone: "success" as const,
     },
@@ -283,60 +189,35 @@ export function AttendanceRegister() {
     {
       label: "Exceptions",
       value: exceptionCount,
-      detail:
-        "Records requiring review",
+      detail: "Records requiring review",
       icon: AlertTriangle,
       tone: "warning" as const,
     },
   ];
 
-  function saveRecord(
-    updatedRecord: AttendanceRecord,
-  ) {
+  function saveRecord(updatedRecord: AttendanceRecord) {
     setRecords((currentRecords) => {
-      const existingRecord =
-        currentRecords.find(
-          (record) =>
-            record.id ===
-            updatedRecord.id,
-        );
+      const existingRecord = currentRecords.find(
+        (record) => record.id === updatedRecord.id,
+      );
 
-      const hasException = [
-        "late",
-        "absent",
-        "missing_checkout",
-      ].includes(
+      const hasException = ["late", "absent", "missing_checkout"].includes(
         updatedRecord.status,
       );
 
-      const nextRecord: AttendanceRegisterRecord =
-        {
-          ...updatedRecord,
-          source:
-            existingRecord?.source ??
-            "manual",
-          hasException,
-        };
+      const nextRecord: AttendanceRegisterRecord = {
+        ...updatedRecord,
+        source: existingRecord?.source ?? "manual",
+        hasException,
+      };
 
-      const exists =
-        currentRecords.some(
-          (record) =>
-            record.id ===
-            updatedRecord.id,
-        );
+      const exists = currentRecords.some((record) => record.id === updatedRecord.id);
 
       return exists
-        ? currentRecords.map(
-            (record) =>
-              record.id ===
-              updatedRecord.id
-                ? nextRecord
-                : record,
+        ? currentRecords.map((record) =>
+            record.id === updatedRecord.id ? nextRecord : record,
           )
-        : [
-            nextRecord,
-            ...currentRecords,
-          ];
+        : [nextRecord, ...currentRecords];
     });
 
     setSelectedRecordId(null);
@@ -346,33 +227,19 @@ export function AttendanceRegister() {
   return (
     <div className="mx-auto max-w-360">
       <PageHeader
-        eyebrow={
-          ATTENDANCE_REGISTER_COPY.eyebrow
-        }
-        title={
-          ATTENDANCE_REGISTER_COPY.title
-        }
-        description={
-          ATTENDANCE_REGISTER_COPY.description
-        }
+        eyebrow={ATTENDANCE_REGISTER_COPY.eyebrow}
+        title={ATTENDANCE_REGISTER_COPY.title}
+        description={ATTENDANCE_REGISTER_COPY.description}
         actions={
           <>
             <Button variant="outline">
               <Download />
-              {
-                ATTENDANCE_REGISTER_COPY.export
-              }
+              {ATTENDANCE_REGISTER_COPY.export}
             </Button>
 
-            <Button
-              onClick={() =>
-                setCreateOpen(true)
-              }
-            >
+            <Button onClick={() => setCreateOpen(true)}>
               <Plus />
-              {
-                ATTENDANCE_REGISTER_COPY.addRecord
-              }
+              {ATTENDANCE_REGISTER_COPY.addRecord}
             </Button>
           </>
         }
@@ -384,10 +251,7 @@ export function AttendanceRegister() {
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
@@ -395,15 +259,11 @@ export function AttendanceRegister() {
         <Card className="p-6">
           <div>
             <h2 className="text-lg font-bold">
-              {
-                ATTENDANCE_REGISTER_COPY.calendarTitle
-              }
+              {ATTENDANCE_REGISTER_COPY.calendarTitle}
             </h2>
 
             <p className="mt-1 text-sm text-text-muted">
-              {
-                ATTENDANCE_REGISTER_COPY.calendarDescription
-              }
+              {ATTENDANCE_REGISTER_COPY.calendarDescription}
             </p>
           </div>
 
@@ -411,9 +271,7 @@ export function AttendanceRegister() {
             <AttendanceCalendar
               days={calendarDays}
               selectedDate={selectedDate}
-              onDateChange={
-                setSelectedDate
-              }
+              onDateChange={setSelectedDate}
             />
           </div>
         </Card>
@@ -421,65 +279,49 @@ export function AttendanceRegister() {
         <Card className="p-6">
           <div>
             <p className="text-sm font-semibold text-primary">
-              {
-                ATTENDANCE_REGISTER_COPY.selectedDayTitle
-              }
+              {ATTENDANCE_REGISTER_COPY.selectedDayTitle}
             </p>
 
-            <h2 className="mt-2 text-xl font-bold">
-              {formatDate(selectedDate)}
-            </h2>
+            <h2 className="mt-2 text-xl font-bold">{formatDate(selectedDate)}</h2>
 
-            <p className="mt-1 text-sm text-text-muted">
-              {selectedBranch.name}
-            </p>
+            <p className="mt-1 text-sm text-text-muted">{selectedBranch.name}</p>
           </div>
 
           {selectedCalendarDay && (
             <div className="mt-6 space-y-3">
               {[
                 {
-                  label:
-                    "Attendance rate",
+                  label: "Attendance rate",
                   value: `${selectedCalendarDay.attendanceRate}%`,
                 },
                 {
                   label: "Scheduled",
-                  value:
-                    selectedCalendarDay.scheduled,
+                  value: selectedCalendarDay.scheduled,
                 },
                 {
                   label: "Present",
-                  value:
-                    selectedCalendarDay.present,
+                  value: selectedCalendarDay.present,
                 },
                 {
                   label: "Late",
-                  value:
-                    selectedCalendarDay.late,
+                  value: selectedCalendarDay.late,
                 },
                 {
                   label: "Absent",
-                  value:
-                    selectedCalendarDay.absent,
+                  value: selectedCalendarDay.absent,
                 },
                 {
                   label: "On leave",
-                  value:
-                    selectedCalendarDay.onLeave,
+                  value: selectedCalendarDay.onLeave,
                 },
               ].map((item) => (
                 <div
                   key={item.label}
                   className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
                 >
-                  <span className="text-sm text-text-muted">
-                    {item.label}
-                  </span>
+                  <span className="text-sm text-text-muted">{item.label}</span>
 
-                  <strong className="text-sm">
-                    {item.value}
-                  </strong>
+                  <strong className="text-sm">{item.value}</strong>
                 </div>
               ))}
             </div>
@@ -490,15 +332,10 @@ export function AttendanceRegister() {
       <Card className="mt-6">
         <div className="border-b border-border p-5">
           <div>
-            <h2 className="text-lg font-bold">
-              {
-                ATTENDANCE_REGISTER_COPY.tableTitle
-              }
-            </h2>
+            <h2 className="text-lg font-bold">{ATTENDANCE_REGISTER_COPY.tableTitle}</h2>
 
             <p className="mt-1 text-sm text-text-muted">
-              {formatDate(selectedDate)} ·{" "}
-              {selectedBranch.name}
+              {formatDate(selectedDate)} · {selectedBranch.name}
             </p>
           </div>
 
@@ -508,70 +345,33 @@ export function AttendanceRegister() {
 
               <Input
                 value={searchQuery}
-                onChange={(event) =>
-                  setSearchQuery(
-                    event.target.value,
-                  )
-                }
-                placeholder={
-                  ATTENDANCE_REGISTER_COPY.searchPlaceholder
-                }
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder={ATTENDANCE_REGISTER_COPY.searchPlaceholder}
                 className="pl-9"
               />
             </div>
 
             <Select
               value={department}
-              onChange={(event) =>
-                setDepartment(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setDepartment(event.target.value)}
             >
-              <option value="all">
-                {
-                  ATTENDANCE_REGISTER_COPY.allDepartments
-                }
-              </option>
+              <option value="all">{ATTENDANCE_REGISTER_COPY.allDepartments}</option>
 
-              {departments.map(
-                (item) => (
-                  <option
-                    key={item}
-                    value={item}
-                  >
-                    {item}
-                  </option>
-                ),
-              )}
+              {departments.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
             </Select>
 
-            <Select
-              value={status}
-              onChange={(event) =>
-                setStatus(
-                  event.target.value,
-                )
-              }
-            >
-              <option value="all">
-                {
-                  ATTENDANCE_REGISTER_COPY.allStatuses
-                }
-              </option>
+            <Select value={status} onChange={(event) => setStatus(event.target.value)}>
+              <option value="all">{ATTENDANCE_REGISTER_COPY.allStatuses}</option>
 
-              {Object.entries(
-                ATTENDANCE_STATUS_CONFIG,
-              ).map(
-                ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(ATTENDANCE_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
           </div>
         </div>
@@ -580,199 +380,111 @@ export function AttendanceRegister() {
           <Table>
             <TableHeader>
               <TableRow className="bg-canvas">
-                <TableHead>
-                  Employee
-                </TableHead>
+                <TableHead>Employee</TableHead>
 
-                <TableHead>
-                  Schedule
-                </TableHead>
+                <TableHead>Schedule</TableHead>
 
-                <TableHead>
-                  Check in
-                </TableHead>
+                <TableHead>Check in</TableHead>
 
-                <TableHead>
-                  Check out
-                </TableHead>
+                <TableHead>Check out</TableHead>
 
-                <TableHead>
-                  Worked
-                </TableHead>
+                <TableHead>Worked</TableHead>
 
-                <TableHead>
-                  Source
-                </TableHead>
+                <TableHead>Source</TableHead>
 
-                <TableHead>
-                  Status
-                </TableHead>
+                <TableHead>Status</TableHead>
 
-                <TableHead className="w-16">
-                  Actions
-                </TableHead>
+                <TableHead className="w-16">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {visibleRecords.map(
-                (record) => {
-                  const employee =
-                    EMPLOYEES.find(
-                      (item) =>
-                        item.id ===
-                        record.employeeId,
-                    );
+              {visibleRecords.map((record) => {
+                const employee = EMPLOYEES.find((item) => item.id === record.employeeId);
 
-                  if (!employee) {
-                    return null;
-                  }
+                if (!employee) {
+                  return null;
+                }
 
-                  const statusConfig =
-                    ATTENDANCE_STATUS_CONFIG[
-                      record.status
-                    ];
+                const statusConfig = ATTENDANCE_STATUS_CONFIG[record.status];
 
-                  const sourceConfig =
-                    ATTENDANCE_SOURCE_CONFIG[
-                      record.source
-                    ];
+                const sourceConfig = ATTENDANCE_SOURCE_CONFIG[record.source];
 
-                  return (
-                    <TableRow
-                      key={record.id}
-                      className="cursor-pointer transition hover:bg-canvas"
-                      onClick={() =>
-                        setSelectedRecordId(
-                          record.id,
-                        )
-                      }
-                    >
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar
-                            name={
-                              employee.name
-                            }
-                            initials={
-                              employee.initials
-                            }
-                          />
+                return (
+                  <TableRow
+                    key={record.id}
+                    className="cursor-pointer transition hover:bg-canvas"
+                    onClick={() => setSelectedRecordId(record.id)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar name={employee.name} initials={employee.initials} />
 
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <p className="font-semibold">
-                                {
-                                  employee.name
-                                }
-                              </p>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <p className="font-semibold">{employee.name}</p>
 
-                              {record.hasException && (
-                                <AlertTriangle className="size-3.5 text-warning" />
-                              )}
-                            </div>
-
-                            <p className="mt-1 text-xs text-text-muted">
-                              {
-                                employee.employeeCode
-                              }{" "}
-                              ·{" "}
-                              {
-                                employee.department
-                              }
-                            </p>
+                            {record.hasException && (
+                              <AlertTriangle className="size-3.5 text-warning" />
+                            )}
                           </div>
+
+                          <p className="mt-1 text-xs text-text-muted">
+                            {employee.employeeCode} · {employee.department}
+                          </p>
                         </div>
-                      </TableCell>
+                      </div>
+                    </TableCell>
 
-                      <TableCell>
-                        {
-                          record.scheduledStart
-                        }{" "}
-                        –{" "}
-                        {
-                          record.scheduledEnd
-                        }
-                      </TableCell>
+                    <TableCell>
+                      {record.scheduledStart} – {record.scheduledEnd}
+                    </TableCell>
 
-                      <TableCell>
-                        {record.checkIn ||
-                          "—"}
-                      </TableCell>
+                    <TableCell>{record.checkIn || "—"}</TableCell>
 
-                      <TableCell>
-                        {record.checkOut ||
-                          "—"}
-                      </TableCell>
+                    <TableCell>{record.checkOut || "—"}</TableCell>
 
-                      <TableCell>
-                        {formatWorkedTime(
-                          record.workedMinutes,
-                        )}
-                      </TableCell>
+                    <TableCell>{formatWorkedTime(record.workedMinutes)}</TableCell>
 
-                      <TableCell>
-                        <Badge
-                          variant={
-                            sourceConfig.badgeVariant
-                          }
-                        >
-                          {
-                            sourceConfig.label
-                          }
-                        </Badge>
-                      </TableCell>
+                    <TableCell>
+                      <Badge variant={sourceConfig.badgeVariant}>
+                        {sourceConfig.label}
+                      </Badge>
+                    </TableCell>
 
-                      <TableCell>
-                        <Badge
-                          variant={
-                            statusConfig.badgeVariant
-                          }
-                        >
-                          {
-                            statusConfig.label
-                          }
-                        </Badge>
-                      </TableCell>
+                    <TableCell>
+                      <Badge variant={statusConfig.badgeVariant}>
+                        {statusConfig.label}
+                      </Badge>
+                    </TableCell>
 
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Edit attendance for ${employee.name}`}
-                          onClick={(
-                            event,
-                          ) => {
-                            event.stopPropagation();
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Edit attendance for ${employee.name}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                            setSelectedRecordId(
-                              record.id,
-                            );
-                          }}
-                        >
-                          <MoreHorizontal />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                },
-              )}
+                          setSelectedRecordId(record.id);
+                        }}
+                      >
+                        <MoreHorizontal />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         ) : (
           <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
             <Users className="size-8 text-text-muted" />
 
-            <h3 className="mt-4 font-bold">
-              {
-                ATTENDANCE_REGISTER_COPY.noRecordsTitle
-              }
-            </h3>
+            <h3 className="mt-4 font-bold">{ATTENDANCE_REGISTER_COPY.noRecordsTitle}</h3>
 
             <p className="mt-2 max-w-md text-sm text-text-muted">
-              {
-                ATTENDANCE_REGISTER_COPY.noRecordsDescription
-              }
+              {ATTENDANCE_REGISTER_COPY.noRecordsDescription}
             </p>
           </div>
         )}
@@ -780,9 +492,7 @@ export function AttendanceRegister() {
 
       <Drawer
         open={Boolean(selectedRecord)}
-        onClose={() =>
-          setSelectedRecordId(null)
-        }
+        onClose={() => setSelectedRecordId(null)}
         title="Edit attendance record"
         description="Correct employee attendance timing, status or notes."
       >
@@ -790,14 +500,8 @@ export function AttendanceRegister() {
           <AttendanceRecordForm
             key={selectedRecord.id}
             record={selectedRecord}
-            selectedBranchId={
-              selectedBranchId
-            }
-            onCancel={() =>
-              setSelectedRecordId(
-                null,
-              )
-            }
+            selectedBranchId={selectedBranchId}
+            onCancel={() => setSelectedRecordId(null)}
             onSave={saveRecord}
           />
         )}
@@ -805,23 +509,16 @@ export function AttendanceRegister() {
 
       <Drawer
         open={createOpen}
-        onClose={() =>
-          setCreateOpen(false)
-        }
+        onClose={() => setCreateOpen(false)}
         title="Add attendance record"
         description="Create a manual attendance entry for the selected organization scope."
       >
         <AttendanceRecordForm
-          selectedBranchId={
-            selectedBranchId
-          }
-          onCancel={() =>
-            setCreateOpen(false)
-          }
+          selectedBranchId={selectedBranchId}
+          onCancel={() => setCreateOpen(false)}
           onSave={saveRecord}
         />
       </Drawer>
     </div>
   );
 }
-

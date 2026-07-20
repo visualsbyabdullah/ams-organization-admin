@@ -18,10 +18,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { ReportSettingsForm } from "@/components/reports/report-settings-form";
 import { ReportTabs } from "@/components/reports/report-tabs";
-import {
-  DataTable,
-  type DataTableColumn,
-} from "@/components/shared/data-table";
+import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,10 +45,8 @@ export function ReportSettingsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedSettingsId, setSelectedSettingsId] =
-    useState<string | null>(null);
-  const [editorMode, setEditorMode] =
-    useState<"create" | "edit" | null>(null);
+  const [selectedSettingsId, setSelectedSettingsId] = useState<string | null>(null);
+  const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedSettings = useMemo(
     () =>
@@ -68,12 +63,7 @@ export function ReportSettingsWorkspace() {
     const query = searchQuery.trim().toLowerCase();
 
     return scopedSettings.filter((item) => {
-      const searchableValue = [
-        item.name,
-        item.branchName,
-        item.note,
-        item.defaultFormat,
-      ]
+      const searchableValue = [item.name, item.branchName, item.note, item.defaultFormat]
         .filter(Boolean)
         .join(" ")
         .toLowerCase();
@@ -90,33 +80,24 @@ export function ReportSettingsWorkspace() {
     settings.find((item) => item.id === selectedSettingsId) ?? null;
 
   const organizationDefault =
-    settings.find(
-      (item) => item.scope === "organization" && item.status === "active",
-    ) ?? null;
+    settings.find((item) => item.scope === "organization" && item.status === "active") ??
+    null;
 
   const branchOverride = selectedBranch.isAggregate
     ? null
-    : settings.find(
+    : (settings.find(
         (item) =>
           item.scope === "branch" &&
           item.branchId === selectedBranch.id &&
           item.status === "active",
-      ) ?? null;
+      ) ?? null);
 
   const effectiveSettings = branchOverride ?? organizationDefault;
 
-  const activeSettings = scopedSettings.filter(
-    (item) => item.status === "active",
-  );
-  const branchOverrides = scopedSettings.filter(
-    (item) => item.scope === "branch",
-  );
-  const scheduledEnabled = scopedSettings.filter(
-    (item) => item.scheduledReportsEnabled,
-  );
-  const payrollEnabled = scopedSettings.filter(
-    (item) => item.allowPayrollDataExport,
-  );
+  const activeSettings = scopedSettings.filter((item) => item.status === "active");
+  const branchOverrides = scopedSettings.filter((item) => item.scope === "branch");
+  const scheduledEnabled = scopedSettings.filter((item) => item.scheduledReportsEnabled);
+  const payrollEnabled = scopedSettings.filter((item) => item.allowPayrollDataExport);
 
   const metrics = [
     {
@@ -186,9 +167,7 @@ export function ReportSettingsWorkspace() {
         id: "format",
         header: "Default format",
         cell: (item) => (
-          <Badge
-            variant={REPORT_FORMAT_CONFIG[item.defaultFormat].badgeVariant}
-          >
+          <Badge variant={REPORT_FORMAT_CONFIG[item.defaultFormat].badgeVariant}>
             {REPORT_FORMAT_CONFIG[item.defaultFormat].label}
           </Badge>
         ),
@@ -216,9 +195,7 @@ export function ReportSettingsWorkspace() {
         id: "status",
         header: "Status",
         cell: (item) => (
-          <Badge
-            variant={REPORT_SETTINGS_STATUS_CONFIG[item.status].badgeVariant}
-          >
+          <Badge variant={REPORT_SETTINGS_STATUS_CONFIG[item.status].badgeVariant}>
             {REPORT_SETTINGS_STATUS_CONFIG[item.status].label}
           </Badge>
         ),
@@ -247,9 +224,7 @@ export function ReportSettingsWorkspace() {
 
   function saveSettings(nextSettings: ReportSettings) {
     setSettings((currentSettings) => {
-      const exists = currentSettings.some(
-        (item) => item.id === nextSettings.id,
-      );
+      const exists = currentSettings.some((item) => item.id === nextSettings.id);
 
       return exists
         ? currentSettings.map((item) =>
@@ -338,9 +313,7 @@ export function ReportSettingsWorkspace() {
       <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_24rem]">
         <Card className="order-1 overflow-hidden">
           <div className="border-b border-border p-5">
-            <h2 className="text-lg font-bold">
-              {REPORT_COPY.settings.registerTitle}
-            </h2>
+            <h2 className="text-lg font-bold">{REPORT_COPY.settings.registerTitle}</h2>
             <p className="mt-1 text-sm text-text-muted">
               {REPORT_COPY.settings.registerDescription}
             </p>
@@ -373,13 +346,11 @@ export function ReportSettingsWorkspace() {
                 onChange={(event) => setStatusFilter(event.target.value)}
               >
                 <option value="all">{REPORT_COPY.settings.allStatuses}</option>
-                {Object.entries(REPORT_SETTINGS_STATUS_CONFIG).map(
-                  ([value, config]) => (
-                    <option key={value} value={value}>
-                      {config.label}
-                    </option>
-                  ),
-                )}
+                {Object.entries(REPORT_SETTINGS_STATUS_CONFIG).map(([value, config]) => (
+                  <option key={value} value={value}>
+                    {config.label}
+                  </option>
+                ))}
               </Select>
             </div>
           </div>
@@ -392,9 +363,7 @@ export function ReportSettingsWorkspace() {
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <Settings2 className="size-8 text-text-muted" />
-                <h3 className="mt-4 font-bold">
-                  {REPORT_COPY.settings.emptyTitle}
-                </h3>
+                <h3 className="mt-4 font-bold">{REPORT_COPY.settings.emptyTitle}</h3>
                 <p className="mt-2 text-sm text-text-muted">
                   {REPORT_COPY.settings.emptyDescription}
                 </p>
@@ -410,9 +379,7 @@ export function ReportSettingsWorkspace() {
             </span>
 
             <div>
-              <h2 className="text-lg font-bold">
-                {REPORT_COPY.settings.effectiveTitle}
-              </h2>
+              <h2 className="text-lg font-bold">{REPORT_COPY.settings.effectiveTitle}</h2>
               <p className="mt-1 text-sm text-text-muted">
                 {REPORT_COPY.settings.effectiveDescription}
               </p>
@@ -424,9 +391,7 @@ export function ReportSettingsWorkspace() {
               <div className="rounded-control border border-border p-4">
                 <p className="text-sm font-bold">{effectiveSettings.name}</p>
                 <p className="mt-1 text-xs text-text-muted">
-                  {branchOverride
-                    ? "Active branch override"
-                    : "Organization default"}
+                  {branchOverride ? "Active branch override" : "Organization default"}
                 </p>
               </div>
 
@@ -434,10 +399,7 @@ export function ReportSettingsWorkspace() {
                 <div className="rounded-control bg-canvas p-4">
                   <p className="text-xs text-text-muted">Default format</p>
                   <p className="mt-1 text-sm font-bold">
-                    {
-                      REPORT_FORMAT_CONFIG[effectiveSettings.defaultFormat]
-                        .label
-                    }
+                    {REPORT_FORMAT_CONFIG[effectiveSettings.defaultFormat].label}
                   </p>
                 </div>
                 <div className="rounded-control bg-canvas p-4">
@@ -449,17 +411,13 @@ export function ReportSettingsWorkspace() {
                 <div className="rounded-control bg-canvas p-4">
                   <p className="text-xs text-text-muted">Maximum rows</p>
                   <p className="mt-1 text-sm font-bold">
-                    {effectiveSettings.maximumRowsPerExport.toLocaleString(
-                      "en-PK",
-                    )}
+                    {effectiveSettings.maximumRowsPerExport.toLocaleString("en-PK")}
                   </p>
                 </div>
                 <div className="rounded-control bg-canvas p-4">
                   <p className="text-xs text-text-muted">Payroll exports</p>
                   <p className="mt-1 text-sm font-bold">
-                    {effectiveSettings.allowPayrollDataExport
-                      ? "Allowed"
-                      : "Blocked"}
+                    {effectiveSettings.allowPayrollDataExport ? "Allowed" : "Blocked"}
                   </p>
                 </div>
               </div>
@@ -533,8 +491,7 @@ export function ReportSettingsWorkspace() {
 
                 <Badge
                   variant={
-                    REPORT_SETTINGS_STATUS_CONFIG[selectedSettings.status]
-                      .badgeVariant
+                    REPORT_SETTINGS_STATUS_CONFIG[selectedSettings.status].badgeVariant
                   }
                 >
                   {REPORT_SETTINGS_STATUS_CONFIG[selectedSettings.status].label}
@@ -551,8 +508,7 @@ export function ReportSettingsWorkspace() {
                 <div>
                   <dt className="text-xs text-text-muted">Branch</dt>
                   <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.branchName ??
-                      "All organization branches"}
+                    {selectedSettings.branchName ?? "All organization branches"}
                   </dd>
                 </div>
                 <div>
@@ -570,9 +526,7 @@ export function ReportSettingsWorkspace() {
                 <div>
                   <dt className="text-xs text-text-muted">Maximum rows</dt>
                   <dd className="mt-1 text-sm font-semibold">
-                    {selectedSettings.maximumRowsPerExport.toLocaleString(
-                      "en-PK",
-                    )}
+                    {selectedSettings.maximumRowsPerExport.toLocaleString("en-PK")}
                   </dd>
                 </div>
               </dl>
@@ -589,9 +543,7 @@ export function ReportSettingsWorkspace() {
                       key={control.key}
                       className="flex items-center justify-between rounded-control border border-border p-4"
                     >
-                      <span className="text-sm font-semibold">
-                        {control.label}
-                      </span>
+                      <span className="text-sm font-semibold">{control.label}</span>
                       <Badge variant={enabled ? "success" : "neutral"}>
                         {enabled ? "Enabled" : "Disabled"}
                       </Badge>
@@ -604,8 +556,7 @@ export function ReportSettingsWorkspace() {
             <section>
               <h3 className="text-sm font-bold">Internal note</h3>
               <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                {selectedSettings.note ||
-                  "No report settings note has been added."}
+                {selectedSettings.note || "No report settings note has been added."}
               </p>
             </section>
           </div>
@@ -615,23 +566,13 @@ export function ReportSettingsWorkspace() {
       <Drawer
         open={editorMode !== null}
         onClose={() => setEditorMode(null)}
-        title={
-          editorMode === "create"
-            ? "Add report settings"
-            : "Edit report settings"
-        }
+        title={editorMode === "create" ? "Add report settings" : "Edit report settings"}
         description="Configure export limits, retention and sensitive-data controls for the selected scope."
       >
         {editorMode && (
           <ReportSettingsForm
-            key={
-              editorMode === "create"
-                ? "new-report-settings"
-                : selectedSettings?.id
-            }
-            settings={
-              editorMode === "edit" ? selectedSettings ?? undefined : undefined
-            }
+            key={editorMode === "create" ? "new-report-settings" : selectedSettings?.id}
+            settings={editorMode === "edit" ? (selectedSettings ?? undefined) : undefined}
             selectedBranchId={selectedBranchId}
             onCancel={() => setEditorMode(null)}
             onSave={saveSettings}

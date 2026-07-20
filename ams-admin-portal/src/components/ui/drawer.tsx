@@ -1,9 +1,6 @@
 ﻿"use client";
 
-import {
-  type ReactNode,
-  useEffect,
-} from "react";
+import { type ReactNode, useEffect } from "react";
 import { X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -33,12 +30,9 @@ export function Drawer({
       return;
     }
 
-    const previousOverflow =
-      document.body.style.overflow;
+    const previousOverflow = document.body.style.overflow;
 
-    function handleKeyDown(
-      event: KeyboardEvent,
-    ) {
+    function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         onClose();
       }
@@ -46,19 +40,12 @@ export function Drawer({
 
     document.body.style.overflow = "hidden";
 
-    window.addEventListener(
-      "keydown",
-      handleKeyDown,
-    );
+    window.addEventListener("keydown", handleKeyDown);
 
     return () => {
-      document.body.style.overflow =
-        previousOverflow;
+      document.body.style.overflow = previousOverflow;
 
-      window.removeEventListener(
-        "keydown",
-        handleKeyDown,
-      );
+      window.removeEventListener("keydown", handleKeyDown);
     };
   }, [onClose, open]);
 
@@ -86,39 +73,23 @@ export function Drawer({
       >
         <header className="flex items-start justify-between gap-5 border-b border-border px-6 py-5">
           <div>
-            <h2
-              id="drawer-title"
-              className="text-xl font-bold tracking-tight"
-            >
+            <h2 id="drawer-title" className="text-xl font-bold tracking-tight">
               {title}
             </h2>
 
             {description && (
-              <p className="mt-1 text-sm leading-6 text-text-muted">
-                {description}
-              </p>
+              <p className="mt-1 text-sm leading-6 text-text-muted">{description}</p>
             )}
           </div>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Close"
-            onClick={onClose}
-          >
+          <Button variant="ghost" size="icon" aria-label="Close" onClick={onClose}>
             <X />
           </Button>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-6">
-          {children}
-        </div>
+        <div className="flex-1 overflow-y-auto p-6">{children}</div>
 
-        {footer && (
-          <footer className="border-t border-border px-6 py-4">
-            {footer}
-          </footer>
-        )}
+        {footer && <footer className="border-t border-border px-6 py-4">{footer}</footer>}
       </aside>
     </div>
   );

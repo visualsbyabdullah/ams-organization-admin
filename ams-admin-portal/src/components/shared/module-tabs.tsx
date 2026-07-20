@@ -15,19 +15,14 @@ type ModuleTabsProps = {
   rootHref: string;
 };
 
-export function ModuleTabs({
-  tabs,
-  rootHref,
-}: ModuleTabsProps) {
+export function ModuleTabs({ tabs, rootHref }: ModuleTabsProps) {
   const pathname = usePathname();
 
   return (
     <nav className="flex gap-1 overflow-x-auto border-b border-border">
       {tabs.map((tab) => {
         const active =
-          tab.href === rootHref
-            ? pathname === rootHref
-            : pathname.startsWith(tab.href);
+          tab.href === rootHref ? pathname === rootHref : pathname.startsWith(tab.href);
 
         return (
           <Link

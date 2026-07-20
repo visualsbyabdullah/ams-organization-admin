@@ -1,7 +1,5 @@
 import { CURRENT_ADMIN } from "@/data/current-admin";
-import {
-  calculateInvoiceTotals,
-} from "@/lib/invoices";
+import { calculateInvoiceTotals } from "@/lib/invoices";
 import type {
   Invoice,
   InvoiceLineItem,
@@ -11,15 +9,10 @@ import type {
 
 type InvoiceSeed = Omit<
   Invoice,
-  | "subtotal"
-  | "taxAmount"
-  | "totalAmount"
-  | "balanceAmount"
+  "subtotal" | "taxAmount" | "totalAmount" | "balanceAmount"
 >;
 
-function createInvoice(
-  seed: InvoiceSeed,
-): Invoice {
+function createInvoice(seed: InvoiceSeed): Invoice {
   const totals = calculateInvoiceTotals(
     seed.lineItems,
     seed.taxRate,
@@ -29,20 +22,12 @@ function createInvoice(
   return {
     ...seed,
     ...totals,
-    balanceAmount: Math.max(
-      totals.totalAmount - seed.paidAmount,
-      0,
-    ),
+    balanceAmount: Math.max(totals.totalAmount - seed.paidAmount, 0),
   };
 }
 
 function createRecurringInvoice(
-  seed: Omit<
-    RecurringInvoice,
-    | "subtotal"
-    | "taxAmount"
-    | "totalAmount"
-  >,
+  seed: Omit<RecurringInvoice, "subtotal" | "taxAmount" | "totalAmount">,
 ): RecurringInvoice {
   const totals = calculateInvoiceTotals(
     seed.lineItems,
@@ -58,10 +43,7 @@ function createRecurringInvoice(
 
 let seedLineItemSequence = 0;
 
-const subscriptionItems = (
-  description: string,
-  amount: number,
-): InvoiceLineItem[] => [
+const subscriptionItems = (description: string, amount: number): InvoiceLineItem[] => [
   {
     id: `invoice-seed-item-${++seedLineItemSequence}`,
     description,
@@ -83,10 +65,7 @@ export const INVOICES: Invoice[] = [
     status: "paid",
     issueDate: "2026-07-01",
     dueDate: "2026-07-15",
-    lineItems: subscriptionItems(
-      "AMS workforce platform â€” July 2026",
-      240000,
-    ),
+    lineItems: subscriptionItems("AMS workforce platform â€” July 2026", 240000),
     taxRate: 15,
     discountAmount: 0,
     paidAmount: 276000,
@@ -143,10 +122,7 @@ export const INVOICES: Invoice[] = [
     status: "overdue",
     issueDate: "2026-06-10",
     dueDate: "2026-07-10",
-    lineItems: subscriptionItems(
-      "Payroll configuration and compliance support",
-      180000,
-    ),
+    lineItems: subscriptionItems("Payroll configuration and compliance support", 180000),
     taxRate: 15,
     discountAmount: 0,
     paidAmount: 0,
@@ -191,10 +167,7 @@ export const INVOICES: Invoice[] = [
     status: "draft",
     issueDate: "2026-07-14",
     dueDate: "2026-07-29",
-    lineItems: subscriptionItems(
-      "Priority support retainer â€” Q3",
-      300000,
-    ),
+    lineItems: subscriptionItems("Priority support retainer â€” Q3", 300000),
     taxRate: 15,
     discountAmount: 0,
     paidAmount: 0,
@@ -213,10 +186,7 @@ export const INVOICES: Invoice[] = [
     status: "sent",
     issueDate: "2026-07-15",
     dueDate: "2026-07-30",
-    lineItems: subscriptionItems(
-      "AMS workforce platform â€” July 2026",
-      195000,
-    ),
+    lineItems: subscriptionItems("AMS workforce platform â€” July 2026", 195000),
     taxRate: 15,
     discountAmount: 0,
     paidAmount: 0,
@@ -235,10 +205,7 @@ export const INVOICES: Invoice[] = [
     status: "paid",
     issueDate: "2026-06-03",
     dueDate: "2026-06-18",
-    lineItems: subscriptionItems(
-      "Organization structure and payroll consulting",
-      260000,
-    ),
+    lineItems: subscriptionItems("Organization structure and payroll consulting", 260000),
     taxRate: 15,
     discountAmount: 15000,
     paidAmount: 281750,
@@ -260,10 +227,7 @@ export const INVOICES: Invoice[] = [
     status: "void",
     issueDate: "2026-06-20",
     dueDate: "2026-07-05",
-    lineItems: subscriptionItems(
-      "AMS workforce platform â€” July 2026",
-      160000,
-    ),
+    lineItems: subscriptionItems("AMS workforce platform â€” July 2026", 160000),
     taxRate: 15,
     discountAmount: 0,
     paidAmount: 0,
@@ -284,10 +248,7 @@ export const RECURRING_INVOICES: RecurringInvoice[] = [
     status: "active",
     startDate: "2026-01-01",
     nextInvoiceDate: "2026-08-01",
-    lineItems: subscriptionItems(
-      "AMS workforce platform subscription",
-      240000,
-    ),
+    lineItems: subscriptionItems("AMS workforce platform subscription", 240000),
     taxRate: 15,
     discountAmount: 0,
     autoSend: true,
@@ -305,10 +266,7 @@ export const RECURRING_INVOICES: RecurringInvoice[] = [
     status: "active",
     startDate: "2026-03-01",
     nextInvoiceDate: "2026-08-01",
-    lineItems: subscriptionItems(
-      "AMS workforce platform subscription",
-      195000,
-    ),
+    lineItems: subscriptionItems("AMS workforce platform subscription", 195000),
     taxRate: 15,
     discountAmount: 0,
     autoSend: true,
@@ -326,10 +284,7 @@ export const RECURRING_INVOICES: RecurringInvoice[] = [
     status: "paused",
     startDate: "2026-01-15",
     nextInvoiceDate: "2026-10-15",
-    lineItems: subscriptionItems(
-      "Priority support retainer",
-      300000,
-    ),
+    lineItems: subscriptionItems("Priority support retainer", 300000),
     taxRate: 15,
     discountAmount: 0,
     autoSend: false,
@@ -347,10 +302,7 @@ export const RECURRING_INVOICES: RecurringInvoice[] = [
     status: "active",
     startDate: "2026-07-01",
     nextInvoiceDate: "2027-07-01",
-    lineItems: subscriptionItems(
-      "Annual administrator refresher training",
-      420000,
-    ),
+    lineItems: subscriptionItems("Annual administrator refresher training", 420000),
     taxRate: 15,
     discountAmount: 20000,
     autoSend: false,
@@ -421,8 +373,7 @@ export const INVOICE_SETTINGS: InvoiceSettings[] = [
     overdueReminderIntervalDays: 7,
     updatedAt: "2026-07-15",
     updatedBy: CURRENT_ADMIN.name,
-    defaultNote:
-      "Draft branch billing profile pending finance approval.",
+    defaultNote: "Draft branch billing profile pending finance approval.",
   },
   {
     id: "invoice-settings-004",
@@ -443,7 +394,6 @@ export const INVOICE_SETTINGS: InvoiceSettings[] = [
     overdueReminderIntervalDays: 7,
     updatedAt: "2026-07-11",
     updatedBy: CURRENT_ADMIN.name,
-    defaultNote:
-      "Payment is due within fifteen days of the invoice date.",
+    defaultNote: "Payment is due within fifteen days of the invoice date.",
   },
 ];

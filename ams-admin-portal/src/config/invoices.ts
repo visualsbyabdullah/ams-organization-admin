@@ -8,8 +8,7 @@ import type {
   RecurringInvoiceStatus,
 } from "@/types/invoice";
 
-export const INVOICE_REFERENCE_DATE =
-  "2026-07-16";
+export const INVOICE_REFERENCE_DATE = "2026-07-16";
 
 export const INVOICE_TABS = [
   {
@@ -34,12 +33,7 @@ export const INVOICE_STATUS_CONFIG: Record<
   InvoiceStatus,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "info"
-      | "warning"
-      | "success"
-      | "danger";
+    badgeVariant: "neutral" | "info" | "warning" | "success" | "danger";
   }
 > = {
   draft: {
@@ -72,12 +66,7 @@ export const INVOICE_CATEGORY_CONFIG: Record<
   InvoiceCategory,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "info"
-      | "warning"
-      | "success"
-      | "danger";
+    badgeVariant: "neutral" | "info" | "warning" | "success" | "danger";
   }
 > = {
   subscription: {
@@ -110,11 +99,7 @@ export const INVOICE_PAYMENT_METHOD_CONFIG: Record<
   InvoicePaymentMethod,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "info"
-      | "warning"
-      | "success";
+    badgeVariant: "neutral" | "info" | "warning" | "success";
   }
 > = {
   bank_transfer: {
@@ -168,10 +153,7 @@ export const RECURRING_INVOICE_STATUS_CONFIG: Record<
   RecurringInvoiceStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "neutral";
+    badgeVariant: "success" | "warning" | "neutral";
   }
 > = {
   active: {
@@ -209,10 +191,7 @@ export const INVOICE_SETTINGS_STATUS_CONFIG: Record<
   InvoiceSettingsStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "neutral";
+    badgeVariant: "success" | "warning" | "neutral";
   }
 > = {
   active: {
@@ -234,13 +213,11 @@ export const INVOICE_COPY = {
     eyebrow: "Billing & Revenue",
     createAction: "Create invoice",
     exportAction: "Export invoices",
-    searchPlaceholder:
-      "Search invoice, client, email, category or reference",
+    searchPlaceholder: "Search invoice, client, email, category or reference",
     allStatuses: "All invoice statuses",
     allCategories: "All categories",
     emptyTitle: "No invoices found",
-    emptyDescription:
-      "Change the filters or create a new client invoice.",
+    emptyDescription: "Change the filters or create a new client invoice.",
   },
   overview: {
     title: "Invoices",
@@ -250,8 +227,7 @@ export const INVOICE_COPY = {
     chartDescription:
       "Monthly invoiced, collected and outstanding revenue for the selected scope.",
     attentionTitle: "Collection attention",
-    attentionDescription:
-      "Overdue and near-due invoices requiring finance follow-up.",
+    attentionDescription: "Overdue and near-due invoices requiring finance follow-up.",
     recentTitle: "Recent invoices",
     recentDescription:
       "Latest client billing activity within the selected organization scope.",
@@ -261,8 +237,7 @@ export const INVOICE_COPY = {
     description:
       "Review, send, collect and maintain client invoices across every branch.",
     registerTitle: "Invoice register",
-    registerDescription:
-      "Complete invoice history for the selected organization scope.",
+    registerDescription: "Complete invoice history for the selected organization scope.",
   },
   recurring: {
     title: "Recurring invoices",
@@ -270,13 +245,11 @@ export const INVOICE_COPY = {
       "Automate repeat billing schedules for subscriptions, retainers and ongoing client services.",
     createAction: "Add recurring invoice",
     registerTitle: "Recurring billing register",
-    registerDescription:
-      "Active, paused and completed recurring invoice schedules.",
+    registerDescription: "Active, paused and completed recurring invoice schedules.",
     allStatuses: "All recurring statuses",
     allFrequencies: "All billing frequencies",
     emptyTitle: "No recurring invoices found",
-    emptyDescription:
-      "Change the filters or add a recurring billing schedule.",
+    emptyDescription: "Change the filters or add a recurring billing schedule.",
   },
   settings: {
     title: "Invoice settings",
@@ -284,18 +257,15 @@ export const INVOICE_COPY = {
       "Configure invoice numbering, payment terms, tax defaults and collection automation by organization or branch.",
     createAction: "Add settings",
     registerTitle: "Invoice settings register",
-    registerDescription:
-      "Organization defaults and branch-specific billing controls.",
+    registerDescription: "Organization defaults and branch-specific billing controls.",
     effectiveTitle: "Effective invoice settings",
     effectiveDescription:
       "Billing rules currently applied within the selected organization scope.",
-    searchPlaceholder:
-      "Search settings, branch, prefix or payment terms",
+    searchPlaceholder: "Search settings, branch, prefix or payment terms",
     allScopes: "Organization and branch",
     allStatuses: "All settings statuses",
     emptyTitle: "No invoice settings found",
-    emptyDescription:
-      "Change the filters or create a billing settings profile.",
+    emptyDescription: "Change the filters or create a billing settings profile.",
   },
   actions: {
     send: "Send invoice",

@@ -44,9 +44,7 @@ export function PerformanceCycleForm({
   const [branchId, setBranchId] = useState(
     cycle?.branchId ?? (selectedBranchId === "all" ? "" : selectedBranchId),
   );
-  const [status, setStatus] = useState<PerformanceCycleStatus>(
-    cycle?.status ?? "draft",
-  );
+  const [status, setStatus] = useState<PerformanceCycleStatus>(cycle?.status ?? "draft");
   const [startDate, setStartDate] = useState(cycle?.startDate ?? "2026-08-01");
   const [endDate, setEndDate] = useState(cycle?.endDate ?? "2026-08-31");
   const [selfReviewDueDate, setSelfReviewDueDate] = useState(
@@ -58,20 +56,18 @@ export function PerformanceCycleForm({
   const [calibrationDate, setCalibrationDate] = useState(
     cycle?.calibrationDate ?? "2026-08-28",
   );
-  const [participants, setParticipants] = useState(
-    String(cycle?.participants ?? 0),
-  );
+  const [participants, setParticipants] = useState(String(cycle?.participants ?? 0));
   const [note, setNote] = useState(cycle?.note ?? "");
   const [submitted, setSubmitted] = useState(false);
 
   const valid = Boolean(
     name.trim() &&
-      startDate &&
-      endDate &&
-      selfReviewDueDate &&
-      managerReviewDueDate &&
-      calibrationDate &&
-      (scope === "organization" || branchId),
+    startDate &&
+    endDate &&
+    selfReviewDueDate &&
+    managerReviewDueDate &&
+    calibrationDate &&
+    (scope === "organization" || branchId),
   );
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -119,30 +115,26 @@ export function PerformanceCycleForm({
           <Select
             id="performanceCycleStatus"
             value={status}
-            onChange={(event) =>
-              setStatus(event.target.value as PerformanceCycleStatus)
-            }
+            onChange={(event) => setStatus(event.target.value as PerformanceCycleStatus)}
           >
-            {Object.entries(PERFORMANCE_CYCLE_STATUS_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>{config.label}</option>
-              ),
-            )}
+            {Object.entries(PERFORMANCE_CYCLE_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
         <FormField label="Cycle scope" htmlFor="performanceCycleScope">
           <Select
             id="performanceCycleScope"
             value={scope}
-            onChange={(event) =>
-              setScope(event.target.value as PerformanceCycleScope)
-            }
+            onChange={(event) => setScope(event.target.value as PerformanceCycleScope)}
           >
-            {Object.entries(PERFORMANCE_CYCLE_SCOPE_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>{config.label}</option>
-              ),
-            )}
+            {Object.entries(PERFORMANCE_CYCLE_SCOPE_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
         {scope === "branch" && (
@@ -158,32 +150,69 @@ export function PerformanceCycleForm({
             >
               <option value="">Select branch</option>
               {businessBranches.map((branch) => (
-                <option key={branch.id} value={branch.id}>{branch.name}</option>
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
               ))}
             </Select>
           </FormField>
         )}
         <FormField label="Start date" htmlFor="performanceCycleStart">
-          <Input id="performanceCycleStart" type="date" value={startDate} onChange={(event) => setStartDate(event.target.value)} />
+          <Input
+            id="performanceCycleStart"
+            type="date"
+            value={startDate}
+            onChange={(event) => setStartDate(event.target.value)}
+          />
         </FormField>
         <FormField label="End date" htmlFor="performanceCycleEnd">
-          <Input id="performanceCycleEnd" type="date" value={endDate} onChange={(event) => setEndDate(event.target.value)} />
+          <Input
+            id="performanceCycleEnd"
+            type="date"
+            value={endDate}
+            onChange={(event) => setEndDate(event.target.value)}
+          />
         </FormField>
         <FormField label="Self-review deadline" htmlFor="performanceSelfDue">
-          <Input id="performanceSelfDue" type="date" value={selfReviewDueDate} onChange={(event) => setSelfReviewDueDate(event.target.value)} />
+          <Input
+            id="performanceSelfDue"
+            type="date"
+            value={selfReviewDueDate}
+            onChange={(event) => setSelfReviewDueDate(event.target.value)}
+          />
         </FormField>
         <FormField label="Manager-review deadline" htmlFor="performanceManagerDue">
-          <Input id="performanceManagerDue" type="date" value={managerReviewDueDate} onChange={(event) => setManagerReviewDueDate(event.target.value)} />
+          <Input
+            id="performanceManagerDue"
+            type="date"
+            value={managerReviewDueDate}
+            onChange={(event) => setManagerReviewDueDate(event.target.value)}
+          />
         </FormField>
         <FormField label="Calibration date" htmlFor="performanceCalibrationDate">
-          <Input id="performanceCalibrationDate" type="date" value={calibrationDate} onChange={(event) => setCalibrationDate(event.target.value)} />
+          <Input
+            id="performanceCalibrationDate"
+            type="date"
+            value={calibrationDate}
+            onChange={(event) => setCalibrationDate(event.target.value)}
+          />
         </FormField>
         <FormField label="Participants" htmlFor="performanceParticipants">
-          <Input id="performanceParticipants" type="number" min="0" value={participants} onChange={(event) => setParticipants(event.target.value)} />
+          <Input
+            id="performanceParticipants"
+            type="number"
+            min="0"
+            value={participants}
+            onChange={(event) => setParticipants(event.target.value)}
+          />
         </FormField>
       </div>
       <FormField label="Cycle note" htmlFor="performanceCycleNote" optional>
-        <Textarea id="performanceCycleNote" value={note} onChange={(event) => setNote(event.target.value)} />
+        <Textarea
+          id="performanceCycleNote"
+          value={note}
+          onChange={(event) => setNote(event.target.value)}
+        />
       </FormField>
       <div className="flex justify-end gap-3 border-t border-border pt-5">
         <Button type="button" variant="ghost" onClick={onCancel}>

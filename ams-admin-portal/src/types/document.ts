@@ -9,16 +9,9 @@
   | "certificate"
   | "other";
 
-export type DocumentOwnerType =
-  | "employee"
-  | "branch"
-  | "organization";
+export type DocumentOwnerType = "employee" | "branch" | "organization";
 
-export type DocumentVisibility =
-  | "private"
-  | "employee"
-  | "managers"
-  | "organization";
+export type DocumentVisibility = "private" | "employee" | "managers" | "organization";
 
 export type DocumentStatus =
   | "draft"
@@ -30,33 +23,17 @@ export type DocumentStatus =
   | "archived";
 
 export type DocumentRequestStatus =
-  | "open"
-  | "submitted"
-  | "fulfilled"
-  | "overdue"
-  | "cancelled";
+  "open" | "submitted" | "fulfilled" | "overdue" | "cancelled";
 
-export type DocumentTemplateStatus =
-  | "draft"
-  | "published"
-  | "archived";
+export type DocumentTemplateStatus = "draft" | "published" | "archived";
 
-export type DocumentTemplateScope =
-  | "organization"
-  | "branch";
+export type DocumentTemplateScope = "organization" | "branch";
 
-export type DocumentTemplateOutput =
-  | "pdf"
-  | "docx";
+export type DocumentTemplateOutput = "pdf" | "docx";
 
-export type DocumentSettingsScope =
-  | "organization"
-  | "branch";
+export type DocumentSettingsScope = "organization" | "branch";
 
-export type DocumentSettingsStatus =
-  | "active"
-  | "draft"
-  | "archived";
+export type DocumentSettingsStatus = "active" | "draft" | "archived";
 
 export type DocumentRecord = {
   id: string;

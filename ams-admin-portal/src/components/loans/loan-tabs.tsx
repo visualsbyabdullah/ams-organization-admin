@@ -13,11 +13,7 @@ export function LoanTabs() {
     <nav className="flex gap-1 overflow-x-auto border-b border-border">
       {LOAN_TABS.map((tab) => {
         const active =
-          tab.href === "/loans"
-            ? pathname === "/loans"
-            : pathname.startsWith(
-                tab.href,
-              );
+          tab.href === "/loans" ? pathname === "/loans" : pathname.startsWith(tab.href);
 
         return (
           <Link

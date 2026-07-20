@@ -6,11 +6,7 @@ type AvatarProps = {
   className?: string;
 };
 
-export function Avatar({
-  name,
-  initials,
-  className,
-}: AvatarProps) {
+export function Avatar({ name, initials, className }: AvatarProps) {
   return (
     <div
       title={name}

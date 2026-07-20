@@ -4,8 +4,7 @@
   LoanRepaymentMethod,
 } from "@/types/loan";
 
-export const LOAN_REFERENCE_DATE =
-  "2026-07-16";
+export const LOAN_REFERENCE_DATE = "2026-07-16";
 
 export const LOAN_TABS = [
   {
@@ -30,12 +29,7 @@ export const LOAN_TYPE_CONFIG: Record<
   EmployeeLoanType,
   {
     label: string;
-    badgeVariant:
-      | "info"
-      | "warning"
-      | "success"
-      | "danger"
-      | "neutral";
+    badgeVariant: "info" | "warning" | "success" | "danger" | "neutral";
   }
 > = {
   personal: {
@@ -64,12 +58,7 @@ export const LOAN_STATUS_CONFIG: Record<
   EmployeeLoanStatus,
   {
     label: string;
-    badgeVariant:
-      | "warning"
-      | "success"
-      | "info"
-      | "danger"
-      | "neutral";
+    badgeVariant: "warning" | "success" | "info" | "danger" | "neutral";
   }
 > = {
   pending_approval: {
@@ -102,10 +91,7 @@ export const LOAN_REPAYMENT_METHOD_CONFIG: Record<
   LoanRepaymentMethod,
   {
     label: string;
-    badgeVariant:
-      | "info"
-      | "neutral"
-      | "warning";
+    badgeVariant: "info" | "neutral" | "warning";
   }
 > = {
   payroll_deduction: {
@@ -138,11 +124,9 @@ export const LOANS_COPY = {
   tableTitle: "Employee loan register",
   tableDescription:
     "Review active and historical employee loans within the selected organization scope.",
-  searchPlaceholder:
-    "Search employee, ID, department, loan type or purpose",
+  searchPlaceholder: "Search employee, ID, department, loan type or purpose",
   allTypes: "All loan types",
   allStatuses: "All loan statuses",
   emptyTitle: "No employee loans found",
-  emptyDescription:
-    "Change the filters or submit a new employee loan request.",
+  emptyDescription: "Change the filters or submit a new employee loan request.",
 } as const;

@@ -10,26 +10,17 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 import type { ComparisonPoint } from "@/types/dashboard";
 
 type ComparisonBarChartProps = {
   data: ComparisonPoint[];
 };
 
-export function ComparisonBarChart({
-  data,
-}: ComparisonBarChartProps) {
+export function ComparisonBarChart({ data }: ComparisonBarChartProps) {
   return (
     <div className="h-64 w-full">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={data}
           margin={{
@@ -66,10 +57,7 @@ export function ComparisonBarChart({
             cursor={{
               fill: "var(--ams-surface-muted)",
             }}
-            formatter={(value) => [
-              `${value}%`,
-              "Attendance",
-            ]}
+            formatter={(value) => [`${value}%`, "Attendance"]}
           />
 
           <Bar

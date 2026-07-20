@@ -16,10 +16,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { ReportDefinitionForm } from "@/components/reports/report-definition-form";
 import { ReportTabs } from "@/components/reports/report-tabs";
-import {
-  DataTable,
-  type DataTableColumn,
-} from "@/components/shared/data-table";
+import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,16 +43,13 @@ import type { ReportDefinition } from "@/types/report";
 
 export function ReportLibraryWorkspace() {
   const { selectedBranch, selectedBranchId } = useBranchScope();
-  const [reports, setReports] =
-    useState<ReportDefinition[]>(REPORT_DEFINITIONS);
+  const [reports, setReports] = useState<ReportDefinition[]>(REPORT_DEFINITIONS);
   const [searchQuery, setSearchQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedReportId, setSelectedReportId] =
-    useState<string | null>(null);
-  const [editorMode, setEditorMode] =
-    useState<"create" | "edit" | null>(null);
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedReports = useMemo(
     () =>
@@ -91,26 +85,13 @@ export function ReportLibraryWorkspace() {
         (scopeFilter === "all" || report.scope === scopeFilter)
       );
     });
-  }, [
-    categoryFilter,
-    scopedReports,
-    scopeFilter,
-    searchQuery,
-    statusFilter,
-  ]);
+  }, [categoryFilter, scopedReports, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedReport =
-    reports.find((report) => report.id === selectedReportId) ?? null;
+  const selectedReport = reports.find((report) => report.id === selectedReportId) ?? null;
 
-  const activeReports = scopedReports.filter(
-    (report) => report.status === "active",
-  );
-  const draftReports = scopedReports.filter(
-    (report) => report.status === "draft",
-  );
-  const branchReports = scopedReports.filter(
-    (report) => report.scope === "branch",
-  );
+  const activeReports = scopedReports.filter((report) => report.status === "active");
+  const draftReports = scopedReports.filter((report) => report.status === "draft");
+  const branchReports = scopedReports.filter((report) => report.scope === "branch");
   const multiFormatReports = scopedReports.filter(
     (report) => report.availableFormats.length > 1,
   );
@@ -164,9 +145,7 @@ export function ReportLibraryWorkspace() {
         id: "category",
         header: "Category",
         cell: (report) => (
-          <Badge
-            variant={REPORT_CATEGORY_CONFIG[report.category].badgeVariant}
-          >
+          <Badge variant={REPORT_CATEGORY_CONFIG[report.category].badgeVariant}>
             {REPORT_CATEGORY_CONFIG[report.category].label}
           </Badge>
         ),
@@ -184,9 +163,7 @@ export function ReportLibraryWorkspace() {
         id: "format",
         header: "Default format",
         cell: (report) => (
-          <Badge
-            variant={REPORT_FORMAT_CONFIG[report.defaultFormat].badgeVariant}
-          >
+          <Badge variant={REPORT_FORMAT_CONFIG[report.defaultFormat].badgeVariant}>
             {REPORT_FORMAT_CONFIG[report.defaultFormat].label}
           </Badge>
         ),
@@ -205,19 +182,13 @@ export function ReportLibraryWorkspace() {
         id: "lastGenerated",
         header: "Last generated",
         cell: (report) =>
-          report.lastGeneratedAt
-            ? formatReportDateTime(report.lastGeneratedAt)
-            : "Never",
+          report.lastGeneratedAt ? formatReportDateTime(report.lastGeneratedAt) : "Never",
       },
       {
         id: "status",
         header: "Status",
         cell: (report) => (
-          <Badge
-            variant={
-              REPORT_DEFINITION_STATUS_CONFIG[report.status].badgeVariant
-            }
-          >
+          <Badge variant={REPORT_DEFINITION_STATUS_CONFIG[report.status].badgeVariant}>
             {REPORT_DEFINITION_STATUS_CONFIG[report.status].label}
           </Badge>
         ),
@@ -349,9 +320,7 @@ export function ReportLibraryWorkspace() {
 
       <Card className="mt-6 overflow-hidden">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {REPORT_COPY.library.registerTitle}
-          </h2>
+          <h2 className="text-lg font-bold">{REPORT_COPY.library.registerTitle}</h2>
           <p className="mt-1 text-sm text-text-muted">
             {REPORT_COPY.library.registerDescription}
           </p>
@@ -396,13 +365,11 @@ export function ReportLibraryWorkspace() {
               onChange={(event) => setStatusFilter(event.target.value)}
             >
               <option value="all">{REPORT_COPY.library.allStatuses}</option>
-              {Object.entries(REPORT_DEFINITION_STATUS_CONFIG).map(
-                ([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(REPORT_DEFINITION_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
           </div>
         </div>
@@ -415,9 +382,7 @@ export function ReportLibraryWorkspace() {
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <FileBarChart2 className="size-8 text-text-muted" />
-              <h3 className="mt-4 font-bold">
-                {REPORT_COPY.library.emptyTitle}
-              </h3>
+              <h3 className="mt-4 font-bold">{REPORT_COPY.library.emptyTitle}</h3>
               <p className="mt-2 text-sm text-text-muted">
                 {REPORT_COPY.library.emptyDescription}
               </p>
@@ -482,8 +447,7 @@ export function ReportLibraryWorkspace() {
 
                 <Badge
                   variant={
-                    REPORT_DEFINITION_STATUS_CONFIG[selectedReport.status]
-                      .badgeVariant
+                    REPORT_DEFINITION_STATUS_CONFIG[selectedReport.status].badgeVariant
                   }
                 >
                   {REPORT_DEFINITION_STATUS_CONFIG[selectedReport.status].label}
@@ -516,9 +480,7 @@ export function ReportLibraryWorkspace() {
                   </dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Estimated records
-                  </dt>
+                  <dt className="text-xs text-text-muted">Estimated records</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedReport.recordEstimate.toLocaleString("en-PK")}
                   </dd>
@@ -538,10 +500,7 @@ export function ReportLibraryWorkspace() {
               <h3 className="text-sm font-bold">Available formats</h3>
               <div className="mt-3 flex flex-wrap gap-2">
                 {selectedReport.availableFormats.map((format) => (
-                  <Badge
-                    key={format}
-                    variant={REPORT_FORMAT_CONFIG[format].badgeVariant}
-                  >
+                  <Badge key={format} variant={REPORT_FORMAT_CONFIG[format].badgeVariant}>
                     {REPORT_FORMAT_CONFIG[format].label}
                   </Badge>
                 ))}
@@ -583,22 +542,14 @@ export function ReportLibraryWorkspace() {
         open={editorMode !== null}
         onClose={() => setEditorMode(null)}
         title={
-          editorMode === "create"
-            ? "Add report definition"
-            : "Edit report definition"
+          editorMode === "create" ? "Add report definition" : "Edit report definition"
         }
         description="Configure report scope, fields, filters and available export formats."
       >
         {editorMode && (
           <ReportDefinitionForm
-            key={
-              editorMode === "create"
-                ? "new-report-definition"
-                : selectedReport?.id
-            }
-            report={
-              editorMode === "edit" ? selectedReport ?? undefined : undefined
-            }
+            key={editorMode === "create" ? "new-report-definition" : selectedReport?.id}
+            report={editorMode === "edit" ? (selectedReport ?? undefined) : undefined}
             selectedBranchId={selectedBranchId}
             onCancel={() => setEditorMode(null)}
             onSave={saveReport}

@@ -11,26 +11,17 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 import type { TrainingTrendPoint } from "@/types/training";
 
 type TrainingActivityChartProps = {
   data: TrainingTrendPoint[];
 };
 
-export function TrainingActivityChart({
-  data,
-}: TrainingActivityChartProps) {
+export function TrainingActivityChart({ data }: TrainingActivityChartProps) {
   return (
     <div className="h-72 w-full [&_*:focus]:outline-none [&_svg]:outline-none">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart
           accessibilityLayer={false}
           data={data}
@@ -63,9 +54,7 @@ export function TrainingActivityChart({
             allowDecimals={false}
           />
 
-          <Tooltip
-            contentStyle={CHART_TOOLTIP_STYLE}
-          />
+          <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
 
           <Legend
             iconType="circle"

@@ -29,8 +29,7 @@ export const DOCUMENT_RECORDS: DocumentRecord[] = [
     verifiedAt: "2026-07-15",
     verifiedBy: "Maaz",
     tags: ["identity", "cnic"],
-    note:
-      "Latest verified identity document supplied by the employee.",
+    note: "Latest verified identity document supplied by the employee.",
   },
   {
     id: "document-002",
@@ -53,8 +52,7 @@ export const DOCUMENT_RECORDS: DocumentRecord[] = [
     verifiedAt: "2026-07-13",
     verifiedBy: "Ayesha Khan",
     tags: ["contract", "employment"],
-    note:
-      "Signed employment agreement retained in the employee record.",
+    note: "Signed employment agreement retained in the employee record.",
   },
   {
     id: "document-003",
@@ -78,8 +76,7 @@ export const DOCUMENT_RECORDS: DocumentRecord[] = [
     verifiedAt: "2026-07-12",
     verifiedBy: "Maaz",
     tags: ["training", "certification"],
-    note:
-      "Renewal evidence is required before the certificate expiry date.",
+    note: "Renewal evidence is required before the certificate expiry date.",
   },
   {
     id: "document-004",
@@ -100,8 +97,7 @@ export const DOCUMENT_RECORDS: DocumentRecord[] = [
     verifiedAt: "2026-07-11",
     verifiedBy: "Maaz",
     tags: ["tax", "registration"],
-    note:
-      "Organization-wide tax registration record.",
+    note: "Organization-wide tax registration record.",
   },
   {
     id: "document-005",
@@ -124,8 +120,7 @@ export const DOCUMENT_RECORDS: DocumentRecord[] = [
     verifiedAt: "2026-07-10",
     verifiedBy: "Maaz",
     tags: ["safety", "compliance"],
-    note:
-      "The Karachi branch requires an updated workplace safety certificate.",
+    note: "The Karachi branch requires an updated workplace safety certificate.",
   },
   {
     id: "document-006",
@@ -145,8 +140,7 @@ export const DOCUMENT_RECORDS: DocumentRecord[] = [
     uploadedAt: "2026-07-16",
     uploadedBy: "Ayesha Khan",
     tags: ["bank", "payroll"],
-    note:
-      "Finance verification is required before payroll bank details are updated.",
+    note: "Finance verification is required before payroll bank details are updated.",
   },
   {
     id: "document-007",
@@ -167,8 +161,7 @@ export const DOCUMENT_RECORDS: DocumentRecord[] = [
     uploadedAt: "2026-07-16",
     uploadedBy: "Maaz",
     tags: ["salary", "certificate"],
-    note:
-      "Draft salary certificate awaiting administrator verification.",
+    note: "Draft salary certificate awaiting administrator verification.",
   },
   {
     id: "document-008",
@@ -188,8 +181,7 @@ export const DOCUMENT_RECORDS: DocumentRecord[] = [
     verifiedAt: "2026-07-09",
     verifiedBy: "Maaz",
     tags: ["handbook", "policy"],
-    note:
-      "Current employee handbook available across all branches.",
+    note: "Current employee handbook available across all branches.",
   },
   {
     id: "document-009",
@@ -208,11 +200,9 @@ export const DOCUMENT_RECORDS: DocumentRecord[] = [
     version: 1,
     uploadedAt: "2026-07-08",
     uploadedBy: "Maaz",
-    rejectionReason:
-      "The uploaded agreement does not contain the employee signature.",
+    rejectionReason: "The uploaded agreement does not contain the employee signature.",
     tags: ["nda", "legal"],
-    note:
-      "A signed replacement document has been requested.",
+    note: "A signed replacement document has been requested.",
   },
 ];
 
@@ -228,8 +218,7 @@ export const DOCUMENT_REQUESTS: DocumentRequest[] = [
     dueDate: "2026-07-25",
     mandatory: true,
     requestedBy: "Maaz",
-    note:
-      "Upload the renewed identity card after collection.",
+    note: "Upload the renewed identity card after collection.",
   },
   {
     id: "document-request-002",
@@ -242,8 +231,7 @@ export const DOCUMENT_REQUESTS: DocumentRequest[] = [
     dueDate: "2026-07-12",
     mandatory: true,
     requestedBy: "Maaz",
-    note:
-      "Renewal evidence is required for the expiring certification.",
+    note: "Renewal evidence is required for the expiring certification.",
   },
   {
     id: "document-request-003",
@@ -258,8 +246,7 @@ export const DOCUMENT_REQUESTS: DocumentRequest[] = [
     linkedDocumentId: "document-006",
     mandatory: true,
     requestedBy: "Ayesha Khan",
-    note:
-      "Submitted document is waiting for finance verification.",
+    note: "Submitted document is waiting for finance verification.",
   },
   {
     id: "document-request-004",
@@ -272,8 +259,7 @@ export const DOCUMENT_REQUESTS: DocumentRequest[] = [
     dueDate: "2026-07-28",
     mandatory: true,
     requestedBy: "Maaz",
-    note:
-      "A current fitness certificate is required for the assigned role.",
+    note: "A current fitness certificate is required for the assigned role.",
   },
   {
     id: "document-request-005",
@@ -289,8 +275,7 @@ export const DOCUMENT_REQUESTS: DocumentRequest[] = [
     linkedDocumentId: "document-007",
     mandatory: true,
     requestedBy: "Maaz",
-    note:
-      "Signed agreement was reviewed and added to the employee record.",
+    note: "Signed agreement was reviewed and added to the employee record.",
   },
   {
     id: "document-request-006",
@@ -303,8 +288,7 @@ export const DOCUMENT_REQUESTS: DocumentRequest[] = [
     dueDate: "2026-06-25",
     mandatory: false,
     requestedBy: "Ayesha Khan",
-    note:
-      "Request was cancelled after manager confirmation.",
+    note: "Request was cancelled after manager confirmation.",
   },
 ];
 
@@ -318,21 +302,13 @@ export const DOCUMENT_TEMPLATES: DocumentTemplate[] = [
     status: "published",
     outputFormat: "pdf",
     version: 4,
-    variables: [
-      "employee_name",
-      "designation",
-      "department",
-      "joining_date",
-      "salary",
-    ],
+    variables: ["employee_name", "designation", "department", "joining_date", "salary"],
     selfService: false,
     approvalRequired: true,
-    description:
-      "Standard organization offer letter for approved employee onboarding.",
+    description: "Standard organization offer letter for approved employee onboarding.",
     updatedAt: "2026-07-12",
     updatedBy: "Maaz",
-    note:
-      "Final output requires organization administrator approval.",
+    note: "Final output requires organization administrator approval.",
   },
   {
     id: "document-template-002",
@@ -343,20 +319,14 @@ export const DOCUMENT_TEMPLATES: DocumentTemplate[] = [
     status: "published",
     outputFormat: "pdf",
     version: 2,
-    variables: [
-      "employee_name",
-      "designation",
-      "start_date",
-      "end_date",
-    ],
+    variables: ["employee_name", "designation", "start_date", "end_date"],
     selfService: true,
     approvalRequired: true,
     description:
       "Experience confirmation letter generated from employee service records.",
     updatedAt: "2026-07-11",
     updatedBy: "Maaz",
-    note:
-      "Employees can request this document through self-service.",
+    note: "Employees can request this document through self-service.",
   },
   {
     id: "document-template-003",
@@ -367,20 +337,14 @@ export const DOCUMENT_TEMPLATES: DocumentTemplate[] = [
     status: "published",
     outputFormat: "pdf",
     version: 3,
-    variables: [
-      "employee_name",
-      "employee_code",
-      "designation",
-      "gross_salary",
-    ],
+    variables: ["employee_name", "employee_code", "designation", "gross_salary"],
     selfService: true,
     approvalRequired: true,
     description:
       "Salary certificate generated from the current approved compensation record.",
     updatedAt: "2026-07-10",
     updatedBy: "Maaz",
-    note:
-      "Finance verification is required before release.",
+    note: "Finance verification is required before release.",
   },
   {
     id: "document-template-004",
@@ -391,19 +355,13 @@ export const DOCUMENT_TEMPLATES: DocumentTemplate[] = [
     status: "published",
     outputFormat: "docx",
     version: 5,
-    variables: [
-      "employee_name",
-      "cnic_number",
-      "effective_date",
-    ],
+    variables: ["employee_name", "cnic_number", "effective_date"],
     selfService: false,
     approvalRequired: true,
-    description:
-      "Standard employee confidentiality and non-disclosure agreement.",
+    description: "Standard employee confidentiality and non-disclosure agreement.",
     updatedAt: "2026-07-08",
     updatedBy: "Maaz",
-    note:
-      "The signed final version must be uploaded to the employee record.",
+    note: "The signed final version must be uploaded to the employee record.",
   },
   {
     id: "document-template-005",
@@ -416,19 +374,13 @@ export const DOCUMENT_TEMPLATES: DocumentTemplate[] = [
     status: "draft",
     outputFormat: "docx",
     version: 1,
-    variables: [
-      "employee_name",
-      "incident_date",
-      "warning_reason",
-    ],
+    variables: ["employee_name", "incident_date", "warning_reason"],
     selfService: false,
     approvalRequired: true,
-    description:
-      "Draft branch-specific warning letter awaiting legal review.",
+    description: "Draft branch-specific warning letter awaiting legal review.",
     updatedAt: "2026-07-15",
     updatedBy: "Ayesha Khan",
-    note:
-      "Do not publish until the language has been approved.",
+    note: "Do not publish until the language has been approved.",
   },
   {
     id: "document-template-006",
@@ -439,19 +391,14 @@ export const DOCUMENT_TEMPLATES: DocumentTemplate[] = [
     status: "archived",
     outputFormat: "pdf",
     version: 1,
-    variables: [
-      "employee_name",
-      "policy_title",
-      "acknowledgement_date",
-    ],
+    variables: ["employee_name", "policy_title", "acknowledgement_date"],
     selfService: false,
     approvalRequired: false,
     description:
       "Previous policy acknowledgement template retained for historical reference.",
     updatedAt: "2026-06-30",
     updatedBy: "Maaz",
-    note:
-      "Replaced by the digital policy acknowledgement workflow.",
+    note: "Replaced by the digital policy acknowledgement workflow.",
   },
 ];
 
@@ -465,14 +412,7 @@ export const DOCUMENT_SETTINGS: DocumentSettings[] = [
     expiryReminderDays: 45,
     secondExpiryReminderDays: 14,
     maximumUploadMb: 25,
-    allowedFileExtensions: [
-      ".pdf",
-      ".doc",
-      ".docx",
-      ".jpg",
-      ".jpeg",
-      ".png",
-    ],
+    allowedFileExtensions: [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png"],
     defaultVisibility: "employee",
     employeeUploadsAllowed: true,
     managerUploadsAllowed: true,
@@ -482,8 +422,7 @@ export const DOCUMENT_SETTINGS: DocumentSettings[] = [
     selfServiceDownloadsAllowed: true,
     updatedAt: "2026-07-12",
     updatedBy: "Maaz",
-    note:
-      "Default document controls used when no active branch override exists.",
+    note: "Default document controls used when no active branch override exists.",
   },
   {
     id: "document-settings-002",
@@ -496,14 +435,7 @@ export const DOCUMENT_SETTINGS: DocumentSettings[] = [
     expiryReminderDays: 60,
     secondExpiryReminderDays: 21,
     maximumUploadMb: 30,
-    allowedFileExtensions: [
-      ".pdf",
-      ".doc",
-      ".docx",
-      ".jpg",
-      ".jpeg",
-      ".png",
-    ],
+    allowedFileExtensions: [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png"],
     defaultVisibility: "employee",
     employeeUploadsAllowed: true,
     managerUploadsAllowed: true,
@@ -513,8 +445,7 @@ export const DOCUMENT_SETTINGS: DocumentSettings[] = [
     selfServiceDownloadsAllowed: true,
     updatedAt: "2026-07-14",
     updatedBy: "Maaz",
-    note:
-      "Islamabad requires electronic signatures for generated employment documents.",
+    note: "Islamabad requires electronic signatures for generated employment documents.",
   },
   {
     id: "document-settings-003",
@@ -527,12 +458,7 @@ export const DOCUMENT_SETTINGS: DocumentSettings[] = [
     expiryReminderDays: 45,
     secondExpiryReminderDays: 14,
     maximumUploadMb: 20,
-    allowedFileExtensions: [
-      ".pdf",
-      ".docx",
-      ".jpg",
-      ".png",
-    ],
+    allowedFileExtensions: [".pdf", ".docx", ".jpg", ".png"],
     defaultVisibility: "employee",
     employeeUploadsAllowed: true,
     managerUploadsAllowed: true,
@@ -542,8 +468,7 @@ export const DOCUMENT_SETTINGS: DocumentSettings[] = [
     selfServiceDownloadsAllowed: true,
     updatedAt: "2026-07-15",
     updatedBy: "Ayesha Khan",
-    note:
-      "Draft branch override awaiting organization administrator approval.",
+    note: "Draft branch override awaiting organization administrator approval.",
   },
   {
     id: "document-settings-004",
@@ -556,14 +481,7 @@ export const DOCUMENT_SETTINGS: DocumentSettings[] = [
     expiryReminderDays: 60,
     secondExpiryReminderDays: 30,
     maximumUploadMb: 25,
-    allowedFileExtensions: [
-      ".pdf",
-      ".doc",
-      ".docx",
-      ".jpg",
-      ".jpeg",
-      ".png",
-    ],
+    allowedFileExtensions: [".pdf", ".doc", ".docx", ".jpg", ".jpeg", ".png"],
     defaultVisibility: "managers",
     employeeUploadsAllowed: true,
     managerUploadsAllowed: true,
@@ -573,15 +491,11 @@ export const DOCUMENT_SETTINGS: DocumentSettings[] = [
     selfServiceDownloadsAllowed: false,
     updatedAt: "2026-07-10",
     updatedBy: "Maaz",
-    note:
-      "Karachi self-service downloads are disabled for compliance-controlled documents.",
+    note: "Karachi self-service downloads are disabled for compliance-controlled documents.",
   },
 ];
 
-export const DOCUMENT_ACTIVITY_TRENDS: Record<
-  string,
-  DocumentTrendPoint[]
-> = {
+export const DOCUMENT_ACTIVITY_TRENDS: Record<string, DocumentTrendPoint[]> = {
   all: [
     { month: "Jan", uploaded: 42, verified: 38, expired: 2 },
     { month: "Feb", uploaded: 47, verified: 44, expired: 1 },

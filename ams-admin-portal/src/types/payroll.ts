@@ -1,21 +1,10 @@
 ﻿export type PayrollRunStatus =
-  | "draft"
-  | "processing"
-  | "pending_approval"
-  | "approved"
-  | "paid";
+  "draft" | "processing" | "pending_approval" | "approved" | "paid";
 
 export type PayrollEmployeeStatus =
-  | "draft"
-  | "pending_review"
-  | "approved"
-  | "paid"
-  | "on_hold";
+  "draft" | "pending_review" | "approved" | "paid" | "on_hold";
 
-export type PayrollPaymentMethod =
-  | "bank_transfer"
-  | "cash"
-  | "cheque";
+export type PayrollPaymentMethod = "bank_transfer" | "cash" | "cheque";
 
 export type PayrollRun = {
   id: string;

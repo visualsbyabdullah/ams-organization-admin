@@ -11,33 +11,20 @@ import {
 import { EMPLOYEES } from "@/data/employees";
 import { formatDate } from "@/lib/date";
 import { formatFileSize } from "@/lib/documents";
-import type {
-  DocumentRecord,
-} from "@/types/document";
+import type { DocumentRecord } from "@/types/document";
 
 type DocumentDetailsProps = {
   document: DocumentRecord;
 };
 
-export function DocumentDetails({
-  document,
-}: DocumentDetailsProps) {
-  const employee =
-    EMPLOYEES.find(
-      (item) =>
-        item.id ===
-        document.employeeId,
-    );
+export function DocumentDetails({ document }: DocumentDetailsProps) {
+  const employee = EMPLOYEES.find((item) => item.id === document.employeeId);
 
   const ownerName =
-    document.ownerType ===
-      "employee"
-      ? employee?.name ??
-        "Employee unavailable"
-      : document.ownerType ===
-          "branch"
-        ? document.branchName ??
-          "Branch unavailable"
+    document.ownerType === "employee"
+      ? (employee?.name ?? "Employee unavailable")
+      : document.ownerType === "branch"
+        ? (document.branchName ?? "Branch unavailable")
         : "Organization";
 
   return (
@@ -48,204 +35,114 @@ export function DocumentDetails({
             <IconContainer
               icon={FileText}
               tone={
-                document.status ===
-                  "verified"
+                document.status === "verified"
                   ? "success"
-                  : document.status ===
-                        "expired" ||
-                      document.status ===
-                        "rejected"
+                  : document.status === "expired" || document.status === "rejected"
                     ? "danger"
-                    : document.status ===
-                          "pending_verification" ||
-                        document.status ===
-                          "expiring"
+                    : document.status === "pending_verification" ||
+                        document.status === "expiring"
                       ? "warning"
                       : "neutral"
               }
             />
 
             <div>
-              <h3 className="font-bold">
-                {document.title}
-              </h3>
+              <h3 className="font-bold">{document.title}</h3>
               <p className="mt-1 text-xs text-text-muted">
-                {
-                  document.documentNumber
-                }{" "}
-                Â· v{document.version}
+                {document.documentNumber} Â· v{document.version}
               </p>
             </div>
           </div>
 
-          <Badge
-            variant={
-              DOCUMENT_STATUS_CONFIG[
-                document.status
-              ].badgeVariant
-            }
-          >
-            {
-              DOCUMENT_STATUS_CONFIG[
-                document.status
-              ].label
-            }
+          <Badge variant={DOCUMENT_STATUS_CONFIG[document.status].badgeVariant}>
+            {DOCUMENT_STATUS_CONFIG[document.status].label}
           </Badge>
         </div>
 
         <dl className="grid gap-5 p-5 sm:grid-cols-2">
           <div>
-            <dt className="text-xs text-text-muted">
-              Owner
-            </dt>
-            <dd className="mt-1 text-sm font-semibold">
-              {ownerName}
-            </dd>
+            <dt className="text-xs text-text-muted">Owner</dt>
+            <dd className="mt-1 text-sm font-semibold">{ownerName}</dd>
           </div>
 
           <div>
-            <dt className="text-xs text-text-muted">
-              Owner type
-            </dt>
+            <dt className="text-xs text-text-muted">Owner type</dt>
             <dd className="mt-1">
               <Badge
-                variant={
-                  DOCUMENT_OWNER_TYPE_CONFIG[
-                    document.ownerType
-                  ].badgeVariant
-                }
+                variant={DOCUMENT_OWNER_TYPE_CONFIG[document.ownerType].badgeVariant}
               >
-                {
-                  DOCUMENT_OWNER_TYPE_CONFIG[
-                    document.ownerType
-                  ].label
-                }
+                {DOCUMENT_OWNER_TYPE_CONFIG[document.ownerType].label}
               </Badge>
             </dd>
           </div>
 
           <div>
-            <dt className="text-xs text-text-muted">
-              Category
-            </dt>
+            <dt className="text-xs text-text-muted">Category</dt>
             <dd className="mt-1">
-              <Badge
-                variant={
-                  DOCUMENT_CATEGORY_CONFIG[
-                    document.category
-                  ].badgeVariant
-                }
-              >
-                {
-                  DOCUMENT_CATEGORY_CONFIG[
-                    document.category
-                  ].label
-                }
+              <Badge variant={DOCUMENT_CATEGORY_CONFIG[document.category].badgeVariant}>
+                {DOCUMENT_CATEGORY_CONFIG[document.category].label}
               </Badge>
             </dd>
           </div>
 
           <div>
-            <dt className="text-xs text-text-muted">
-              Visibility
-            </dt>
+            <dt className="text-xs text-text-muted">Visibility</dt>
             <dd className="mt-1 text-sm font-semibold">
-              {
-                DOCUMENT_VISIBILITY_CONFIG[
-                  document.visibility
-                ].label
-              }
+              {DOCUMENT_VISIBILITY_CONFIG[document.visibility].label}
             </dd>
           </div>
 
           <div>
-            <dt className="text-xs text-text-muted">
-              Branch
-            </dt>
+            <dt className="text-xs text-text-muted">Branch</dt>
             <dd className="mt-1 text-sm font-semibold">
-              {document.branchName ??
-                "All organization branches"}
+              {document.branchName ?? "All organization branches"}
             </dd>
           </div>
 
           <div>
-            <dt className="text-xs text-text-muted">
-              Uploaded
-            </dt>
+            <dt className="text-xs text-text-muted">Uploaded</dt>
             <dd className="mt-1 text-sm font-semibold">
-              {formatDate(
-                document.uploadedAt,
-              )}{" "}
-              by {document.uploadedBy}
+              {formatDate(document.uploadedAt)} by {document.uploadedBy}
             </dd>
           </div>
 
           <div>
-            <dt className="text-xs text-text-muted">
-              Issue date
-            </dt>
+            <dt className="text-xs text-text-muted">Issue date</dt>
             <dd className="mt-1 text-sm font-semibold">
-              {document.issueDate
-                ? formatDate(
-                    document.issueDate,
-                  )
-                : "Not recorded"}
+              {document.issueDate ? formatDate(document.issueDate) : "Not recorded"}
             </dd>
           </div>
 
           <div>
-            <dt className="text-xs text-text-muted">
-              Expiry date
-            </dt>
+            <dt className="text-xs text-text-muted">Expiry date</dt>
             <dd className="mt-1 text-sm font-semibold">
-              {document.expiryDate
-                ? formatDate(
-                    document.expiryDate,
-                  )
-                : "No expiry"}
+              {document.expiryDate ? formatDate(document.expiryDate) : "No expiry"}
             </dd>
           </div>
         </dl>
       </section>
 
       <section>
-        <h3 className="text-sm font-bold">
-          File information
-        </h3>
+        <h3 className="text-sm font-bold">File information</h3>
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <div className="rounded-control bg-canvas p-4">
-            <p className="text-xs text-text-muted">
-              File name
-            </p>
-            <p className="mt-1 break-all text-sm font-semibold">
-              {document.fileName}
-            </p>
+            <p className="text-xs text-text-muted">File name</p>
+            <p className="mt-1 break-all text-sm font-semibold">{document.fileName}</p>
           </div>
           <div className="rounded-control bg-canvas p-4">
-            <p className="text-xs text-text-muted">
-              File size
-            </p>
+            <p className="text-xs text-text-muted">File size</p>
             <p className="mt-1 text-sm font-semibold">
-              {formatFileSize(
-                document.fileSizeBytes,
-              )}
+              {formatFileSize(document.fileSizeBytes)}
             </p>
           </div>
           <div className="rounded-control bg-canvas p-4">
-            <p className="text-xs text-text-muted">
-              MIME type
-            </p>
-            <p className="mt-1 break-all text-sm font-semibold">
-              {document.mimeType}
-            </p>
+            <p className="text-xs text-text-muted">MIME type</p>
+            <p className="mt-1 break-all text-sm font-semibold">{document.mimeType}</p>
           </div>
           <div className="rounded-control bg-canvas p-4">
-            <p className="text-xs text-text-muted">
-              Verified by
-            </p>
+            <p className="text-xs text-text-muted">Verified by</p>
             <p className="mt-1 text-sm font-semibold">
-              {document.verifiedBy ??
-                "Not verified"}
+              {document.verifiedBy ?? "Not verified"}
             </p>
           </div>
         </div>
@@ -253,48 +150,30 @@ export function DocumentDetails({
 
       {document.rejectionReason && (
         <section className="rounded-control bg-danger-muted p-4">
-          <h3 className="text-sm font-bold text-danger">
-            Rejection reason
-          </h3>
-          <p className="mt-2 text-sm leading-6 text-danger">
-            {
-              document.rejectionReason
-            }
-          </p>
+          <h3 className="text-sm font-bold text-danger">Rejection reason</h3>
+          <p className="mt-2 text-sm leading-6 text-danger">{document.rejectionReason}</p>
         </section>
       )}
 
       <section>
-        <h3 className="text-sm font-bold">
-          Tags
-        </h3>
+        <h3 className="text-sm font-bold">Tags</h3>
         <div className="mt-3 flex flex-wrap gap-2">
           {document.tags.length > 0 ? (
-            document.tags.map(
-              (tag) => (
-                <Badge
-                  key={tag}
-                  variant="neutral"
-                >
-                  {tag}
-                </Badge>
-              ),
-            )
+            document.tags.map((tag) => (
+              <Badge key={tag} variant="neutral">
+                {tag}
+              </Badge>
+            ))
           ) : (
-            <p className="text-sm text-text-muted">
-              No tags have been added.
-            </p>
+            <p className="text-sm text-text-muted">No tags have been added.</p>
           )}
         </div>
       </section>
 
       <section>
-        <h3 className="text-sm font-bold">
-          Internal note
-        </h3>
+        <h3 className="text-sm font-bold">Internal note</h3>
         <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-          {document.note ||
-            "No document note has been added."}
+          {document.note || "No document note has been added."}
         </p>
       </section>
     </div>

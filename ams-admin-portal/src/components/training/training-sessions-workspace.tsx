@@ -1,10 +1,6 @@
 ﻿"use client";
 
-import {
-  type MouseEvent,
-  useMemo,
-  useState,
-} from "react";
+import { type MouseEvent, useMemo, useState } from "react";
 import {
   CalendarDays,
   CheckCircle2,
@@ -23,10 +19,7 @@ import {
 } from "lucide-react";
 
 import { MetricCard } from "@/components/dashboard/metric-card";
-import {
-  DataTable,
-  type DataTableColumn,
-} from "@/components/shared/data-table";
+import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { TrainingSessionForm } from "@/components/training/training-session-form";
@@ -45,68 +38,43 @@ import {
 } from "@/config/training";
 import { useBranchScope } from "@/context/branch-scope-context";
 import { BRANCH_OPTIONS } from "@/data/branches";
-import {
-  TRAINING_COURSES,
-  TRAINING_SESSIONS,
-} from "@/data/training";
+import { TRAINING_COURSES, TRAINING_SESSIONS } from "@/data/training";
 import { formatDate } from "@/lib/date";
 import { downloadTrainingCsv } from "@/lib/training";
-import type {
-  TrainingSession,
-  TrainingSessionStatus,
-} from "@/types/training";
+import type { TrainingSession, TrainingSessionStatus } from "@/types/training";
 
 type EditorMode = "create" | "edit" | null;
 
 export function TrainingSessionsWorkspace() {
-  const {
-    selectedBranch,
-    selectedBranchId,
-  } = useBranchScope();
+  const { selectedBranch, selectedBranchId } = useBranchScope();
 
-  const [sessions, setSessions] =
-    useState<TrainingSession[]>(
-      TRAINING_SESSIONS,
-    );
+  const [sessions, setSessions] = useState<TrainingSession[]>(TRAINING_SESSIONS);
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [statusFilter, setStatusFilter] =
-    useState("all");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-  const [modeFilter, setModeFilter] =
-    useState("all");
+  const [modeFilter, setModeFilter] = useState("all");
 
-  const [selectedSessionId, setSelectedSessionId] =
-    useState<string | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
 
-  const [editorMode, setEditorMode] =
-    useState<EditorMode>(null);
+  const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
   const scopedSessions = useMemo(
     () =>
       sessions.filter(
-        (session) =>
-          selectedBranch.isAggregate ||
-          session.branchId === selectedBranch.id,
+        (session) => selectedBranch.isAggregate || session.branchId === selectedBranch.id,
       ),
     [sessions, selectedBranch],
   );
 
   const visibleSessions = useMemo(() => {
-    const query = searchQuery
-      .trim()
-      .toLowerCase();
+    const query = searchQuery.trim().toLowerCase();
 
     return scopedSessions.filter((session) => {
-      const course = TRAINING_COURSES.find(
-        (item) => item.id === session.courseId,
-      );
+      const course = TRAINING_COURSES.find((item) => item.id === session.courseId);
 
-      const branch = BRANCH_OPTIONS.find(
-        (item) => item.id === session.branchId,
-      );
+      const branch = BRANCH_OPTIONS.find((item) => item.id === session.branchId);
 
       const searchableValue = [
         course?.title,
@@ -114,9 +82,7 @@ export function TrainingSessionsWorkspace() {
         session.facilitator,
         session.venue,
         branch?.name,
-        TRAINING_DELIVERY_MODE_CONFIG[
-          session.deliveryMode
-        ].label,
+        TRAINING_DELIVERY_MODE_CONFIG[session.deliveryMode].label,
       ]
         .filter(Boolean)
         .join(" ")
@@ -124,29 +90,17 @@ export function TrainingSessionsWorkspace() {
 
       return (
         searchableValue.includes(query) &&
-        (statusFilter === "all" ||
-          session.status === statusFilter) &&
-        (modeFilter === "all" ||
-          session.deliveryMode === modeFilter)
+        (statusFilter === "all" || session.status === statusFilter) &&
+        (modeFilter === "all" || session.deliveryMode === modeFilter)
       );
     });
-  }, [
-    modeFilter,
-    scopedSessions,
-    searchQuery,
-    statusFilter,
-  ]);
+  }, [modeFilter, scopedSessions, searchQuery, statusFilter]);
 
   const selectedSession =
-    sessions.find(
-      (session) => session.id === selectedSessionId,
-    ) ?? null;
+    sessions.find((session) => session.id === selectedSessionId) ?? null;
 
   const selectedCourse = selectedSession
-    ? TRAINING_COURSES.find(
-        (course) =>
-          course.id === selectedSession.courseId,
-      )
+    ? TRAINING_COURSES.find((course) => course.id === selectedSession.courseId)
     : null;
 
   const scheduledSessions = scopedSessions.filter(
@@ -154,13 +108,8 @@ export function TrainingSessionsWorkspace() {
   );
 
   const upcomingSessions = scheduledSessions
-    .filter(
-      (session) =>
-        session.sessionDate >= TRAINING_REFERENCE_DATE,
-    )
-    .sort((first, second) =>
-      first.sessionDate.localeCompare(second.sessionDate),
-    );
+    .filter((session) => session.sessionDate >= TRAINING_REFERENCE_DATE)
+    .sort((first, second) => first.sessionDate.localeCompare(second.sessionDate));
 
   const completedSessions = scopedSessions.filter(
     (session) => session.status === "completed",
@@ -182,11 +131,7 @@ export function TrainingSessionsWorkspace() {
   );
 
   const attendanceRate =
-    attendanceCapacity > 0
-      ? Math.round(
-          (totalAttendance / attendanceCapacity) * 100,
-        )
-      : 0;
+    attendanceCapacity > 0 ? Math.round((totalAttendance / attendanceCapacity) * 100) : 0;
 
   const metrics = [
     {
@@ -219,27 +164,19 @@ export function TrainingSessionsWorkspace() {
     },
   ];
 
-  const columns = useMemo<
-    DataTableColumn<TrainingSession>[]
-  >(
+  const columns = useMemo<DataTableColumn<TrainingSession>[]>(
     () => [
       {
         id: "course",
         header: TRAINING_COPY.sessions.columns.course,
         cell: (session) => {
-          const course = TRAINING_COURSES.find(
-            (item) => item.id === session.courseId,
-          );
+          const course = TRAINING_COURSES.find((item) => item.id === session.courseId);
 
-          const branch = BRANCH_OPTIONS.find(
-            (item) => item.id === session.branchId,
-          );
+          const branch = BRANCH_OPTIONS.find((item) => item.id === session.branchId);
 
           return course ? (
             <div>
-              <p className="font-semibold">
-                {course.title}
-              </p>
+              <p className="font-semibold">{course.title}</p>
 
               <p className="mt-1 text-xs text-text-muted">
                 {course.code} Â· {branch?.name ?? session.branchId}
@@ -255,9 +192,7 @@ export function TrainingSessionsWorkspace() {
         header: TRAINING_COPY.sessions.columns.date,
         cell: (session) => (
           <div>
-            <p className="font-semibold">
-              {formatDate(session.sessionDate)}
-            </p>
+            <p className="font-semibold">{formatDate(session.sessionDate)}</p>
 
             <p className="mt-1 text-xs text-text-muted">
               {session.startTime}â€“{session.endTime}
@@ -267,8 +202,7 @@ export function TrainingSessionsWorkspace() {
       },
       {
         id: "facilitator",
-        header:
-          TRAINING_COPY.sessions.columns.facilitator,
+        header: TRAINING_COPY.sessions.columns.facilitator,
         cell: (session) => session.facilitator,
       },
       {
@@ -280,17 +214,9 @@ export function TrainingSessionsWorkspace() {
 
             <div className="mt-1">
               <Badge
-                variant={
-                  TRAINING_DELIVERY_MODE_CONFIG[
-                    session.deliveryMode
-                  ].badgeVariant
-                }
+                variant={TRAINING_DELIVERY_MODE_CONFIG[session.deliveryMode].badgeVariant}
               >
-                {
-                  TRAINING_DELIVERY_MODE_CONFIG[
-                    session.deliveryMode
-                  ].label
-                }
+                {TRAINING_DELIVERY_MODE_CONFIG[session.deliveryMode].label}
               </Badge>
             </div>
           </div>
@@ -298,35 +224,23 @@ export function TrainingSessionsWorkspace() {
       },
       {
         id: "capacity",
-        header:
-          TRAINING_COPY.sessions.columns.capacity,
-        cell: (session) =>
-          `${session.enrolledCount}/${session.capacity}`,
+        header: TRAINING_COPY.sessions.columns.capacity,
+        cell: (session) => `${session.enrolledCount}/${session.capacity}`,
       },
       {
         id: "attendance",
-        header:
-          TRAINING_COPY.sessions.columns.attendance,
+        header: TRAINING_COPY.sessions.columns.attendance,
         className: "min-w-40",
         cell: (session) => {
           const rate =
             session.enrolledCount > 0
-              ? Math.round(
-                  (session.attendanceCount /
-                    session.enrolledCount) *
-                    100,
-                )
+              ? Math.round((session.attendanceCount / session.enrolledCount) * 100)
               : 0;
 
           return session.status === "completed" ? (
-            <ProgressBar
-              value={rate}
-              tone="success"
-            />
+            <ProgressBar value={rate} tone="success" />
           ) : (
-            <span className="text-text-muted">
-              Not recorded
-            </span>
+            <span className="text-text-muted">Not recorded</span>
           );
         },
       },
@@ -334,25 +248,14 @@ export function TrainingSessionsWorkspace() {
         id: "status",
         header: TRAINING_COPY.sessions.columns.status,
         cell: (session) => (
-          <Badge
-            variant={
-              TRAINING_SESSION_STATUS_CONFIG[
-                session.status
-              ].badgeVariant
-            }
-          >
-            {
-              TRAINING_SESSION_STATUS_CONFIG[
-                session.status
-              ].label
-            }
+          <Badge variant={TRAINING_SESSION_STATUS_CONFIG[session.status].badgeVariant}>
+            {TRAINING_SESSION_STATUS_CONFIG[session.status].label}
           </Badge>
         ),
       },
       {
         id: "actions",
-        header:
-          TRAINING_COPY.sessions.columns.actions,
+        header: TRAINING_COPY.sessions.columns.actions,
         headClassName: "w-16",
         cell: (session) => (
           <Button
@@ -374,15 +277,11 @@ export function TrainingSessionsWorkspace() {
 
   function saveSession(nextSession: TrainingSession) {
     setSessions((currentSessions) => {
-      const exists = currentSessions.some(
-        (session) => session.id === nextSession.id,
-      );
+      const exists = currentSessions.some((session) => session.id === nextSession.id);
 
       return exists
         ? currentSessions.map((session) =>
-            session.id === nextSession.id
-              ? nextSession
-              : session,
+            session.id === nextSession.id ? nextSession : session,
           )
         : [nextSession, ...currentSessions];
     });
@@ -391,10 +290,7 @@ export function TrainingSessionsWorkspace() {
     setEditorMode(null);
   }
 
-  function updateStatus(
-    sessionId: string,
-    status: TrainingSessionStatus,
-  ) {
+  function updateStatus(sessionId: string, status: TrainingSessionStatus) {
     setSessions((currentSessions) =>
       currentSessions.map((session) => {
         if (session.id !== sessionId) {
@@ -443,12 +339,8 @@ export function TrainingSessionsWorkspace() {
         "Status",
       ],
       visibleSessions.map((session) => {
-        const course = TRAINING_COURSES.find(
-          (item) => item.id === session.courseId,
-        );
-        const branch = BRANCH_OPTIONS.find(
-          (item) => item.id === session.branchId,
-        );
+        const course = TRAINING_COURSES.find((item) => item.id === session.courseId);
+        const branch = BRANCH_OPTIONS.find((item) => item.id === session.branchId);
 
         return [
           course?.title ?? "",
@@ -458,9 +350,7 @@ export function TrainingSessionsWorkspace() {
           session.endTime,
           session.facilitator,
           session.venue,
-          TRAINING_DELIVERY_MODE_CONFIG[
-            session.deliveryMode
-          ].label,
+          TRAINING_DELIVERY_MODE_CONFIG[session.deliveryMode].label,
           session.capacity,
           session.enrolledCount,
           session.attendanceCount,
@@ -478,10 +368,7 @@ export function TrainingSessionsWorkspace() {
         description={TRAINING_COPY.sessions.description}
         actions={
           <>
-            <Button
-              variant="outline"
-              onClick={exportSessions}
-            >
+            <Button variant="outline" onClick={exportSessions}>
               <Download />
               {TRAINING_COPY.sessions.exportAction}
             </Button>
@@ -505,19 +392,14 @@ export function TrainingSessionsWorkspace() {
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[minmax(0,1fr)_22rem]">
         <Card className="order-1 overflow-hidden">
           <div className="border-b border-border p-5">
-            <h2 className="text-lg font-bold">
-              {TRAINING_COPY.sessions.registerTitle}
-            </h2>
+            <h2 className="text-lg font-bold">{TRAINING_COPY.sessions.registerTitle}</h2>
 
             <p className="mt-1 text-sm text-text-muted">
               {TRAINING_COPY.sessions.registerDescription}
@@ -529,29 +411,19 @@ export function TrainingSessionsWorkspace() {
 
                 <Input
                   value={searchQuery}
-                  onChange={(event) =>
-                    setSearchQuery(event.target.value)
-                  }
-                  placeholder={
-                    TRAINING_COPY.sessions.searchPlaceholder
-                  }
+                  onChange={(event) => setSearchQuery(event.target.value)}
+                  placeholder={TRAINING_COPY.sessions.searchPlaceholder}
                   className="pl-9"
                 />
               </div>
 
               <Select
                 value={statusFilter}
-                onChange={(event) =>
-                  setStatusFilter(event.target.value)
-                }
+                onChange={(event) => setStatusFilter(event.target.value)}
               >
-                <option value="all">
-                  {TRAINING_COPY.sessions.allStatuses}
-                </option>
+                <option value="all">{TRAINING_COPY.sessions.allStatuses}</option>
 
-                {Object.entries(
-                  TRAINING_SESSION_STATUS_CONFIG,
-                ).map(([value, config]) => (
+                {Object.entries(TRAINING_SESSION_STATUS_CONFIG).map(([value, config]) => (
                   <option key={value} value={value}>
                     {config.label}
                   </option>
@@ -560,17 +432,11 @@ export function TrainingSessionsWorkspace() {
 
               <Select
                 value={modeFilter}
-                onChange={(event) =>
-                  setModeFilter(event.target.value)
-                }
+                onChange={(event) => setModeFilter(event.target.value)}
               >
-                <option value="all">
-                  {TRAINING_COPY.sessions.allModes}
-                </option>
+                <option value="all">{TRAINING_COPY.sessions.allModes}</option>
 
-                {Object.entries(
-                  TRAINING_DELIVERY_MODE_CONFIG,
-                ).map(([value, config]) => (
+                {Object.entries(TRAINING_DELIVERY_MODE_CONFIG).map(([value, config]) => (
                   <option key={value} value={value}>
                     {config.label}
                   </option>
@@ -583,16 +449,12 @@ export function TrainingSessionsWorkspace() {
             rows={visibleSessions}
             columns={columns}
             getRowKey={(session) => session.id}
-            onRowClick={(session) =>
-              setSelectedSessionId(session.id)
-            }
+            onRowClick={(session) => setSelectedSessionId(session.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <FileSearch className="size-8 text-text-muted" />
 
-                <h3 className="mt-4 font-bold">
-                  {TRAINING_COPY.sessions.emptyTitle}
-                </h3>
+                <h3 className="mt-4 font-bold">{TRAINING_COPY.sessions.emptyTitle}</h3>
 
                 <p className="mt-2 text-sm text-text-muted">
                   {TRAINING_COPY.sessions.emptyDescription}
@@ -630,23 +492,17 @@ export function TrainingSessionsWorkspace() {
                   <button
                     key={session.id}
                     type="button"
-                    onClick={() =>
-                      setSelectedSessionId(session.id)
-                    }
+                    onClick={() => setSelectedSessionId(session.id)}
                     className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <p className="text-sm font-semibold">
                       {course?.title ?? "Training course"}
                     </p>
 
-                    <p className="mt-1 text-xs text-text-muted">
-                      {session.facilitator}
-                    </p>
+                    <p className="mt-1 text-xs text-text-muted">{session.facilitator}</p>
 
                     <div className="mt-3 flex items-center justify-between gap-3">
-                      <Badge variant="info">
-                        {formatDate(session.sessionDate)}
-                      </Badge>
+                      <Badge variant="info">{formatDate(session.sessionDate)}</Badge>
 
                       <span className="text-xs text-text-muted">
                         {session.enrolledCount}/{session.capacity}
@@ -676,33 +532,18 @@ export function TrainingSessionsWorkspace() {
                 <>
                   <Button
                     variant="outline"
-                    onClick={() =>
-                      updateStatus(
-                        selectedSession.id,
-                        "cancelled",
-                      )
-                    }
+                    onClick={() => updateStatus(selectedSession.id, "cancelled")}
                   >
                     <X />
                     Cancel session
                   </Button>
 
-                  <Button
-                    variant="outline"
-                    onClick={() => setEditorMode("edit")}
-                  >
+                  <Button variant="outline" onClick={() => setEditorMode("edit")}>
                     <FilePenLine />
                     Edit session
                   </Button>
 
-                  <Button
-                    onClick={() =>
-                      updateStatus(
-                        selectedSession.id,
-                        "in_progress",
-                      )
-                    }
-                  >
+                  <Button onClick={() => updateStatus(selectedSession.id, "in_progress")}>
                     <Play />
                     Start session
                   </Button>
@@ -710,28 +551,14 @@ export function TrainingSessionsWorkspace() {
               )}
 
               {selectedSession.status === "in_progress" && (
-                <Button
-                  onClick={() =>
-                    updateStatus(
-                      selectedSession.id,
-                      "completed",
-                    )
-                  }
-                >
+                <Button onClick={() => updateStatus(selectedSession.id, "completed")}>
                   <CheckCircle2 />
                   Complete session
                 </Button>
               )}
 
               {selectedSession.status === "cancelled" && (
-                <Button
-                  onClick={() =>
-                    updateStatus(
-                      selectedSession.id,
-                      "scheduled",
-                    )
-                  }
-                >
+                <Button onClick={() => updateStatus(selectedSession.id, "scheduled")}>
                   <RotateCcw />
                   Restore session
                 </Button>
@@ -745,9 +572,7 @@ export function TrainingSessionsWorkspace() {
             <section className="rounded-card border border-border">
               <div className="flex items-start justify-between gap-4 border-b border-border p-5">
                 <div>
-                  <h3 className="font-bold">
-                    {selectedCourse.title}
-                  </h3>
+                  <h3 className="font-bold">{selectedCourse.title}</h3>
 
                   <p className="mt-1 text-xs text-text-muted">
                     {selectedCourse.code} Â· {formatDate(selectedSession.sessionDate)}
@@ -756,69 +581,49 @@ export function TrainingSessionsWorkspace() {
 
                 <Badge
                   variant={
-                    TRAINING_SESSION_STATUS_CONFIG[
-                      selectedSession.status
-                    ].badgeVariant
+                    TRAINING_SESSION_STATUS_CONFIG[selectedSession.status].badgeVariant
                   }
                 >
-                  {
-                    TRAINING_SESSION_STATUS_CONFIG[
-                      selectedSession.status
-                    ].label
-                  }
+                  {TRAINING_SESSION_STATUS_CONFIG[selectedSession.status].label}
                 </Badge>
               </div>
 
               <dl className="grid gap-5 p-5 sm:grid-cols-2">
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Facilitator
-                  </dt>
+                  <dt className="text-xs text-text-muted">Facilitator</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSession.facilitator}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Venue
-                  </dt>
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedSession.venue}
-                  </dd>
+                  <dt className="text-xs text-text-muted">Venue</dt>
+                  <dd className="mt-1 text-sm font-semibold">{selectedSession.venue}</dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Time
-                  </dt>
+                  <dt className="text-xs text-text-muted">Time</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSession.startTime}â€“{selectedSession.endTime}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Delivery mode
-                  </dt>
+                  <dt className="text-xs text-text-muted">Delivery mode</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {TRAINING_DELIVERY_MODE_CONFIG[selectedSession.deliveryMode].label}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Capacity
-                  </dt>
+                  <dt className="text-xs text-text-muted">Capacity</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSession.capacity}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Enrolled
-                  </dt>
+                  <dt className="text-xs text-text-muted">Enrolled</dt>
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedSession.enrolledCount}
                   </dd>
@@ -827,24 +632,18 @@ export function TrainingSessionsWorkspace() {
             </section>
 
             <section>
-              <h3 className="text-sm font-bold">
-                Attendance
-              </h3>
+              <h3 className="text-sm font-bold">Attendance</h3>
 
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 <div className="rounded-control bg-info-muted p-4">
-                  <p className="text-xs text-info">
-                    Enrolled
-                  </p>
+                  <p className="text-xs text-info">Enrolled</p>
                   <p className="mt-1 text-lg font-bold text-info">
                     {selectedSession.enrolledCount}
                   </p>
                 </div>
 
                 <div className="rounded-control bg-success-muted p-4">
-                  <p className="text-xs text-success">
-                    Attended
-                  </p>
+                  <p className="text-xs text-success">Attended</p>
                   <p className="mt-1 text-lg font-bold text-success">
                     {selectedSession.attendanceCount}
                   </p>
@@ -870,13 +669,10 @@ export function TrainingSessionsWorkspace() {
             </section>
 
             <section>
-              <h3 className="text-sm font-bold">
-                Session note
-              </h3>
+              <h3 className="text-sm font-bold">Session note</h3>
 
               <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                {selectedSession.note ||
-                  "No session note has been added."}
+                {selectedSession.note || "No session note has been added."}
               </p>
             </section>
           </div>
@@ -887,24 +683,14 @@ export function TrainingSessionsWorkspace() {
         open={editorMode !== null}
         onClose={() => setEditorMode(null)}
         title={
-          editorMode === "create"
-            ? "Schedule training session"
-            : "Edit training session"
+          editorMode === "create" ? "Schedule training session" : "Edit training session"
         }
         description="Configure course delivery, facilitator, capacity and session timing."
       >
         {editorMode && (
           <TrainingSessionForm
-            key={
-              editorMode === "create"
-                ? "new-training-session"
-                : selectedSession?.id
-            }
-            session={
-              editorMode === "edit"
-                ? selectedSession ?? undefined
-                : undefined
-            }
+            key={editorMode === "create" ? "new-training-session" : selectedSession?.id}
+            session={editorMode === "edit" ? (selectedSession ?? undefined) : undefined}
             courses={TRAINING_COURSES}
             selectedBranchId={selectedBranchId}
             onCancel={() => setEditorMode(null)}

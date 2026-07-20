@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Bell,
-  ChevronDown,
-  Menu,
-  Search,
-} from "lucide-react";
+import { Bell, ChevronDown, Menu, Search } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { UI_COPY } from "@/config/ui";
@@ -16,14 +11,8 @@ type TopbarProps = {
   onMenuOpen: () => void;
 };
 
-export function Topbar({
-  onMenuOpen,
-}: TopbarProps) {
-  const {
-    branches,
-    selectedBranchId,
-    setSelectedBranchId,
-  } = useBranchScope();
+export function Topbar({ onMenuOpen }: TopbarProps) {
+  const { branches, selectedBranchId, setSelectedBranchId } = useBranchScope();
 
   return (
     <header className="sticky top-0 z-30 flex h-18 items-center gap-3 border-b border-border bg-surface/95 px-4 backdrop-blur lg:px-6">
@@ -55,16 +44,11 @@ export function Topbar({
           <select
             aria-label={UI_COPY.topbar.branchLabel}
             value={selectedBranchId}
-            onChange={(event) =>
-              setSelectedBranchId(event.target.value)
-            }
+            onChange={(event) => setSelectedBranchId(event.target.value)}
             className="h-10 min-w-44 appearance-none rounded-control border border-border bg-surface pl-3 pr-9 text-sm font-semibold outline-none transition hover:bg-surface-muted focus:border-primary focus:ring-2 focus:ring-primary/10"
           >
             {branches.map((branch) => (
-              <option
-                key={branch.id}
-                value={branch.id}
-              >
+              <option key={branch.id} value={branch.id}>
                 {branch.name}
               </option>
             ))}
@@ -105,10 +89,7 @@ export function Topbar({
             </span>
           </span>
 
-          <ChevronDown
-            size={15}
-            className="hidden text-text-muted xl:block"
-          />
+          <ChevronDown size={15} className="hidden text-text-muted xl:block" />
         </button>
       </div>
     </header>

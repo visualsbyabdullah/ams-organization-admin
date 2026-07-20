@@ -1,10 +1,5 @@
 ﻿export type AttendanceStatus =
-  | "present"
-  | "late"
-  | "absent"
-  | "on_leave"
-  | "remote"
-  | "missing_checkout";
+  "present" | "late" | "absent" | "on_leave" | "remote" | "missing_checkout";
 
 export type AttendanceRecord = {
   id: string;

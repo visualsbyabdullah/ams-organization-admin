@@ -11,29 +11,18 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 import { formatPKR } from "@/lib/currency";
-import type {
-  DepartmentCompensationPoint,
-} from "@/types/compensation";
+import type { DepartmentCompensationPoint } from "@/types/compensation";
 
 type DepartmentCompensationChartProps = {
   data: DepartmentCompensationPoint[];
 };
 
-export function DepartmentCompensationChart({
-  data,
-}: DepartmentCompensationChartProps) {
+export function DepartmentCompensationChart({ data }: DepartmentCompensationChartProps) {
   return (
     <div className="h-72 w-full [&_*:focus]:outline-none [&_svg]:outline-none">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <BarChart
           accessibilityLayer={false}
           data={data}
@@ -63,21 +52,12 @@ export function DepartmentCompensationChart({
             tickLine={false}
             tick={CHART_AXIS_STYLE}
             width={72}
-            tickFormatter={(value) =>
-              formatPKR(
-                Number(value),
-                true,
-              )
-            }
+            tickFormatter={(value) => formatPKR(Number(value), true)}
           />
 
           <Tooltip
-            contentStyle={
-              CHART_TOOLTIP_STYLE
-            }
-            formatter={(value) =>
-              formatPKR(Number(value))
-            }
+            contentStyle={CHART_TOOLTIP_STYLE}
+            formatter={(value) => formatPKR(Number(value))}
             cursor={{
               fill: "var(--ams-surface-muted)",
             }}
@@ -95,9 +75,7 @@ export function DepartmentCompensationChart({
           <Bar
             dataKey="averageBaseSalary"
             name="Average base salary"
-            fill={
-              CHART_COLORS.primary
-            }
+            fill={CHART_COLORS.primary}
             radius={[5, 5, 0, 0]}
             maxBarSize={48}
           />
@@ -105,9 +83,7 @@ export function DepartmentCompensationChart({
           <Bar
             dataKey="averageTotalCompensation"
             name="Average fixed compensation"
-            fill={
-              CHART_COLORS.present
-            }
+            fill={CHART_COLORS.present}
             radius={[5, 5, 0, 0]}
             maxBarSize={48}
           />

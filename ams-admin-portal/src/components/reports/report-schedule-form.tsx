@@ -50,18 +50,14 @@ function buildNextRun(
 
   if (frequency === "weekly") {
     const difference = (dayOfWeek - next.getDay() + 7) % 7;
-    next.setDate(
-      next.getDate() + (difference === 0 && next <= now ? 7 : difference),
-    );
+    next.setDate(next.getDate() + (difference === 0 && next <= now ? 7 : difference));
   }
 
   if (frequency === "monthly" || frequency === "quarterly") {
     next.setDate(dayOfMonth);
 
     if (next <= now) {
-      next.setMonth(
-        next.getMonth() + (frequency === "quarterly" ? 3 : 1),
-      );
+      next.setMonth(next.getMonth() + (frequency === "quarterly" ? 3 : 1));
     }
   }
 
@@ -92,9 +88,7 @@ export function ReportScheduleForm({
 
   const [name, setName] = useState(schedule?.name ?? "");
   const [reportId, setReportId] = useState(initialReportId);
-  const [scope, setScope] = useState<ReportScope>(
-    schedule?.scope ?? "organization",
-  );
+  const [scope, setScope] = useState<ReportScope>(schedule?.scope ?? "organization");
   const [branchId, setBranchId] = useState(
     schedule?.branchId ?? (selectedBranchId === "all" ? "" : selectedBranchId),
   );
@@ -105,18 +99,12 @@ export function ReportScheduleForm({
     schedule?.frequency ?? "monthly",
   );
   const [runAt, setRunAt] = useState(schedule?.runAt ?? "08:00");
-  const [dayOfWeek, setDayOfWeek] = useState(
-    String(schedule?.dayOfWeek ?? 1),
-  );
-  const [dayOfMonth, setDayOfMonth] = useState(
-    String(schedule?.dayOfMonth ?? 1),
-  );
+  const [dayOfWeek, setDayOfWeek] = useState(String(schedule?.dayOfWeek ?? 1));
+  const [dayOfMonth, setDayOfMonth] = useState(String(schedule?.dayOfMonth ?? 1));
   const [format, setFormat] = useState<ReportFormat>(
     schedule?.format ?? initialReport?.defaultFormat ?? "xlsx",
   );
-  const [recipients, setRecipients] = useState(
-    schedule?.recipients.join(", ") ?? "",
-  );
+  const [recipients, setRecipients] = useState(schedule?.recipients.join(", ") ?? "");
   const [includeEmptyReport, setIncludeEmptyReport] = useState(
     schedule?.includeEmptyReport ?? false,
   );
@@ -130,10 +118,10 @@ export function ReportScheduleForm({
 
   const isValid = Boolean(
     name.trim() &&
-      reportId &&
-      (scope === "organization" || branchId) &&
-      runAt &&
-      parsedRecipients.length > 0,
+    reportId &&
+    (scope === "organization" || branchId) &&
+    runAt &&
+    parsedRecipients.length > 0,
   );
 
   function handleReportChange(nextReportId: string) {
@@ -173,12 +161,7 @@ export function ReportScheduleForm({
       format,
       recipients: parsedRecipients,
       includeEmptyReport,
-      nextRunAt: buildNextRun(
-        frequency,
-        runAt,
-        Number(dayOfWeek),
-        Number(dayOfMonth),
-      ),
+      nextRunAt: buildNextRun(frequency, runAt, Number(dayOfWeek), Number(dayOfMonth)),
       lastRunAt: schedule?.lastRunAt,
       updatedAt: new Date().toISOString().slice(0, 10),
       updatedBy: CURRENT_ADMIN.name,
@@ -224,17 +207,13 @@ export function ReportScheduleForm({
           <Select
             id="reportScheduleStatus"
             value={status}
-            onChange={(event) =>
-              setStatus(event.target.value as ReportScheduleStatus)
-            }
+            onChange={(event) => setStatus(event.target.value as ReportScheduleStatus)}
           >
-            {Object.entries(REPORT_SCHEDULE_STATUS_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(REPORT_SCHEDULE_STATUS_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
@@ -246,13 +225,11 @@ export function ReportScheduleForm({
               setFrequency(event.target.value as ReportScheduleFrequency)
             }
           >
-            {Object.entries(REPORT_SCHEDULE_FREQUENCY_CONFIG).map(
-              ([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(REPORT_SCHEDULE_FREQUENCY_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
@@ -260,9 +237,7 @@ export function ReportScheduleForm({
           <Select
             id="reportScheduleScope"
             value={scope}
-            onChange={(event) =>
-              setScope(event.target.value as ReportScope)
-            }
+            onChange={(event) => setScope(event.target.value as ReportScope)}
           >
             {Object.entries(REPORT_SCOPE_CONFIG).map(([value, config]) => (
               <option key={value} value={value}>
@@ -284,13 +259,11 @@ export function ReportScheduleForm({
               onChange={(event) => setBranchId(event.target.value)}
             >
               <option value="">Select branch</option>
-              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map(
-                (branch) => (
-                  <option key={branch.id} value={branch.id}>
-                    {branch.name}
-                  </option>
-                ),
-              )}
+              {BRANCH_OPTIONS.filter((branch) => !branch.isAggregate).map((branch) => (
+                <option key={branch.id} value={branch.id}>
+                  {branch.name}
+                </option>
+              ))}
             </Select>
           </FormField>
         )}
@@ -339,18 +312,16 @@ export function ReportScheduleForm({
           <Select
             id="reportScheduleFormat"
             value={format}
-            onChange={(event) =>
-              setFormat(event.target.value as ReportFormat)
-            }
+            onChange={(event) => setFormat(event.target.value as ReportFormat)}
           >
-            {(selectedReport?.availableFormats ??
-              (Object.keys(REPORT_FORMAT_CONFIG) as ReportFormat[])).map(
-              (value) => (
-                <option key={value} value={value}>
-                  {REPORT_FORMAT_CONFIG[value].label}
-                </option>
-              ),
-            )}
+            {(
+              selectedReport?.availableFormats ??
+              (Object.keys(REPORT_FORMAT_CONFIG) as ReportFormat[])
+            ).map((value) => (
+              <option key={value} value={value}>
+                {REPORT_FORMAT_CONFIG[value].label}
+              </option>
+            ))}
           </Select>
         </FormField>
       </div>
@@ -392,9 +363,7 @@ export function ReportScheduleForm({
         <Button type="button" variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
-        <Button type="submit">
-          {schedule ? "Save schedule" : "Create schedule"}
-        </Button>
+        <Button type="submit">{schedule ? "Save schedule" : "Create schedule"}</Button>
       </div>
     </form>
   );

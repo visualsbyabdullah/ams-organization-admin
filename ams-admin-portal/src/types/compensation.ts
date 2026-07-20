@@ -1,11 +1,6 @@
-﻿export type CompensationStatus =
-  | "active"
-  | "pending_review"
-  | "archived";
+﻿export type CompensationStatus = "active" | "pending_review" | "archived";
 
-export type PayFrequency =
-  | "monthly"
-  | "hourly";
+export type PayFrequency = "monthly" | "hourly";
 
 export type CompensationChangeReason =
   | "annual_review"

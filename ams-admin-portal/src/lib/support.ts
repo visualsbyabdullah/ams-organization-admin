@@ -17,8 +17,7 @@ export function getSupportSlaState(ticket: SupportTicket): SupportSlaState {
   const dueTime = new Date(ticket.dueAt).getTime();
 
   if (ticket.status === "resolved" || ticket.status === "closed") {
-    const completedAt =
-      ticket.resolvedAt ?? ticket.closedAt ?? ticket.updatedAt;
+    const completedAt = ticket.resolvedAt ?? ticket.closedAt ?? ticket.updatedAt;
 
     return new Date(completedAt).getTime() <= dueTime ? "met" : "missed";
   }

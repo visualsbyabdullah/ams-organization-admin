@@ -1,17 +1,8 @@
 ﻿export type LoanRepaymentStatus =
-  | "scheduled"
-  | "due"
-  | "partial"
-  | "overdue"
-  | "paid"
-  | "waived"
-  | "failed";
+  "scheduled" | "due" | "partial" | "overdue" | "paid" | "waived" | "failed";
 
 export type LoanRepaymentSource =
-  | "payroll_deduction"
-  | "bank_transfer"
-  | "cash"
-  | "manual_adjustment";
+  "payroll_deduction" | "bank_transfer" | "cash" | "manual_adjustment";
 
 export type LoanRepayment = {
   id: string;

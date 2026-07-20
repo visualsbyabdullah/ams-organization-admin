@@ -1,22 +1,11 @@
 ﻿export type StatutoryEmployeeStatus =
-  | "compliant"
-  | "pending_review"
-  | "exempt"
-  | "blocked";
+  "compliant" | "pending_review" | "exempt" | "blocked";
 
 export type StatutoryFilingStatus =
-  | "draft"
-  | "ready"
-  | "submitted"
-  | "accepted"
-  | "overdue";
+  "draft" | "ready" | "submitted" | "accepted" | "overdue";
 
 export type StatutoryFilingCategory =
-  | "income_tax"
-  | "social_security"
-  | "retirement"
-  | "health"
-  | "other";
+  "income_tax" | "social_security" | "retirement" | "health" | "other";
 
 export type EmployeeStatutoryRecord = {
   id: string;

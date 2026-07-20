@@ -1,24 +1,14 @@
-﻿import type {
-  LoanRepaymentSource,
-  LoanRepaymentStatus,
-} from "@/types/loan-repayment";
+﻿import type { LoanRepaymentSource, LoanRepaymentStatus } from "@/types/loan-repayment";
 
-export const LOAN_REPAYMENT_REFERENCE_DATE =
-  "2026-07-16";
+export const LOAN_REPAYMENT_REFERENCE_DATE = "2026-07-16";
 
-export const LOAN_REPAYMENT_REFERENCE_PERIOD =
-  "2026-07";
+export const LOAN_REPAYMENT_REFERENCE_PERIOD = "2026-07";
 
 export const LOAN_REPAYMENT_STATUS_CONFIG: Record<
   LoanRepaymentStatus,
   {
     label: string;
-    badgeVariant:
-      | "neutral"
-      | "info"
-      | "warning"
-      | "danger"
-      | "success";
+    badgeVariant: "neutral" | "info" | "warning" | "danger" | "success";
   }
 > = {
   scheduled: {
@@ -55,11 +45,7 @@ export const LOAN_REPAYMENT_SOURCE_CONFIG: Record<
   LoanRepaymentSource,
   {
     label: string;
-    badgeVariant:
-      | "info"
-      | "neutral"
-      | "warning"
-      | "danger";
+    badgeVariant: "info" | "neutral" | "warning" | "danger";
   }
 > = {
   payroll_deduction: {
@@ -112,11 +98,9 @@ export const LOAN_REPAYMENTS_COPY = {
   attentionTitle: "Collection queue",
   attentionDescription:
     "Due, overdue and partially paid installments requiring payroll or finance action.",
-  searchPlaceholder:
-    "Search employee, ID, loan type, reference or repayment note",
+  searchPlaceholder: "Search employee, ID, loan type, reference or repayment note",
   allStatuses: "All repayment statuses",
   allSources: "All payment sources",
   emptyTitle: "No loan repayments found",
-  emptyDescription:
-    "Change the selected filters or payroll period.",
+  emptyDescription: "Change the selected filters or payroll period.",
 } as const;

@@ -1,25 +1,10 @@
 export type InvoiceStatus =
-  | "draft"
-  | "sent"
-  | "partially_paid"
-  | "paid"
-  | "overdue"
-  | "void";
+  "draft" | "sent" | "partially_paid" | "paid" | "overdue" | "void";
 
 export type InvoiceCategory =
-  | "subscription"
-  | "services"
-  | "implementation"
-  | "training"
-  | "support"
-  | "other";
+  "subscription" | "services" | "implementation" | "training" | "support" | "other";
 
-export type InvoicePaymentMethod =
-  | "bank_transfer"
-  | "card"
-  | "cash"
-  | "cheque"
-  | "other";
+export type InvoicePaymentMethod = "bank_transfer" | "card" | "cash" | "cheque" | "other";
 
 export type InvoiceLineItem = {
   id: string;
@@ -55,16 +40,9 @@ export type Invoice = {
   note: string;
 };
 
-export type RecurringInvoiceFrequency =
-  | "monthly"
-  | "quarterly"
-  | "biannual"
-  | "annual";
+export type RecurringInvoiceFrequency = "monthly" | "quarterly" | "biannual" | "annual";
 
-export type RecurringInvoiceStatus =
-  | "active"
-  | "paused"
-  | "ended";
+export type RecurringInvoiceStatus = "active" | "paused" | "ended";
 
 export type RecurringInvoice = {
   id: string;
@@ -89,14 +67,9 @@ export type RecurringInvoice = {
   note: string;
 };
 
-export type InvoiceSettingsScope =
-  | "organization"
-  | "branch";
+export type InvoiceSettingsScope = "organization" | "branch";
 
-export type InvoiceSettingsStatus =
-  | "active"
-  | "draft"
-  | "archived";
+export type InvoiceSettingsStatus = "active" | "draft" | "archived";
 
 export type InvoiceSettings = {
   id: string;

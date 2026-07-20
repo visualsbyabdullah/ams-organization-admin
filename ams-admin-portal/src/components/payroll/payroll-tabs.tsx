@@ -15,9 +15,7 @@ export function PayrollTabs() {
         const active =
           tab.href === "/payroll"
             ? pathname === "/payroll"
-            : pathname.startsWith(
-                tab.href,
-              );
+            : pathname.startsWith(tab.href);
 
         return (
           <Link

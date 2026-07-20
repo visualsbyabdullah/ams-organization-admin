@@ -1,10 +1,6 @@
 ﻿"use client";
 
-import {
-  type FormEvent,
-  useMemo,
-  useState,
-} from "react";
+import { type FormEvent, useMemo, useState } from "react";
 
 import { FormField } from "@/components/forms/form-field";
 import { Button } from "@/components/ui/button";
@@ -25,9 +21,7 @@ import type {
 type AttendanceExceptionFormProps = {
   selectedBranchId: string;
   onCancel: () => void;
-  onCreate: (
-    exception: AttendanceException,
-  ) => void;
+  onCreate: (exception: AttendanceException) => void;
 };
 
 export function AttendanceExceptionForm({
@@ -35,57 +29,34 @@ export function AttendanceExceptionForm({
   onCancel,
   onCreate,
 }: AttendanceExceptionFormProps) {
-  const [employeeId, setEmployeeId] =
-    useState("");
+  const [employeeId, setEmployeeId] = useState("");
 
-  const [date, setDate] =
-    useState("2026-07-16");
+  const [date, setDate] = useState("2026-07-16");
 
-  const [type, setType] =
-    useState<AttendanceExceptionType>(
-      "late_arrival",
-    );
+  const [type, setType] = useState<AttendanceExceptionType>("late_arrival");
 
-  const [severity, setSeverity] =
-    useState<AttendanceExceptionSeverity>(
-      "medium",
-    );
+  const [severity, setSeverity] = useState<AttendanceExceptionSeverity>("medium");
 
-  const [
-    impactMinutes,
-    setImpactMinutes,
-  ] = useState("0");
+  const [impactMinutes, setImpactMinutes] = useState("0");
 
-  const [reason, setReason] =
-    useState("");
+  const [reason, setReason] = useState("");
 
-  const [adminNote, setAdminNote] =
-    useState("");
+  const [adminNote, setAdminNote] = useState("");
 
-  const [submitted, setSubmitted] =
-    useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  const availableEmployees =
-    useMemo(
-      () =>
-        EMPLOYEES.filter(
-          (employee) =>
-            selectedBranchId === "all" ||
-            employee.branchId ===
-              selectedBranchId,
-        ),
-      [selectedBranchId],
-    );
-
-  const isValid = Boolean(
-    employeeId &&
-      date &&
-      reason.trim(),
+  const availableEmployees = useMemo(
+    () =>
+      EMPLOYEES.filter(
+        (employee) =>
+          selectedBranchId === "all" || employee.branchId === selectedBranchId,
+      ),
+    [selectedBranchId],
   );
 
-  function handleSubmit(
-    event: FormEvent<HTMLFormElement>,
-  ) {
+  const isValid = Boolean(employeeId && date && reason.trim());
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitted(true);
 
@@ -93,11 +64,7 @@ export function AttendanceExceptionForm({
       return;
     }
 
-    const employee =
-      EMPLOYEES.find(
-        (item) =>
-          item.id === employeeId,
-      );
+    const employee = EMPLOYEES.find((item) => item.id === employeeId);
 
     if (!employee) {
       return;
@@ -112,12 +79,8 @@ export function AttendanceExceptionForm({
       severity,
       status: "open",
       source: "admin",
-      detectedAt:
-        new Date().toISOString(),
-      impactMinutes: Math.max(
-        Number(impactMinutes) || 0,
-        0,
-      ),
+      detectedAt: new Date().toISOString(),
+      impactMinutes: Math.max(Number(impactMinutes) || 0, 0),
       reason: reason.trim(),
       employeeNote: "",
       adminNote: adminNote.trim(),
@@ -125,60 +88,34 @@ export function AttendanceExceptionForm({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="space-y-5"
-    >
+    <form onSubmit={handleSubmit} className="space-y-5">
       <FormField
         label="Employee"
         htmlFor="exceptionEmployee"
-        error={
-          submitted && !employeeId
-            ? "Select an employee"
-            : undefined
-        }
+        error={submitted && !employeeId ? "Select an employee" : undefined}
       >
         <Select
           id="exceptionEmployee"
           value={employeeId}
-          onChange={(event) =>
-            setEmployeeId(
-              event.target.value,
-            )
-          }
+          onChange={(event) => setEmployeeId(event.target.value)}
         >
-          <option value="">
-            Select employee
-          </option>
+          <option value="">Select employee</option>
 
-          {availableEmployees.map(
-            (employee) => (
-              <option
-                key={employee.id}
-                value={employee.id}
-              >
-                {employee.name} —{" "}
-                {employee.employeeCode}
-              </option>
-            ),
-          )}
+          {availableEmployees.map((employee) => (
+            <option key={employee.id} value={employee.id}>
+              {employee.name} — {employee.employeeCode}
+            </option>
+          ))}
         </Select>
       </FormField>
 
       <div className="grid gap-5 sm:grid-cols-2">
-        <FormField
-          label="Attendance date"
-          htmlFor="exceptionDate"
-        >
+        <FormField label="Attendance date" htmlFor="exceptionDate">
           <Input
             id="exceptionDate"
             type="date"
             value={date}
-            onChange={(event) =>
-              setDate(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setDate(event.target.value)}
           />
         </FormField>
 
@@ -192,65 +129,35 @@ export function AttendanceExceptionForm({
             type="number"
             min="0"
             value={impactMinutes}
-            onChange={(event) =>
-              setImpactMinutes(
-                event.target.value,
-              )
-            }
+            onChange={(event) => setImpactMinutes(event.target.value)}
           />
         </FormField>
 
-        <FormField
-          label="Exception type"
-          htmlFor="exceptionType"
-        >
+        <FormField label="Exception type" htmlFor="exceptionType">
           <Select
             id="exceptionType"
             value={type}
-            onChange={(event) =>
-              setType(
-                event.target
-                  .value as AttendanceExceptionType,
-              )
-            }
+            onChange={(event) => setType(event.target.value as AttendanceExceptionType)}
           >
-            {Object.entries(
-              ATTENDANCE_EXCEPTION_TYPE_CONFIG,
-            ).map(
-              ([value, config]) => (
-                <option
-                  key={value}
-                  value={value}
-                >
-                  {config.label}
-                </option>
-              ),
-            )}
+            {Object.entries(ATTENDANCE_EXCEPTION_TYPE_CONFIG).map(([value, config]) => (
+              <option key={value} value={value}>
+                {config.label}
+              </option>
+            ))}
           </Select>
         </FormField>
 
-        <FormField
-          label="Severity"
-          htmlFor="exceptionSeverity"
-        >
+        <FormField label="Severity" htmlFor="exceptionSeverity">
           <Select
             id="exceptionSeverity"
             value={severity}
             onChange={(event) =>
-              setSeverity(
-                event.target
-                  .value as AttendanceExceptionSeverity,
-              )
+              setSeverity(event.target.value as AttendanceExceptionSeverity)
             }
           >
-            {Object.entries(
-              ATTENDANCE_EXCEPTION_SEVERITY_CONFIG,
-            ).map(
+            {Object.entries(ATTENDANCE_EXCEPTION_SEVERITY_CONFIG).map(
               ([value, config]) => (
-                <option
-                  key={value}
-                  value={value}
-                >
+                <option key={value} value={value}>
                   {config.label}
                 </option>
               ),
@@ -263,52 +170,32 @@ export function AttendanceExceptionForm({
         label="Exception reason"
         htmlFor="exceptionReason"
         error={
-          submitted && !reason.trim()
-            ? "Explain this attendance exception"
-            : undefined
+          submitted && !reason.trim() ? "Explain this attendance exception" : undefined
         }
       >
         <Textarea
           id="exceptionReason"
           value={reason}
-          onChange={(event) =>
-            setReason(
-              event.target.value,
-            )
-          }
+          onChange={(event) => setReason(event.target.value)}
           placeholder="Describe what caused the exception..."
         />
       </FormField>
 
-      <FormField
-        label="Administrator note"
-        htmlFor="exceptionAdminNote"
-        optional
-      >
+      <FormField label="Administrator note" htmlFor="exceptionAdminNote" optional>
         <Textarea
           id="exceptionAdminNote"
           value={adminNote}
-          onChange={(event) =>
-            setAdminNote(
-              event.target.value,
-            )
-          }
+          onChange={(event) => setAdminNote(event.target.value)}
           placeholder="Add internal review context..."
         />
       </FormField>
 
       <div className="flex justify-end gap-3 border-t border-border pt-5">
-        <Button
-          type="button"
-          variant="ghost"
-          onClick={onCancel}
-        >
+        <Button type="button" variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
 
-        <Button type="submit">
-          Create exception
-        </Button>
+        <Button type="submit">Create exception</Button>
       </div>
     </form>
   );

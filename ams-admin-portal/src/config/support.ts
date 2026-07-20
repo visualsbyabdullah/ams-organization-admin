@@ -148,11 +148,9 @@ export const SUPPORT_COPY = {
     chartDescription:
       "Created and resolved employee support tickets during the current year.",
     queueTitle: "Requires attention",
-    queueDescription:
-      "Urgent, overdue and SLA-risk tickets requiring support action.",
+    queueDescription: "Urgent, overdue and SLA-risk tickets requiring support action.",
     tableTitle: "Recent support tickets",
-    tableDescription:
-      "Latest employee requests within the selected organization scope.",
+    tableDescription: "Latest employee requests within the selected organization scope.",
   },
   tickets: {
     eyebrow: "Employee Support",
@@ -164,15 +162,13 @@ export const SUPPORT_COPY = {
     registerTitle: "Ticket register",
     registerDescription:
       "Search and manage employee support requests across the selected scope.",
-    searchPlaceholder:
-      "Search ticket, employee, category, assignee or description",
+    searchPlaceholder: "Search ticket, employee, category, assignee or description",
     allStatuses: "All ticket statuses",
     allPriorities: "All priorities",
     allCategories: "All categories",
     allSlaStates: "All SLA states",
     emptyTitle: "No support tickets found",
-    emptyDescription:
-      "Change the selected filters or create a new support ticket.",
+    emptyDescription: "Change the selected filters or create a new support ticket.",
   },
   categories: {
     eyebrow: "Employee Support",
@@ -181,8 +177,7 @@ export const SUPPORT_COPY = {
       "Configure request routing, default priority and service-level targets for employee support.",
     createAction: "Add category",
     registerTitle: "Category register",
-    registerDescription:
-      "Organization categories and branch-specific routing overrides.",
+    registerDescription: "Organization categories and branch-specific routing overrides.",
     searchPlaceholder: "Search category, code, assignee or description",
     allStatuses: "All category statuses",
     allScopes: "Organization and branch",
@@ -196,8 +191,7 @@ export const SUPPORT_COPY = {
       "Publish reusable guidance that helps employees resolve common questions before opening tickets.",
     createAction: "Add article",
     registerTitle: "Knowledge article register",
-    registerDescription:
-      "Draft, published and archived employee support guidance.",
+    registerDescription: "Draft, published and archived employee support guidance.",
     searchPlaceholder: "Search title, summary, tag, category or author",
     allStatuses: "All article statuses",
     allVisibility: "All visibility levels",
@@ -211,8 +205,7 @@ export const SUPPORT_COPY = {
       "Configure service levels, employee access, escalation and branch-specific support workflows.",
     createAction: "Add settings",
     registerTitle: "Support settings register",
-    registerDescription:
-      "Organization defaults and branch-specific support overrides.",
+    registerDescription: "Organization defaults and branch-specific support overrides.",
     effectiveTitle: "Effective support settings",
     effectiveDescription:
       "Rules currently applied within the selected organization scope.",

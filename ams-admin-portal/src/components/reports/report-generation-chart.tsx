@@ -11,20 +11,14 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 import type { ReportGenerationTrendPoint } from "@/types/report";
 
 type ReportGenerationChartProps = {
   data: ReportGenerationTrendPoint[];
 };
 
-export function ReportGenerationChart({
-  data,
-}: ReportGenerationChartProps) {
+export function ReportGenerationChart({ data }: ReportGenerationChartProps) {
   return (
     <div className="h-72 w-full [&_*:focus]:outline-none [&_svg]:outline-none">
       <ResponsiveContainer width="100%" height="100%">
@@ -47,12 +41,7 @@ export function ReportGenerationChart({
             dy={8}
           />
 
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={CHART_AXIS_STYLE}
-            width={44}
-          />
+          <YAxis axisLine={false} tickLine={false} tick={CHART_AXIS_STYLE} width={44} />
 
           <Tooltip contentStyle={CHART_TOOLTIP_STYLE} />
 

@@ -14,10 +14,7 @@ import {
 
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { ReportTabs } from "@/components/reports/report-tabs";
-import {
-  DataTable,
-  type DataTableColumn,
-} from "@/components/shared/data-table";
+import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -47,8 +44,7 @@ export function ReportExportsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [formatFilter, setFormatFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedExportId, setSelectedExportId] =
-    useState<string | null>(null);
+  const [selectedExportId, setSelectedExportId] = useState<string | null>(null);
   const [generateOpen, setGenerateOpen] = useState(false);
   const [selectedGenerateReportId, setSelectedGenerateReportId] = useState(
     REPORT_DEFINITIONS.find((report) => report.status === "active")?.id ?? "",
@@ -92,24 +88,17 @@ export function ReportExportsWorkspace() {
     });
   }, [formatFilter, scopedExports, searchQuery, statusFilter]);
 
-  const selectedExport =
-    exports.find((item) => item.id === selectedExportId) ?? null;
+  const selectedExport = exports.find((item) => item.id === selectedExportId) ?? null;
 
   const selectedReport = selectedExport
-    ? REPORT_DEFINITIONS.find(
-        (report) => report.id === selectedExport.reportId,
-      )
+    ? REPORT_DEFINITIONS.find((report) => report.id === selectedExport.reportId)
     : undefined;
 
-  const completedExports = scopedExports.filter(
-    (item) => item.status === "completed",
-  );
+  const completedExports = scopedExports.filter((item) => item.status === "completed");
   const processingExports = scopedExports.filter(
     (item) => item.status === "queued" || item.status === "processing",
   );
-  const failedExports = scopedExports.filter(
-    (item) => item.status === "failed",
-  );
+  const failedExports = scopedExports.filter((item) => item.status === "failed");
   const totalRecords = completedExports.reduce(
     (total, item) => total + item.recordCount,
     0,
@@ -169,8 +158,7 @@ export function ReportExportsWorkspace() {
       {
         id: "branch",
         header: "Scope",
-        cell: (item) =>
-          item.branchId === "all" ? "All Branches" : item.branchId,
+        cell: (item) => (item.branchId === "all" ? "All Branches" : item.branchId),
       },
       {
         id: "requestedBy",
@@ -295,9 +283,7 @@ export function ReportExportsWorkspace() {
 
       <Card className="mt-6 overflow-hidden">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {REPORT_COPY.exports.registerTitle}
-          </h2>
+          <h2 className="text-lg font-bold">{REPORT_COPY.exports.registerTitle}</h2>
           <p className="mt-1 text-sm text-text-muted">
             {REPORT_COPY.exports.registerDescription}
           </p>
@@ -330,13 +316,11 @@ export function ReportExportsWorkspace() {
               onChange={(event) => setStatusFilter(event.target.value)}
             >
               <option value="all">{REPORT_COPY.exports.allStatuses}</option>
-              {Object.entries(REPORT_EXPORT_STATUS_CONFIG).map(
-                ([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(REPORT_EXPORT_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
           </div>
         </div>
@@ -349,9 +333,7 @@ export function ReportExportsWorkspace() {
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <FileBarChart2 className="size-8 text-text-muted" />
-              <h3 className="mt-4 font-bold">
-                {REPORT_COPY.exports.emptyTitle}
-              </h3>
+              <h3 className="mt-4 font-bold">{REPORT_COPY.exports.emptyTitle}</h3>
               <p className="mt-2 text-sm text-text-muted">
                 {REPORT_COPY.exports.emptyDescription}
               </p>
@@ -377,9 +359,7 @@ export function ReportExportsWorkspace() {
 
               {selectedExport.status === "completed" && (
                 <Button
-                  onClick={() =>
-                    downloadReportSummary(selectedReport, selectedExport)
-                  }
+                  onClick={() => downloadReportSummary(selectedReport, selectedExport)}
                 >
                   <Download />
                   Download
@@ -402,8 +382,7 @@ export function ReportExportsWorkspace() {
 
                 <Badge
                   variant={
-                    REPORT_EXPORT_STATUS_CONFIG[selectedExport.status]
-                      .badgeVariant
+                    REPORT_EXPORT_STATUS_CONFIG[selectedExport.status].badgeVariant
                   }
                 >
                   {REPORT_EXPORT_STATUS_CONFIG[selectedExport.status].label}
@@ -471,10 +450,7 @@ export function ReportExportsWorkspace() {
         description="Select an active report definition for the current organization scope."
         footer={
           <div className="flex justify-end">
-            <Button
-              onClick={generateReport}
-              disabled={!selectedGenerateReportId}
-            >
+            <Button onClick={generateReport} disabled={!selectedGenerateReportId}>
               <Download />
               Generate
             </Button>
@@ -484,9 +460,7 @@ export function ReportExportsWorkspace() {
         <div className="space-y-5">
           <Select
             value={selectedGenerateReportId}
-            onChange={(event) =>
-              setSelectedGenerateReportId(event.target.value)
-            }
+            onChange={(event) => setSelectedGenerateReportId(event.target.value)}
           >
             {REPORT_DEFINITIONS.filter(
               (report) =>

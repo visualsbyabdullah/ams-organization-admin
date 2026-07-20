@@ -99,8 +99,7 @@ export const EMPLOYEE_CHANGES: EmployeeChange[] = [
     effectiveDate: "2026-07-12",
     requestedBy: "Ayesha Khan",
     requestedAt: "2026-07-09",
-    reason:
-      "Employment ended after completion of the notice period.",
+    reason: "Employment ended after completion of the notice period.",
     status: "completed",
     approvals: [
       {
@@ -127,8 +126,7 @@ export const EMPLOYEE_CHANGES: EmployeeChange[] = [
     effectiveDate: "2026-08-10",
     requestedBy: "Maaz",
     requestedAt: "2026-07-15",
-    reason:
-      "Reporting structure updated following the operations reorganization.",
+    reason: "Reporting structure updated following the operations reorganization.",
     status: "draft",
     approvals: [],
   },

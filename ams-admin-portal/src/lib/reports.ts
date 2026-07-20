@@ -1,8 +1,4 @@
-import type {
-  ReportDefinition,
-  ReportExport,
-  ReportFormat,
-} from "@/types/report";
+import type { ReportDefinition, ReportExport, ReportFormat } from "@/types/report";
 
 const DATE_TIME_FORMATTER = new Intl.DateTimeFormat("en-GB", {
   day: "2-digit",
@@ -21,9 +17,7 @@ export function formatFileSize(value?: number) {
     return "Pending";
   }
 
-  return value >= 1024
-    ? `${(value / 1024).toFixed(1)} MB`
-    : `${value} KB`;
+  return value >= 1024 ? `${(value / 1024).toFixed(1)} MB` : `${value} KB`;
 }
 
 function escapeCsvValue(value: string | number) {
@@ -69,9 +63,7 @@ export function downloadReportSummary(
     ["Default Filters", report.defaultFilters.join(", ")],
   ];
 
-  const csv = rows
-    .map((row) => row.map(escapeCsvValue).join(","))
-    .join("\n");
+  const csv = rows.map((row) => row.map(escapeCsvValue).join(",")).join("\n");
 
   const blob = new Blob([csv], {
     type: "text/csv;charset=utf-8",

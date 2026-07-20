@@ -1,10 +1,6 @@
-﻿import type {
-  LeaveRequestStatus,
-  LeaveType,
-} from "@/types/leave";
+﻿import type { LeaveRequestStatus, LeaveType } from "@/types/leave";
 
-export const LEAVE_REFERENCE_DATE =
-  "2026-07-16";
+export const LEAVE_REFERENCE_DATE = "2026-07-16";
 
 export const LEAVE_TABS = [
   {
@@ -29,12 +25,7 @@ export const LEAVE_TYPE_CONFIG: Record<
   LeaveType,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "danger"
-      | "info"
-      | "neutral";
+    badgeVariant: "success" | "warning" | "danger" | "info" | "neutral";
   }
 > = {
   annual: {
@@ -67,11 +58,7 @@ export const LEAVE_STATUS_CONFIG: Record<
   LeaveRequestStatus,
   {
     label: string;
-    badgeVariant:
-      | "warning"
-      | "success"
-      | "danger"
-      | "neutral";
+    badgeVariant: "warning" | "success" | "danger" | "neutral";
   }
 > = {
   pending: {
@@ -98,16 +85,14 @@ export const LEAVE_COPY = {
   description:
     "Monitor employee leave balances, upcoming absences and approval requests across the organization.",
   createRequest: "New leave request",
-  searchPlaceholder:
-    "Search employee, ID, department or reason",
+  searchPlaceholder: "Search employee, ID, department or reason",
   allTypes: "All leave types",
   allStatuses: "All statuses",
   trendTitle: "Leave request trend",
   trendDescription:
     "Approved, pending and rejected leave requests during the current year.",
   upcomingTitle: "Upcoming absences",
-  upcomingDescription:
-    "Approved leave starting within the next seven days.",
+  upcomingDescription: "Approved leave starting within the next seven days.",
   tableTitle: "Recent leave requests",
   tableDescription:
     "Review and manage leave requests within the selected organization scope.",

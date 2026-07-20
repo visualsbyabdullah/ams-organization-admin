@@ -1,6 +1,4 @@
-﻿import type {
-  AttendanceStatus,
-} from "@/types/attendance";
+﻿import type { AttendanceStatus } from "@/types/attendance";
 
 export const ATTENDANCE_TABS = [
   {
@@ -33,12 +31,7 @@ export const ATTENDANCE_STATUS_CONFIG: Record<
   AttendanceStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "danger"
-      | "info"
-      | "neutral";
+    badgeVariant: "success" | "warning" | "danger" | "info" | "neutral";
   }
 > = {
   present: {
@@ -74,24 +67,20 @@ export const ATTENDANCE_COPY = {
     "Monitor workforce availability, attendance exceptions and employee working hours.",
   addRecord: "Add attendance record",
   export: "Export",
-  searchPlaceholder:
-    "Search employee, ID, department or designation",
+  searchPlaceholder: "Search employee, ID, department or designation",
   allStatuses: "All statuses",
   viewingDate: "Viewing attendance for",
   attendanceTrend: {
     title: "Weekly attendance trend",
-    description:
-      "Present, late and absent employees during the current week.",
+    description: "Present, late and absent employees during the current week.",
   },
   departmentChart: {
     title: "Department attendance",
-    description:
-      "Today’s attendance distribution by department.",
+    description: "Today’s attendance distribution by department.",
   },
   exceptions: {
     title: "Exceptions requiring attention",
-    description:
-      "Attendance records that may require an administrator review.",
+    description: "Attendance records that may require an administrator review.",
   },
   table: {
     employee: "Employee",

@@ -27,11 +27,7 @@ export const EMPLOYEE_STATUS_CONFIG: Record<
   EmployeeStatus,
   {
     label: string;
-    badgeVariant:
-      | "success"
-      | "warning"
-      | "danger"
-      | "info";
+    badgeVariant: "success" | "warning" | "danger" | "info";
   }
 > = {
   active: {

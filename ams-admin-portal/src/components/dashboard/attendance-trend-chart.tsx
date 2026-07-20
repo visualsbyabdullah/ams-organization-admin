@@ -11,26 +11,17 @@ import {
   YAxis,
 } from "recharts";
 
-import {
-  CHART_AXIS_STYLE,
-  CHART_COLORS,
-  CHART_TOOLTIP_STYLE,
-} from "@/config/charts";
+import { CHART_AXIS_STYLE, CHART_COLORS, CHART_TOOLTIP_STYLE } from "@/config/charts";
 import type { AttendanceTrendPoint } from "@/types/dashboard";
 
 type AttendanceTrendChartProps = {
   data: AttendanceTrendPoint[];
 };
 
-export function AttendanceTrendChart({
-  data,
-}: AttendanceTrendChartProps) {
+export function AttendanceTrendChart({ data }: AttendanceTrendChartProps) {
   return (
     <div className="h-72 w-full">
-      <ResponsiveContainer
-        width="100%"
-        height="100%"
-      >
+      <ResponsiveContainer width="100%" height="100%">
         <AreaChart
           data={data}
           margin={{
@@ -41,42 +32,14 @@ export function AttendanceTrendChart({
           }}
         >
           <defs>
-            <linearGradient
-              id="presentGradient"
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="1"
-            >
-              <stop
-                offset="5%"
-                stopColor={CHART_COLORS.present}
-                stopOpacity={0.22}
-              />
-              <stop
-                offset="95%"
-                stopColor={CHART_COLORS.present}
-                stopOpacity={0}
-              />
+            <linearGradient id="presentGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor={CHART_COLORS.present} stopOpacity={0.22} />
+              <stop offset="95%" stopColor={CHART_COLORS.present} stopOpacity={0} />
             </linearGradient>
 
-            <linearGradient
-              id="lateGradient"
-              x1="0"
-              y1="0"
-              x2="0"
-              y2="1"
-            >
-              <stop
-                offset="5%"
-                stopColor={CHART_COLORS.late}
-                stopOpacity={0.15}
-              />
-              <stop
-                offset="95%"
-                stopColor={CHART_COLORS.late}
-                stopOpacity={0}
-              />
+            <linearGradient id="lateGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor={CHART_COLORS.late} stopOpacity={0.15} />
+              <stop offset="95%" stopColor={CHART_COLORS.late} stopOpacity={0} />
             </linearGradient>
           </defs>
 
@@ -94,11 +57,7 @@ export function AttendanceTrendChart({
             dy={8}
           />
 
-          <YAxis
-            axisLine={false}
-            tickLine={false}
-            tick={CHART_AXIS_STYLE}
-          />
+          <YAxis axisLine={false} tickLine={false} tick={CHART_AXIS_STYLE} />
 
           <Tooltip
             contentStyle={CHART_TOOLTIP_STYLE}

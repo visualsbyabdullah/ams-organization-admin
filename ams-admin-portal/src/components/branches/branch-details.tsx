@@ -1,42 +1,21 @@
-import {
-  Building2,
-  Clock3,
-  Mail,
-  MapPin,
-  Phone,
-  UserRound,
-  Users,
-} from "lucide-react";
+import { Building2, Clock3, Mail, MapPin, Phone, UserRound, Users } from "lucide-react";
 
-import {
-  BranchMap,
-} from "@/components/branches/branch-map";
-import {
-  Badge,
-} from "@/components/ui/badge";
-import {
-  BRANCH_STATUS_CONFIG,
-} from "@/config/branches";
+import { BranchMap } from "@/components/branches/branch-map";
+import { Badge } from "@/components/ui/badge";
+import { BRANCH_STATUS_CONFIG } from "@/config/branches";
 import {
   formatBranchWorkingDays,
   getBranchCapacityUtilization,
   getBranchCoordinates,
 } from "@/lib/branches";
-import type {
-  BranchRecord,
-} from "@/types/branch";
+import type { BranchRecord } from "@/types/branch";
 
 type BranchDetailsProps = {
   branch: BranchRecord;
 };
 
-export function BranchDetails({
-  branch,
-}: BranchDetailsProps) {
-  const capacityUtilization =
-    getBranchCapacityUtilization(
-      branch,
-    );
+export function BranchDetails({ branch }: BranchDetailsProps) {
+  const capacityUtilization = getBranchCapacityUtilization(branch);
 
   return (
     <div className="space-y-6">
@@ -50,31 +29,16 @@ export function BranchDetails({
             </span>
 
             <div>
-              <p className="text-xs font-semibold text-primary">
-                {branch.code}
-              </p>
-              <h3 className="mt-1 font-bold">
-                {branch.name}
-              </h3>
+              <p className="text-xs font-semibold text-primary">{branch.code}</p>
+              <h3 className="mt-1 font-bold">{branch.name}</h3>
               <p className="mt-1 text-sm text-text-muted">
-                {branch.city},{" "}
-                {branch.province}
+                {branch.city}, {branch.province}
               </p>
             </div>
           </div>
 
-          <Badge
-            variant={
-              BRANCH_STATUS_CONFIG[
-                branch.status
-              ].badgeVariant
-            }
-          >
-            {
-              BRANCH_STATUS_CONFIG[
-                branch.status
-              ].label
-            }
+          <Badge variant={BRANCH_STATUS_CONFIG[branch.status].badgeVariant}>
+            {BRANCH_STATUS_CONFIG[branch.status].label}
           </Badge>
         </div>
 
@@ -85,10 +49,7 @@ export function BranchDetails({
               Address
             </dt>
             <dd className="mt-2 text-sm font-semibold">
-              {branch.addressLine},{" "}
-              {branch.city},{" "}
-              {branch.country}{" "}
-              {branch.postalCode}
+              {branch.addressLine}, {branch.city}, {branch.country} {branch.postalCode}
             </dd>
           </div>
 
@@ -97,9 +58,7 @@ export function BranchDetails({
               <UserRound size={14} />
               Branch manager
             </dt>
-            <dd className="mt-2 text-sm font-semibold">
-              {branch.managerName}
-            </dd>
+            <dd className="mt-2 text-sm font-semibold">{branch.managerName}</dd>
           </div>
 
           <div>
@@ -107,9 +66,7 @@ export function BranchDetails({
               <Phone size={14} />
               Phone
             </dt>
-            <dd className="mt-2 text-sm font-semibold">
-              {branch.phone}
-            </dd>
+            <dd className="mt-2 text-sm font-semibold">{branch.phone}</dd>
           </div>
 
           <div>
@@ -117,9 +74,7 @@ export function BranchDetails({
               <Mail size={14} />
               Email
             </dt>
-            <dd className="mt-2 text-sm font-semibold">
-              {branch.email}
-            </dd>
+            <dd className="mt-2 text-sm font-semibold">{branch.email}</dd>
           </div>
 
           <div>
@@ -128,8 +83,7 @@ export function BranchDetails({
               Employees
             </dt>
             <dd className="mt-2 text-sm font-semibold">
-              {branch.employeeCount} of{" "}
-              {branch.capacity} capacity
+              {branch.employeeCount} of {branch.capacity} capacity
             </dd>
           </div>
 
@@ -139,104 +93,56 @@ export function BranchDetails({
               Working schedule
             </dt>
             <dd className="mt-2 text-sm font-semibold">
-              {branch.workingHoursStart}–
-              {branch.workingHoursEnd}
+              {branch.workingHoursStart}–{branch.workingHoursEnd}
             </dd>
             <dd className="mt-1 text-xs text-text-muted">
-              {formatBranchWorkingDays(
-                branch,
-              )}
+              {formatBranchWorkingDays(branch)}
             </dd>
           </div>
 
           <div>
-            <dt className="text-xs text-text-muted">
-              Latitude / longitude
-            </dt>
-            <dd className="mt-2 text-sm font-semibold">
-              {getBranchCoordinates(
-                branch,
-              )}
-            </dd>
+            <dt className="text-xs text-text-muted">Latitude / longitude</dt>
+            <dd className="mt-2 text-sm font-semibold">{getBranchCoordinates(branch)}</dd>
           </div>
 
           <div>
-            <dt className="text-xs text-text-muted">
-              Capacity utilization
-            </dt>
-            <dd className="mt-2 text-sm font-semibold">
-              {capacityUtilization}%
-            </dd>
+            <dt className="text-xs text-text-muted">Capacity utilization</dt>
+            <dd className="mt-2 text-sm font-semibold">{capacityUtilization}%</dd>
           </div>
         </dl>
       </section>
 
       <section>
-        <h3 className="text-sm font-bold">
-          Enabled branch modules
-        </h3>
+        <h3 className="text-sm font-bold">Enabled branch modules</h3>
 
         <div className="mt-3 grid gap-3 sm:grid-cols-3">
           <div className="flex items-center justify-between rounded-control border border-border p-4">
-            <span className="text-sm font-semibold">
-              Attendance
-            </span>
-            <Badge
-              variant={
-                branch.attendanceEnabled
-                  ? "success"
-                  : "neutral"
-              }
-            >
-              {branch.attendanceEnabled
-                ? "Enabled"
-                : "Disabled"}
+            <span className="text-sm font-semibold">Attendance</span>
+            <Badge variant={branch.attendanceEnabled ? "success" : "neutral"}>
+              {branch.attendanceEnabled ? "Enabled" : "Disabled"}
             </Badge>
           </div>
 
           <div className="flex items-center justify-between rounded-control border border-border p-4">
-            <span className="text-sm font-semibold">
-              Payroll
-            </span>
-            <Badge
-              variant={
-                branch.payrollEnabled
-                  ? "success"
-                  : "neutral"
-              }
-            >
-              {branch.payrollEnabled
-                ? "Enabled"
-                : "Disabled"}
+            <span className="text-sm font-semibold">Payroll</span>
+            <Badge variant={branch.payrollEnabled ? "success" : "neutral"}>
+              {branch.payrollEnabled ? "Enabled" : "Disabled"}
             </Badge>
           </div>
 
           <div className="flex items-center justify-between rounded-control border border-border p-4">
-            <span className="text-sm font-semibold">
-              Remote work
-            </span>
-            <Badge
-              variant={
-                branch.remoteWorkEnabled
-                  ? "success"
-                  : "neutral"
-              }
-            >
-              {branch.remoteWorkEnabled
-                ? "Enabled"
-                : "Disabled"}
+            <span className="text-sm font-semibold">Remote work</span>
+            <Badge variant={branch.remoteWorkEnabled ? "success" : "neutral"}>
+              {branch.remoteWorkEnabled ? "Enabled" : "Disabled"}
             </Badge>
           </div>
         </div>
       </section>
 
       <section>
-        <h3 className="text-sm font-bold">
-          Internal note
-        </h3>
+        <h3 className="text-sm font-bold">Internal note</h3>
         <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-          {branch.note ||
-            "No branch note has been added."}
+          {branch.note || "No branch note has been added."}
         </p>
       </section>
     </div>

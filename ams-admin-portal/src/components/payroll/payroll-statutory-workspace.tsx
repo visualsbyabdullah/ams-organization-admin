@@ -1,9 +1,6 @@
 ﻿"use client";
 
-import {
-  useMemo,
-  useState,
-} from "react";
+import { useMemo, useState } from "react";
 import {
   BadgeCheck,
   Banknote,
@@ -55,10 +52,7 @@ import {
 import { useBranchScope } from "@/context/branch-scope-context";
 import { CURRENT_ADMIN } from "@/data/current-admin";
 import { EMPLOYEES } from "@/data/employees";
-import {
-  EMPLOYEE_STATUTORY_RECORDS,
-  STATUTORY_FILINGS,
-} from "@/data/payroll-statutory";
+import { EMPLOYEE_STATUTORY_RECORDS, STATUTORY_FILINGS } from "@/data/payroll-statutory";
 import { formatPKR } from "@/lib/currency";
 import { formatDate } from "@/lib/date";
 import type {
@@ -68,31 +62,18 @@ import type {
   StatutoryFilingStatus,
 } from "@/types/payroll-statutory";
 
-type FilingEditorMode =
-  | "create"
-  | "edit"
-  | null;
+type FilingEditorMode = "create" | "edit" | null;
 
-function formatPeriod(
-  period: string,
-) {
-  const [year, month] =
-    period.split("-").map(Number);
+function formatPeriod(period: string) {
+  const [year, month] = period.split("-").map(Number);
 
-  return new Intl.DateTimeFormat(
-    "en-GB",
-    {
-      month: "long",
-      year: "numeric",
-    },
-  ).format(
-    new Date(year, month - 1, 1),
-  );
+  return new Intl.DateTimeFormat("en-GB", {
+    month: "long",
+    year: "numeric",
+  }).format(new Date(year, month - 1, 1));
 }
 
-function getEmployeeContribution(
-  record: EmployeeStatutoryRecord,
-) {
+function getEmployeeContribution(record: EmployeeStatutoryRecord) {
   return (
     record.incomeTax +
     record.employeeSocialSecurity +
@@ -101,9 +82,7 @@ function getEmployeeContribution(
   );
 }
 
-function getEmployerContribution(
-  record: EmployeeStatutoryRecord,
-) {
+function getEmployerContribution(record: EmployeeStatutoryRecord) {
   return (
     record.employerSocialSecurity +
     record.employerRetirement +
@@ -112,316 +91,167 @@ function getEmployerContribution(
 }
 
 export function PayrollStatutoryWorkspace() {
-  const {
-    selectedBranch,
-    selectedBranchId,
-  } = useBranchScope();
+  const { selectedBranch, selectedBranchId } = useBranchScope();
 
-  const [
-    employeeRecords,
-    setEmployeeRecords,
-  ] = useState<
-    EmployeeStatutoryRecord[]
-  >(EMPLOYEE_STATUTORY_RECORDS);
+  const [employeeRecords, setEmployeeRecords] = useState<EmployeeStatutoryRecord[]>(
+    EMPLOYEE_STATUTORY_RECORDS,
+  );
 
-  const [filings, setFilings] =
-    useState<StatutoryFiling[]>(
-      STATUTORY_FILINGS,
-    );
+  const [filings, setFilings] = useState<StatutoryFiling[]>(STATUTORY_FILINGS);
 
-  const [searchQuery, setSearchQuery] =
-    useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const [
-    employeeStatusFilter,
-    setEmployeeStatusFilter,
-  ] = useState("all");
+  const [employeeStatusFilter, setEmployeeStatusFilter] = useState("all");
 
-  const [
-    filingStatusFilter,
-    setFilingStatusFilter,
-  ] = useState("all");
+  const [filingStatusFilter, setFilingStatusFilter] = useState("all");
 
-  const [
-    categoryFilter,
-    setCategoryFilter,
-  ] = useState("all");
+  const [categoryFilter, setCategoryFilter] = useState("all");
 
-  const [periodFilter, setPeriodFilter] =
-    useState("all");
+  const [periodFilter, setPeriodFilter] = useState("all");
 
-  const [
-    selectedEmployeeRecordId,
-    setSelectedEmployeeRecordId,
-  ] = useState<string | null>(null);
+  const [selectedEmployeeRecordId, setSelectedEmployeeRecordId] = useState<string | null>(
+    null,
+  );
 
-  const [
-    selectedFilingId,
-    setSelectedFilingId,
-  ] = useState<string | null>(null);
+  const [selectedFilingId, setSelectedFilingId] = useState<string | null>(null);
 
-  const [
-    filingEditorMode,
-    setFilingEditorMode,
-  ] = useState<FilingEditorMode>(null);
+  const [filingEditorMode, setFilingEditorMode] = useState<FilingEditorMode>(null);
 
-  const scopedEmployeeRecords =
-    useMemo(
-      () =>
-        employeeRecords.filter(
-          (record) =>
-            record.period ===
-              STATUTORY_REFERENCE_PERIOD &&
-            (selectedBranch.isAggregate ||
-              record.branchId ===
-                selectedBranch.id),
-        ),
-      [
-        employeeRecords,
-        selectedBranch,
-      ],
-    );
+  const scopedEmployeeRecords = useMemo(
+    () =>
+      employeeRecords.filter(
+        (record) =>
+          record.period === STATUTORY_REFERENCE_PERIOD &&
+          (selectedBranch.isAggregate || record.branchId === selectedBranch.id),
+      ),
+    [employeeRecords, selectedBranch],
+  );
 
-  const visibleEmployeeRecords =
-    useMemo(() => {
-      const query = searchQuery
-        .trim()
+  const visibleEmployeeRecords = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    return scopedEmployeeRecords.filter((record) => {
+      const employee = EMPLOYEES.find((item) => item.id === record.employeeId);
+
+      if (!employee) {
+        return false;
+      }
+
+      const searchableValue = [
+        employee.name,
+        employee.employeeCode,
+        employee.department,
+        employee.designation,
+        record.registrationNumber,
+      ]
+        .join(" ")
         .toLowerCase();
 
-      return scopedEmployeeRecords.filter(
-        (record) => {
-          const employee =
-            EMPLOYEES.find(
-              (item) =>
-                item.id ===
-                record.employeeId,
-            );
+      const matchesStatus =
+        employeeStatusFilter === "all" || record.status === employeeStatusFilter;
 
-          if (!employee) {
-            return false;
-          }
+      return searchableValue.includes(query) && matchesStatus;
+    });
+  }, [employeeStatusFilter, scopedEmployeeRecords, searchQuery]);
 
-          const searchableValue = [
-            employee.name,
-            employee.employeeCode,
-            employee.department,
-            employee.designation,
-            record.registrationNumber,
-          ]
-            .join(" ")
-            .toLowerCase();
+  const scopedFilings = useMemo(
+    () =>
+      filings.filter(
+        (filing) => selectedBranch.isAggregate || filing.branchId === selectedBranch.id,
+      ),
+    [filings, selectedBranch],
+  );
 
-          const matchesStatus =
-            employeeStatusFilter ===
-              "all" ||
-            record.status ===
-              employeeStatusFilter;
+  const visibleFilings = useMemo(
+    () =>
+      scopedFilings.filter((filing) => {
+        const matchesStatus =
+          filingStatusFilter === "all" || filing.status === filingStatusFilter;
 
-          return (
-            searchableValue.includes(
-              query,
-            ) && matchesStatus
-          );
-        },
-      );
-    }, [
-      employeeStatusFilter,
-      scopedEmployeeRecords,
-      searchQuery,
-    ]);
+        const matchesCategory =
+          categoryFilter === "all" || filing.category === categoryFilter;
 
-  const scopedFilings =
-    useMemo(
-      () =>
-        filings.filter(
-          (filing) =>
-            selectedBranch.isAggregate ||
-            filing.branchId ===
-              selectedBranch.id,
-        ),
-      [filings, selectedBranch],
-    );
+        const matchesPeriod = periodFilter === "all" || filing.period === periodFilter;
 
-  const visibleFilings =
-    useMemo(
-      () =>
-        scopedFilings.filter(
-          (filing) => {
-            const matchesStatus =
-              filingStatusFilter ===
-                "all" ||
-              filing.status ===
-                filingStatusFilter;
-
-            const matchesCategory =
-              categoryFilter === "all" ||
-              filing.category ===
-                categoryFilter;
-
-            const matchesPeriod =
-              periodFilter === "all" ||
-              filing.period ===
-                periodFilter;
-
-            return (
-              matchesStatus &&
-              matchesCategory &&
-              matchesPeriod
-            );
-          },
-        ),
-      [
-        categoryFilter,
-        filingStatusFilter,
-        periodFilter,
-        scopedFilings,
-      ],
-    );
+        return matchesStatus && matchesCategory && matchesPeriod;
+      }),
+    [categoryFilter, filingStatusFilter, periodFilter, scopedFilings],
+  );
 
   const selectedEmployeeRecord =
-    employeeRecords.find(
-      (record) =>
-        record.id ===
-        selectedEmployeeRecordId,
-    ) ?? null;
+    employeeRecords.find((record) => record.id === selectedEmployeeRecordId) ?? null;
 
-  const selectedEmployee =
-    selectedEmployeeRecord
-      ? EMPLOYEES.find(
-          (employee) =>
-            employee.id ===
-            selectedEmployeeRecord.employeeId,
-        )
-      : null;
+  const selectedEmployee = selectedEmployeeRecord
+    ? EMPLOYEES.find((employee) => employee.id === selectedEmployeeRecord.employeeId)
+    : null;
 
-  const selectedFiling =
-    filings.find(
-      (filing) =>
-        filing.id ===
-        selectedFilingId,
-    ) ?? null;
+  const selectedFiling = filings.find((filing) => filing.id === selectedFilingId) ?? null;
 
-  const employeeDeductions =
-    scopedEmployeeRecords.reduce(
-      (total, record) =>
-        total +
-        getEmployeeContribution(
-          record,
-        ),
-      0,
-    );
+  const employeeDeductions = scopedEmployeeRecords.reduce(
+    (total, record) => total + getEmployeeContribution(record),
+    0,
+  );
 
-  const employerContributions =
-    scopedEmployeeRecords.reduce(
-      (total, record) =>
-        total +
-        getEmployerContribution(
-          record,
-        ),
-      0,
-    );
+  const employerContributions = scopedEmployeeRecords.reduce(
+    (total, record) => total + getEmployerContribution(record),
+    0,
+  );
 
-  const pendingFilings =
-    scopedFilings.filter(
-      (filing) =>
-        [
-          "draft",
-          "ready",
-          "submitted",
-        ].includes(filing.status),
-    );
+  const pendingFilings = scopedFilings.filter((filing) =>
+    ["draft", "ready", "submitted"].includes(filing.status),
+  );
 
-  const overdueFilings =
-    scopedFilings.filter(
-      (filing) =>
-        filing.status === "overdue" ||
-        (filing.status !== "accepted" &&
-          filing.dueDate <
-            STATUTORY_REFERENCE_DATE),
-    );
+  const overdueFilings = scopedFilings.filter(
+    (filing) =>
+      filing.status === "overdue" ||
+      (filing.status !== "accepted" && filing.dueDate < STATUTORY_REFERENCE_DATE),
+  );
 
-  const chartData =
-    useMemo<
-      StatutoryContributionPoint[]
-    >(() => {
-      const grouped =
-        new Map<
-          string,
-          {
-            employeeContribution: number;
-            employerContribution: number;
-          }
-        >();
+  const chartData = useMemo<StatutoryContributionPoint[]>(() => {
+    const grouped = new Map<
+      string,
+      {
+        employeeContribution: number;
+        employerContribution: number;
+      }
+    >();
 
-      scopedEmployeeRecords.forEach(
-        (record) => {
-          const employee =
-            EMPLOYEES.find(
-              (item) =>
-                item.id ===
-                record.employeeId,
-            );
+    scopedEmployeeRecords.forEach((record) => {
+      const employee = EMPLOYEES.find((item) => item.id === record.employeeId);
 
-          if (!employee) {
-            return;
-          }
+      if (!employee) {
+        return;
+      }
 
-          const current =
-            grouped.get(
-              employee.branchName,
-            ) ?? {
-              employeeContribution: 0,
-              employerContribution: 0,
-            };
+      const current = grouped.get(employee.branchName) ?? {
+        employeeContribution: 0,
+        employerContribution: 0,
+      };
 
-          current.employeeContribution +=
-            getEmployeeContribution(
-              record,
-            );
+      current.employeeContribution += getEmployeeContribution(record);
 
-          current.employerContribution +=
-            getEmployerContribution(
-              record,
-            );
+      current.employerContribution += getEmployerContribution(record);
 
-          grouped.set(
-            employee.branchName,
-            current,
-          );
-        },
-      );
+      grouped.set(employee.branchName, current);
+    });
 
-      return Array.from(
-        grouped.entries(),
-      ).map(
-        ([branchName, values]) => ({
-          branch:
-            branchName.replace(
-              " Branch",
-              "",
-            ),
-          ...values,
-        }),
-      );
-    }, [scopedEmployeeRecords]);
+    return Array.from(grouped.entries()).map(([branchName, values]) => ({
+      branch: branchName.replace(" Branch", ""),
+      ...values,
+    }));
+  }, [scopedEmployeeRecords]);
 
   const metrics = [
     {
       label: "Employee deductions",
-      value: formatPKR(
-        employeeDeductions,
-        true,
-      ),
+      value: formatPKR(employeeDeductions, true),
       detail: "July 2026 payroll",
       icon: Banknote,
       tone: "info" as const,
     },
     {
       label: "Employer contributions",
-      value: formatPKR(
-        employerContributions,
-        true,
-      ),
+      value: formatPKR(employerContributions, true),
       detail: selectedBranch.name,
       icon: ShieldCheck,
       tone: "success" as const,
@@ -429,143 +259,91 @@ export function PayrollStatutoryWorkspace() {
     {
       label: "Pending filings",
       value: pendingFilings.length,
-      detail:
-        "Not yet formally accepted",
+      detail: "Not yet formally accepted",
       icon: Clock3,
       tone: "warning" as const,
     },
     {
       label: "Overdue items",
       value: overdueFilings.length,
-      detail:
-        "Require immediate action",
+      detail: "Require immediate action",
       icon: CircleAlert,
       tone: "danger" as const,
     },
   ];
 
-  function saveFiling(
-    nextFiling: StatutoryFiling,
-  ) {
-    setFilings(
-      (currentFilings) => {
-        const exists =
-          currentFilings.some(
-            (filing) =>
-              filing.id ===
-              nextFiling.id,
-          );
+  function saveFiling(nextFiling: StatutoryFiling) {
+    setFilings((currentFilings) => {
+      const exists = currentFilings.some((filing) => filing.id === nextFiling.id);
 
-        return exists
-          ? currentFilings.map(
-              (filing) =>
-                filing.id ===
-                nextFiling.id
-                  ? nextFiling
-                  : filing,
-            )
-          : [
-              nextFiling,
-              ...currentFilings,
-            ];
-      },
-    );
+      return exists
+        ? currentFilings.map((filing) =>
+            filing.id === nextFiling.id ? nextFiling : filing,
+          )
+        : [nextFiling, ...currentFilings];
+    });
 
-    setSelectedFilingId(
-      nextFiling.id,
-    );
+    setSelectedFilingId(nextFiling.id);
 
     setFilingEditorMode(null);
   }
 
-  function updateFilingStatus(
-    filingId: string,
-    status: StatutoryFilingStatus,
-  ) {
-    const actionDate = new Date()
-      .toISOString()
-      .slice(0, 10);
+  function updateFilingStatus(filingId: string, status: StatutoryFilingStatus) {
+    const actionDate = new Date().toISOString().slice(0, 10);
 
-    setFilings(
-      (currentFilings) =>
-        currentFilings.map(
-          (filing) =>
-            filing.id === filingId
-              ? {
-                  ...filing,
-                  status,
-                  submittedAt:
-                    status === "submitted"
-                      ? actionDate
-                      : filing.submittedAt,
-                  acceptedAt:
-                    status === "accepted"
-                      ? actionDate
-                      : filing.acceptedAt,
-                  referenceNumber:
-                    status === "submitted" &&
-                    !filing.referenceNumber
-                      ? `SUB-${filing.branchId.toUpperCase()}-${filing.period.replace("-", "")}`
-                      : filing.referenceNumber,
-                }
-              : filing,
-        ),
+    setFilings((currentFilings) =>
+      currentFilings.map((filing) =>
+        filing.id === filingId
+          ? {
+              ...filing,
+              status,
+              submittedAt: status === "submitted" ? actionDate : filing.submittedAt,
+              acceptedAt: status === "accepted" ? actionDate : filing.acceptedAt,
+              referenceNumber:
+                status === "submitted" && !filing.referenceNumber
+                  ? `SUB-${filing.branchId.toUpperCase()}-${filing.period.replace("-", "")}`
+                  : filing.referenceNumber,
+            }
+          : filing,
+      ),
     );
   }
 
-  function markEmployeeCompliant(
-    recordId: string,
-  ) {
-    setEmployeeRecords(
-      (currentRecords) =>
-        currentRecords.map(
-          (record) =>
-            record.id === recordId
-              ? {
-                  ...record,
-                  status: "compliant",
-                  note:
-                    record.note ||
-                    `Reviewed by ${CURRENT_ADMIN.name}.`,
-                }
-              : record,
-        ),
+  function markEmployeeCompliant(recordId: string) {
+    setEmployeeRecords((currentRecords) =>
+      currentRecords.map((record) =>
+        record.id === recordId
+          ? {
+              ...record,
+              status: "compliant",
+              note: record.note || `Reviewed by ${CURRENT_ADMIN.name}.`,
+            }
+          : record,
+      ),
     );
   }
 
   return (
     <div className="mx-auto max-w-360">
       <PageHeader
-        eyebrow={
-          PAYROLL_STATUTORY_COPY.eyebrow
-        }
-        title={
-          PAYROLL_STATUTORY_COPY.title
-        }
-        description={
-          PAYROLL_STATUTORY_COPY.description
-        }
+        eyebrow={PAYROLL_STATUTORY_COPY.eyebrow}
+        title={PAYROLL_STATUTORY_COPY.title}
+        description={PAYROLL_STATUTORY_COPY.description}
         actions={
           <>
             <Button variant="outline">
               <Download />
-              {
-                PAYROLL_STATUTORY_COPY.exportAction
-              }
+              {PAYROLL_STATUTORY_COPY.exportAction}
             </Button>
 
             <Button
               onClick={() => {
                 setSelectedFilingId(null);
-                setFilingEditorMode(
-                  "create",
-                );
+                setFilingEditorMode("create");
               }}
             >
               <Plus />
-              {
-                PAYROLL_STATUTORY_COPY.createAction
-              }
+              {PAYROLL_STATUTORY_COPY.createAction}
             </Button>
           </>
         }
@@ -577,115 +355,65 @@ export function PayrollStatutoryWorkspace() {
 
       <section className="mt-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {metrics.map((metric) => (
-          <MetricCard
-            key={metric.label}
-            {...metric}
-          />
+          <MetricCard key={metric.label} {...metric} />
         ))}
       </section>
 
       <section className="mt-6 grid gap-6 xl:grid-cols-[1.25fr_0.75fr]">
         <ChartCard
-          title={
-            PAYROLL_STATUTORY_COPY.chartTitle
-          }
-          description={
-            PAYROLL_STATUTORY_COPY.chartDescription
-          }
+          title={PAYROLL_STATUTORY_COPY.chartTitle}
+          description={PAYROLL_STATUTORY_COPY.chartDescription}
         >
           {chartData.length > 0 ? (
-            <StatutoryContributionChart
-              data={chartData}
-            />
+            <StatutoryContributionChart data={chartData} />
           ) : (
             <div className="flex h-72 items-center justify-center text-sm text-text-muted">
-              No contribution data is
-              available.
+              No contribution data is available.
             </div>
           )}
         </ChartCard>
 
         <Card className="p-5">
-          <h2 className="text-lg font-bold">
-            {
-              PAYROLL_STATUTORY_COPY.deadlinesTitle
-            }
-          </h2>
+          <h2 className="text-lg font-bold">{PAYROLL_STATUTORY_COPY.deadlinesTitle}</h2>
 
           <p className="mt-1 text-sm text-text-muted">
-            {
-              PAYROLL_STATUTORY_COPY.deadlinesDescription
-            }
+            {PAYROLL_STATUTORY_COPY.deadlinesDescription}
           </p>
 
           <div className="mt-5 space-y-3">
             {scopedFilings
-              .filter(
-                (filing) =>
-                  filing.status !==
-                  "accepted",
-              )
-              .sort((first, second) =>
-                first.dueDate.localeCompare(
-                  second.dueDate,
-                ),
-              )
+              .filter((filing) => filing.status !== "accepted")
+              .sort((first, second) => first.dueDate.localeCompare(second.dueDate))
               .slice(0, 5)
               .map((filing) => (
                 <button
                   key={filing.id}
                   type="button"
-                  onClick={() =>
-                    setSelectedFilingId(
-                      filing.id,
-                    )
-                  }
+                  onClick={() => setSelectedFilingId(filing.id)}
                   className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold">
-                        {
-                          STATUTORY_FILING_CATEGORY_CONFIG[
-                            filing.category
-                          ].label
-                        }
+                        {STATUTORY_FILING_CATEGORY_CONFIG[filing.category].label}
                       </p>
 
-                      <p className="mt-1 text-xs text-text-muted">
-                        {filing.branchName}
-                      </p>
+                      <p className="mt-1 text-xs text-text-muted">{filing.branchName}</p>
                     </div>
 
                     <Badge
-                      variant={
-                        STATUTORY_FILING_STATUS_CONFIG[
-                          filing.status
-                        ].badgeVariant
-                      }
+                      variant={STATUTORY_FILING_STATUS_CONFIG[filing.status].badgeVariant}
                     >
-                      {
-                        STATUTORY_FILING_STATUS_CONFIG[
-                          filing.status
-                        ].label
-                      }
+                      {STATUTORY_FILING_STATUS_CONFIG[filing.status].label}
                     </Badge>
                   </div>
 
                   <div className="mt-3 flex items-center justify-between gap-3">
                     <span className="text-xs text-text-muted">
-                      Due{" "}
-                      {formatDate(
-                        filing.dueDate,
-                      )}
+                      Due {formatDate(filing.dueDate)}
                     </span>
 
-                    <strong className="text-sm">
-                      {formatPKR(
-                        filing.amount,
-                        true,
-                      )}
-                    </strong>
+                    <strong className="text-sm">{formatPKR(filing.amount, true)}</strong>
                   </div>
                 </button>
               ))}
@@ -695,16 +423,10 @@ export function PayrollStatutoryWorkspace() {
 
       <Card className="mt-6">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {
-              PAYROLL_STATUTORY_COPY.employeeTitle
-            }
-          </h2>
+          <h2 className="text-lg font-bold">{PAYROLL_STATUTORY_COPY.employeeTitle}</h2>
 
           <p className="mt-1 text-sm text-text-muted">
-            {
-              PAYROLL_STATUTORY_COPY.employeeDescription
-            }
+            {PAYROLL_STATUTORY_COPY.employeeDescription}
           </p>
 
           <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_14rem]">
@@ -713,223 +435,122 @@ export function PayrollStatutoryWorkspace() {
 
               <Input
                 value={searchQuery}
-                onChange={(event) =>
-                  setSearchQuery(
-                    event.target.value,
-                  )
-                }
-                placeholder={
-                  PAYROLL_STATUTORY_COPY.searchPlaceholder
-                }
+                onChange={(event) => setSearchQuery(event.target.value)}
+                placeholder={PAYROLL_STATUTORY_COPY.searchPlaceholder}
                 className="pl-9"
               />
             </div>
 
             <Select
-              value={
-                employeeStatusFilter
-              }
-              onChange={(event) =>
-                setEmployeeStatusFilter(
-                  event.target.value,
-                )
-              }
+              value={employeeStatusFilter}
+              onChange={(event) => setEmployeeStatusFilter(event.target.value)}
             >
-              <option value="all">
-                {
-                  PAYROLL_STATUTORY_COPY.allEmployeeStatuses
-                }
-              </option>
+              <option value="all">{PAYROLL_STATUTORY_COPY.allEmployeeStatuses}</option>
 
-              {Object.entries(
-                STATUTORY_EMPLOYEE_STATUS_CONFIG,
-              ).map(
-                ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(STATUTORY_EMPLOYEE_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
           </div>
         </div>
 
-        {visibleEmployeeRecords.length >
-        0 ? (
+        {visibleEmployeeRecords.length > 0 ? (
           <Table>
             <TableHeader>
               <TableRow className="bg-canvas">
-                <TableHead>
-                  Employee
-                </TableHead>
+                <TableHead>Employee</TableHead>
 
-                <TableHead>
-                  Taxable income
-                </TableHead>
+                <TableHead>Taxable income</TableHead>
 
-                <TableHead>
-                  Income tax
-                </TableHead>
+                <TableHead>Income tax</TableHead>
 
-                <TableHead>
-                  Employee contribution
-                </TableHead>
+                <TableHead>Employee contribution</TableHead>
 
-                <TableHead>
-                  Employer contribution
-                </TableHead>
+                <TableHead>Employer contribution</TableHead>
 
-                <TableHead>
-                  Registration
-                </TableHead>
+                <TableHead>Registration</TableHead>
 
-                <TableHead>
-                  Status
-                </TableHead>
+                <TableHead>Status</TableHead>
 
-                <TableHead className="w-16">
-                  Actions
-                </TableHead>
+                <TableHead className="w-16">Actions</TableHead>
               </TableRow>
             </TableHeader>
 
             <TableBody>
-              {visibleEmployeeRecords.map(
-                (record) => {
-                  const employee =
-                    EMPLOYEES.find(
-                      (item) =>
-                        item.id ===
-                        record.employeeId,
-                    );
+              {visibleEmployeeRecords.map((record) => {
+                const employee = EMPLOYEES.find((item) => item.id === record.employeeId);
 
-                  if (!employee) {
-                    return null;
-                  }
+                if (!employee) {
+                  return null;
+                }
 
-                  const statusConfig =
-                    STATUTORY_EMPLOYEE_STATUS_CONFIG[
-                      record.status
-                    ];
+                const statusConfig = STATUTORY_EMPLOYEE_STATUS_CONFIG[record.status];
 
-                  return (
-                    <TableRow
-                      key={record.id}
-                      className="cursor-pointer transition hover:bg-canvas"
-                      onClick={() =>
-                        setSelectedEmployeeRecordId(
-                          record.id,
-                        )
-                      }
-                    >
-                      <TableCell>
-                        <div className="flex items-center gap-3">
-                          <Avatar
-                            name={
-                              employee.name
-                            }
-                            initials={
-                              employee.initials
-                            }
-                          />
+                return (
+                  <TableRow
+                    key={record.id}
+                    className="cursor-pointer transition hover:bg-canvas"
+                    onClick={() => setSelectedEmployeeRecordId(record.id)}
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <Avatar name={employee.name} initials={employee.initials} />
 
-                          <div>
-                            <p className="font-semibold">
-                              {employee.name}
-                            </p>
+                        <div>
+                          <p className="font-semibold">{employee.name}</p>
 
-                            <p className="mt-1 text-xs text-text-muted">
-                              {
-                                employee.employeeCode
-                              }{" "}
-                              ·{" "}
-                              {
-                                employee.department
-                              }
-                            </p>
-                          </div>
+                          <p className="mt-1 text-xs text-text-muted">
+                            {employee.employeeCode} · {employee.department}
+                          </p>
                         </div>
-                      </TableCell>
+                      </div>
+                    </TableCell>
 
-                      <TableCell>
-                        {formatPKR(
-                          record.taxableIncome,
-                        )}
-                      </TableCell>
+                    <TableCell>{formatPKR(record.taxableIncome)}</TableCell>
 
-                      <TableCell>
-                        {formatPKR(
-                          record.incomeTax,
-                        )}
-                      </TableCell>
+                    <TableCell>{formatPKR(record.incomeTax)}</TableCell>
 
-                      <TableCell>
-                        {formatPKR(
-                          getEmployeeContribution(
-                            record,
-                          ),
-                        )}
-                      </TableCell>
+                    <TableCell>{formatPKR(getEmployeeContribution(record))}</TableCell>
 
-                      <TableCell>
-                        {formatPKR(
-                          getEmployerContribution(
-                            record,
-                          ),
-                        )}
-                      </TableCell>
+                    <TableCell>{formatPKR(getEmployerContribution(record))}</TableCell>
 
-                      <TableCell>
-                        {record.registrationNumber ||
-                          "Missing"}
-                      </TableCell>
+                    <TableCell>{record.registrationNumber || "Missing"}</TableCell>
 
-                      <TableCell>
-                        <Badge
-                          variant={
-                            statusConfig.badgeVariant
-                          }
-                        >
-                          {statusConfig.label}
-                        </Badge>
-                      </TableCell>
+                    <TableCell>
+                      <Badge variant={statusConfig.badgeVariant}>
+                        {statusConfig.label}
+                      </Badge>
+                    </TableCell>
 
-                      <TableCell>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          aria-label={`Open statutory record for ${employee.name}`}
-                          onClick={(event) => {
-                            event.stopPropagation();
+                    <TableCell>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        aria-label={`Open statutory record for ${employee.name}`}
+                        onClick={(event) => {
+                          event.stopPropagation();
 
-                            setSelectedEmployeeRecordId(
-                              record.id,
-                            );
-                          }}
-                        >
-                          <MoreHorizontal />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                },
-              )}
+                          setSelectedEmployeeRecordId(record.id);
+                        }}
+                      >
+                        <MoreHorizontal />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         ) : (
           <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
             <Users className="size-8 text-text-muted" />
 
-            <h3 className="mt-4 font-bold">
-              No employee records found
-            </h3>
+            <h3 className="mt-4 font-bold">No employee records found</h3>
 
             <p className="mt-2 text-sm text-text-muted">
-              Change the branch, search or status
-              filter.
+              Change the branch, search or status filter.
             </p>
           </div>
         )}
@@ -937,95 +558,48 @@ export function PayrollStatutoryWorkspace() {
 
       <Card className="mt-6">
         <div className="border-b border-border p-5">
-          <h2 className="text-lg font-bold">
-            {
-              PAYROLL_STATUTORY_COPY.filingsTitle
-            }
-          </h2>
+          <h2 className="text-lg font-bold">{PAYROLL_STATUTORY_COPY.filingsTitle}</h2>
 
           <p className="mt-1 text-sm text-text-muted">
-            {
-              PAYROLL_STATUTORY_COPY.filingsDescription
-            }
+            {PAYROLL_STATUTORY_COPY.filingsDescription}
           </p>
 
           <div className="mt-5 grid gap-3 md:grid-cols-3">
             <Select
               value={periodFilter}
-              onChange={(event) =>
-                setPeriodFilter(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setPeriodFilter(event.target.value)}
             >
-              {STATUTORY_PERIOD_OPTIONS.map(
-                (option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </option>
-                ),
-              )}
+              {STATUTORY_PERIOD_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </Select>
 
             <Select
               value={categoryFilter}
-              onChange={(event) =>
-                setCategoryFilter(
-                  event.target.value,
-                )
-              }
+              onChange={(event) => setCategoryFilter(event.target.value)}
             >
-              <option value="all">
-                {
-                  PAYROLL_STATUTORY_COPY.allCategories
-                }
-              </option>
+              <option value="all">{PAYROLL_STATUTORY_COPY.allCategories}</option>
 
-              {Object.entries(
-                STATUTORY_FILING_CATEGORY_CONFIG,
-              ).map(
-                ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(STATUTORY_FILING_CATEGORY_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
 
             <Select
-              value={
-                filingStatusFilter
-              }
-              onChange={(event) =>
-                setFilingStatusFilter(
-                  event.target.value,
-                )
-              }
+              value={filingStatusFilter}
+              onChange={(event) => setFilingStatusFilter(event.target.value)}
             >
-              <option value="all">
-                {
-                  PAYROLL_STATUTORY_COPY.allFilingStatuses
-                }
-              </option>
+              <option value="all">{PAYROLL_STATUTORY_COPY.allFilingStatuses}</option>
 
-              {Object.entries(
-                STATUTORY_FILING_STATUS_CONFIG,
-              ).map(
-                ([value, config]) => (
-                  <option
-                    key={value}
-                    value={value}
-                  >
-                    {config.label}
-                  </option>
-                ),
-              )}
+              {Object.entries(STATUTORY_FILING_STATUS_CONFIG).map(([value, config]) => (
+                <option key={value} value={value}>
+                  {config.label}
+                </option>
+              ))}
             </Select>
           </div>
         </div>
@@ -1033,143 +607,82 @@ export function PayrollStatutoryWorkspace() {
         <Table>
           <TableHeader>
             <TableRow className="bg-canvas">
-              <TableHead>
-                Period
-              </TableHead>
+              <TableHead>Period</TableHead>
 
-              <TableHead>
-                Branch
-              </TableHead>
+              <TableHead>Branch</TableHead>
 
-              <TableHead>
-                Category
-              </TableHead>
+              <TableHead>Category</TableHead>
 
-              <TableHead>
-                Amount
-              </TableHead>
+              <TableHead>Amount</TableHead>
 
-              <TableHead>
-                Due date
-              </TableHead>
+              <TableHead>Due date</TableHead>
 
-              <TableHead>
-                Reference
-              </TableHead>
+              <TableHead>Reference</TableHead>
 
-              <TableHead>
-                Status
-              </TableHead>
+              <TableHead>Status</TableHead>
 
-              <TableHead className="w-16">
-                Actions
-              </TableHead>
+              <TableHead className="w-16">Actions</TableHead>
             </TableRow>
           </TableHeader>
 
           <TableBody>
-            {visibleFilings.map(
-              (filing) => (
-                <TableRow
-                  key={filing.id}
-                  className="cursor-pointer transition hover:bg-canvas"
-                  onClick={() =>
-                    setSelectedFilingId(
-                      filing.id,
-                    )
-                  }
-                >
-                  <TableCell>
-                    {formatPeriod(
-                      filing.period,
-                    )}
-                  </TableCell>
+            {visibleFilings.map((filing) => (
+              <TableRow
+                key={filing.id}
+                className="cursor-pointer transition hover:bg-canvas"
+                onClick={() => setSelectedFilingId(filing.id)}
+              >
+                <TableCell>{formatPeriod(filing.period)}</TableCell>
 
-                  <TableCell>
-                    {filing.branchName}
-                  </TableCell>
+                <TableCell>{filing.branchName}</TableCell>
 
-                  <TableCell>
-                    <Badge
-                      variant={
-                        STATUTORY_FILING_CATEGORY_CONFIG[
-                          filing.category
-                        ].badgeVariant
-                      }
-                    >
-                      {
-                        STATUTORY_FILING_CATEGORY_CONFIG[
-                          filing.category
-                        ].label
-                      }
-                    </Badge>
-                  </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={
+                      STATUTORY_FILING_CATEGORY_CONFIG[filing.category].badgeVariant
+                    }
+                  >
+                    {STATUTORY_FILING_CATEGORY_CONFIG[filing.category].label}
+                  </Badge>
+                </TableCell>
 
-                  <TableCell>
-                    {formatPKR(
-                      filing.amount,
-                    )}
-                  </TableCell>
+                <TableCell>{formatPKR(filing.amount)}</TableCell>
 
-                  <TableCell>
-                    {formatDate(
-                      filing.dueDate,
-                    )}
-                  </TableCell>
+                <TableCell>{formatDate(filing.dueDate)}</TableCell>
 
-                  <TableCell>
-                    {filing.referenceNumber ||
-                      "Not assigned"}
-                  </TableCell>
+                <TableCell>{filing.referenceNumber || "Not assigned"}</TableCell>
 
-                  <TableCell>
-                    <Badge
-                      variant={
-                        STATUTORY_FILING_STATUS_CONFIG[
-                          filing.status
-                        ].badgeVariant
-                      }
-                    >
-                      {
-                        STATUTORY_FILING_STATUS_CONFIG[
-                          filing.status
-                        ].label
-                      }
-                    </Badge>
-                  </TableCell>
+                <TableCell>
+                  <Badge
+                    variant={STATUTORY_FILING_STATUS_CONFIG[filing.status].badgeVariant}
+                  >
+                    {STATUTORY_FILING_STATUS_CONFIG[filing.status].label}
+                  </Badge>
+                </TableCell>
 
-                  <TableCell>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      aria-label={`Open statutory filing for ${filing.branchName}`}
-                      onClick={(event) => {
-                        event.stopPropagation();
+                <TableCell>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={`Open statutory filing for ${filing.branchName}`}
+                    onClick={(event) => {
+                      event.stopPropagation();
 
-                        setSelectedFilingId(
-                          filing.id,
-                        );
-                      }}
-                    >
-                      <MoreHorizontal />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ),
-            )}
+                      setSelectedFilingId(filing.id);
+                    }}
+                  >
+                    <MoreHorizontal />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </Card>
 
       <Drawer
-        open={Boolean(
-          selectedEmployeeRecord,
-        )}
-        onClose={() =>
-          setSelectedEmployeeRecordId(
-            null,
-          )
-        }
+        open={Boolean(selectedEmployeeRecord)}
+        onClose={() => setSelectedEmployeeRecordId(null)}
         title="Employee statutory record"
         description={
           selectedEmployee
@@ -1178,225 +691,149 @@ export function PayrollStatutoryWorkspace() {
         }
         footer={
           selectedEmployeeRecord &&
-          [
-            "pending_review",
-            "blocked",
-          ].includes(
-            selectedEmployeeRecord.status,
-          ) ? (
-            <Button
-              onClick={() =>
-                markEmployeeCompliant(
-                  selectedEmployeeRecord.id,
-                )
-              }
-            >
+          ["pending_review", "blocked"].includes(selectedEmployeeRecord.status) ? (
+            <Button onClick={() => markEmployeeCompliant(selectedEmployeeRecord.id)}>
               <BadgeCheck />
               Mark compliant
             </Button>
           ) : undefined
         }
       >
-        {selectedEmployeeRecord &&
-          selectedEmployee && (
-            <div className="space-y-6">
-              <section className="rounded-card border border-border">
-                <div className="flex items-start justify-between gap-4 border-b border-border p-5">
-                  <div>
-                    <h3 className="font-bold">
-                      {selectedEmployee.name}
-                    </h3>
+        {selectedEmployeeRecord && selectedEmployee && (
+          <div className="space-y-6">
+            <section className="rounded-card border border-border">
+              <div className="flex items-start justify-between gap-4 border-b border-border p-5">
+                <div>
+                  <h3 className="font-bold">{selectedEmployee.name}</h3>
 
-                    <p className="mt-1 text-xs text-text-muted">
-                      {
-                        selectedEmployee.designation
-                      }{" "}
-                      ·{" "}
-                      {
-                        selectedEmployee.branchName
-                      }
-                    </p>
-                  </div>
-
-                  <Badge
-                    variant={
-                      STATUTORY_EMPLOYEE_STATUS_CONFIG[
-                        selectedEmployeeRecord.status
-                      ].badgeVariant
-                    }
-                  >
-                    {
-                      STATUTORY_EMPLOYEE_STATUS_CONFIG[
-                        selectedEmployeeRecord.status
-                      ].label
-                    }
-                  </Badge>
+                  <p className="mt-1 text-xs text-text-muted">
+                    {selectedEmployee.designation} · {selectedEmployee.branchName}
+                  </p>
                 </div>
 
-                <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Payroll period
-                    </dt>
+                <Badge
+                  variant={
+                    STATUTORY_EMPLOYEE_STATUS_CONFIG[selectedEmployeeRecord.status]
+                      .badgeVariant
+                  }
+                >
+                  {STATUTORY_EMPLOYEE_STATUS_CONFIG[selectedEmployeeRecord.status].label}
+                </Badge>
+              </div>
 
-                    <dd className="mt-1 text-sm font-semibold">
-                      {formatPeriod(
-                        selectedEmployeeRecord.period,
-                      )}
-                    </dd>
+              <dl className="grid gap-5 p-5 sm:grid-cols-2">
+                <div>
+                  <dt className="text-xs text-text-muted">Payroll period</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {formatPeriod(selectedEmployeeRecord.period)}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Registration number</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {selectedEmployeeRecord.registrationNumber || "Not registered"}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Taxable income</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {formatPKR(selectedEmployeeRecord.taxableIncome)}
+                  </dd>
+                </div>
+
+                <div>
+                  <dt className="text-xs text-text-muted">Income tax</dt>
+
+                  <dd className="mt-1 text-sm font-semibold">
+                    {formatPKR(selectedEmployeeRecord.incomeTax)}
+                  </dd>
+                </div>
+              </dl>
+            </section>
+
+            <section>
+              <h3 className="text-sm font-bold">Employee deductions</h3>
+
+              <dl className="mt-3 space-y-3">
+                {[
+                  {
+                    label: "Income tax",
+                    value: selectedEmployeeRecord.incomeTax,
+                  },
+                  {
+                    label: "Social security",
+                    value: selectedEmployeeRecord.employeeSocialSecurity,
+                  },
+                  {
+                    label: "Retirement contribution",
+                    value: selectedEmployeeRecord.employeeRetirement,
+                  },
+                  {
+                    label: "Other deductions",
+                    value: selectedEmployeeRecord.otherEmployeeDeductions,
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
+                  >
+                    <dt className="text-sm text-text-muted">{item.label}</dt>
+
+                    <dd className="text-sm font-semibold">{formatPKR(item.value)}</dd>
                   </div>
+                ))}
+              </dl>
+            </section>
 
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Registration number
-                    </dt>
+            <section>
+              <h3 className="text-sm font-bold">Employer contributions</h3>
 
-                    <dd className="mt-1 text-sm font-semibold">
-                      {selectedEmployeeRecord.registrationNumber ||
-                        "Not registered"}
-                    </dd>
+              <dl className="mt-3 space-y-3">
+                {[
+                  {
+                    label: "Social security",
+                    value: selectedEmployeeRecord.employerSocialSecurity,
+                  },
+                  {
+                    label: "Retirement contribution",
+                    value: selectedEmployeeRecord.employerRetirement,
+                  },
+                  {
+                    label: "Other contributions",
+                    value: selectedEmployeeRecord.otherEmployerContributions,
+                  },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
+                  >
+                    <dt className="text-sm text-text-muted">{item.label}</dt>
+
+                    <dd className="text-sm font-semibold">{formatPKR(item.value)}</dd>
                   </div>
+                ))}
+              </dl>
+            </section>
 
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Taxable income
-                    </dt>
+            <section>
+              <h3 className="text-sm font-bold">Review note</h3>
 
-                    <dd className="mt-1 text-sm font-semibold">
-                      {formatPKR(
-                        selectedEmployeeRecord.taxableIncome,
-                      )}
-                    </dd>
-                  </div>
-
-                  <div>
-                    <dt className="text-xs text-text-muted">
-                      Income tax
-                    </dt>
-
-                    <dd className="mt-1 text-sm font-semibold">
-                      {formatPKR(
-                        selectedEmployeeRecord.incomeTax,
-                      )}
-                    </dd>
-                  </div>
-                </dl>
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold">
-                  Employee deductions
-                </h3>
-
-                <dl className="mt-3 space-y-3">
-                  {[
-                    {
-                      label: "Income tax",
-                      value:
-                        selectedEmployeeRecord.incomeTax,
-                    },
-                    {
-                      label:
-                        "Social security",
-                      value:
-                        selectedEmployeeRecord.employeeSocialSecurity,
-                    },
-                    {
-                      label:
-                        "Retirement contribution",
-                      value:
-                        selectedEmployeeRecord.employeeRetirement,
-                    },
-                    {
-                      label:
-                        "Other deductions",
-                      value:
-                        selectedEmployeeRecord.otherEmployeeDeductions,
-                    },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
-                    >
-                      <dt className="text-sm text-text-muted">
-                        {item.label}
-                      </dt>
-
-                      <dd className="text-sm font-semibold">
-                        {formatPKR(
-                          item.value,
-                        )}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold">
-                  Employer contributions
-                </h3>
-
-                <dl className="mt-3 space-y-3">
-                  {[
-                    {
-                      label:
-                        "Social security",
-                      value:
-                        selectedEmployeeRecord.employerSocialSecurity,
-                    },
-                    {
-                      label:
-                        "Retirement contribution",
-                      value:
-                        selectedEmployeeRecord.employerRetirement,
-                    },
-                    {
-                      label:
-                        "Other contributions",
-                      value:
-                        selectedEmployeeRecord.otherEmployerContributions,
-                    },
-                  ].map((item) => (
-                    <div
-                      key={item.label}
-                      className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
-                    >
-                      <dt className="text-sm text-text-muted">
-                        {item.label}
-                      </dt>
-
-                      <dd className="text-sm font-semibold">
-                        {formatPKR(
-                          item.value,
-                        )}
-                      </dd>
-                    </div>
-                  ))}
-                </dl>
-              </section>
-
-              <section>
-                <h3 className="text-sm font-bold">
-                  Review note
-                </h3>
-
-                <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                  {selectedEmployeeRecord.note ||
-                    "No review note has been added."}
-                </p>
-              </section>
-            </div>
-          )}
+              <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
+                {selectedEmployeeRecord.note || "No review note has been added."}
+              </p>
+            </section>
+          </div>
+        )}
       </Drawer>
 
       <Drawer
-        open={Boolean(
-          selectedFiling,
-        )}
-        onClose={() =>
-          setSelectedFilingId(null)
-        }
+        open={Boolean(selectedFiling)}
+        onClose={() => setSelectedFilingId(null)}
         title="Statutory filing"
         description={
           selectedFiling
@@ -1406,84 +843,40 @@ export function PayrollStatutoryWorkspace() {
         footer={
           selectedFiling ? (
             <div className="flex flex-wrap justify-end gap-3">
-              {[
-                "draft",
-                "overdue",
-              ].includes(
-                selectedFiling.status,
-              ) && (
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    setFilingEditorMode(
-                      "edit",
-                    )
-                  }
-                >
+              {["draft", "overdue"].includes(selectedFiling.status) && (
+                <Button variant="outline" onClick={() => setFilingEditorMode("edit")}>
                   <FilePenLine />
                   Edit filing
                 </Button>
               )}
 
-              {selectedFiling.status ===
-                "draft" && (
-                <Button
-                  onClick={() =>
-                    updateFilingStatus(
-                      selectedFiling.id,
-                      "ready",
-                    )
-                  }
-                >
+              {selectedFiling.status === "draft" && (
+                <Button onClick={() => updateFilingStatus(selectedFiling.id, "ready")}>
                   <FileCheck2 />
                   Mark ready
                 </Button>
               )}
 
-              {[
-                "ready",
-                "overdue",
-              ].includes(
-                selectedFiling.status,
-              ) && (
+              {["ready", "overdue"].includes(selectedFiling.status) && (
                 <Button
-                  onClick={() =>
-                    updateFilingStatus(
-                      selectedFiling.id,
-                      "submitted",
-                    )
-                  }
+                  onClick={() => updateFilingStatus(selectedFiling.id, "submitted")}
                 >
                   <Send />
                   Mark submitted
                 </Button>
               )}
 
-              {selectedFiling.status ===
-                "submitted" && (
-                <Button
-                  onClick={() =>
-                    updateFilingStatus(
-                      selectedFiling.id,
-                      "accepted",
-                    )
-                  }
-                >
+              {selectedFiling.status === "submitted" && (
+                <Button onClick={() => updateFilingStatus(selectedFiling.id, "accepted")}>
                   <Check />
                   Mark accepted
                 </Button>
               )}
 
-              {selectedFiling.status ===
-                "accepted" && (
+              {selectedFiling.status === "accepted" && (
                 <Button
                   variant="outline"
-                  onClick={() =>
-                    updateFilingStatus(
-                      selectedFiling.id,
-                      "draft",
-                    )
-                  }
+                  onClick={() => updateFilingStatus(selectedFiling.id, "draft")}
                 >
                   <RotateCcw />
                   Reopen filing
@@ -1499,124 +892,82 @@ export function PayrollStatutoryWorkspace() {
               <div className="flex items-start justify-between gap-4 border-b border-border p-5">
                 <div>
                   <h3 className="font-bold">
-                    {
-                      STATUTORY_FILING_CATEGORY_CONFIG[
-                        selectedFiling.category
-                      ].label
-                    }
+                    {STATUTORY_FILING_CATEGORY_CONFIG[selectedFiling.category].label}
                   </h3>
 
                   <p className="mt-1 text-xs text-text-muted">
-                    Created by{" "}
-                    {
-                      selectedFiling.createdBy
-                    }{" "}
-                    on{" "}
-                    {formatDate(
-                      selectedFiling.createdAt,
-                    )}
+                    Created by {selectedFiling.createdBy} on{" "}
+                    {formatDate(selectedFiling.createdAt)}
                   </p>
                 </div>
 
                 <Badge
                   variant={
-                    STATUTORY_FILING_STATUS_CONFIG[
-                      selectedFiling.status
-                    ].badgeVariant
+                    STATUTORY_FILING_STATUS_CONFIG[selectedFiling.status].badgeVariant
                   }
                 >
-                  {
-                    STATUTORY_FILING_STATUS_CONFIG[
-                      selectedFiling.status
-                    ].label
-                  }
+                  {STATUTORY_FILING_STATUS_CONFIG[selectedFiling.status].label}
                 </Badge>
               </div>
 
               <dl className="grid gap-5 p-5 sm:grid-cols-2">
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Filing amount
-                  </dt>
+                  <dt className="text-xs text-text-muted">Filing amount</dt>
 
                   <dd className="mt-1 text-lg font-bold">
-                    {formatPKR(
-                      selectedFiling.amount,
-                    )}
+                    {formatPKR(selectedFiling.amount)}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Due date
-                  </dt>
+                  <dt className="text-xs text-text-muted">Due date</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(
-                      selectedFiling.dueDate,
-                    )}
+                    {formatDate(selectedFiling.dueDate)}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Branch
-                  </dt>
+                  <dt className="text-xs text-text-muted">Branch</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {
-                      selectedFiling.branchName
-                    }
+                    {selectedFiling.branchName}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Payroll period
-                  </dt>
+                  <dt className="text-xs text-text-muted">Payroll period</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {formatPeriod(
-                      selectedFiling.period,
-                    )}
+                    {formatPeriod(selectedFiling.period)}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Submitted date
-                  </dt>
+                  <dt className="text-xs text-text-muted">Submitted date</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
                     {selectedFiling.submittedAt
-                      ? formatDate(
-                          selectedFiling.submittedAt,
-                        )
+                      ? formatDate(selectedFiling.submittedAt)
                       : "Not submitted"}
                   </dd>
                 </div>
 
                 <div>
-                  <dt className="text-xs text-text-muted">
-                    Reference number
-                  </dt>
+                  <dt className="text-xs text-text-muted">Reference number</dt>
 
                   <dd className="mt-1 text-sm font-semibold">
-                    {selectedFiling.referenceNumber ||
-                      "Not assigned"}
+                    {selectedFiling.referenceNumber || "Not assigned"}
                   </dd>
                 </div>
               </dl>
             </section>
 
             <section>
-              <h3 className="text-sm font-bold">
-                Filing note
-              </h3>
+              <h3 className="text-sm font-bold">Filing note</h3>
 
               <p className="mt-2 rounded-control bg-canvas p-4 text-sm leading-6 text-text-muted">
-                {selectedFiling.note ||
-                  "No filing note has been added."}
+                {selectedFiling.note || "No filing note has been added."}
               </p>
             </section>
 
@@ -1625,10 +976,7 @@ export function PayrollStatutoryWorkspace() {
                 <BadgeCheck className="size-5" />
 
                 <p className="text-sm font-semibold">
-                  Accepted on{" "}
-                  {formatDate(
-                    selectedFiling.acceptedAt,
-                  )}
+                  Accepted on {formatDate(selectedFiling.acceptedAt)}
                 </p>
               </div>
             )}
@@ -1637,40 +985,23 @@ export function PayrollStatutoryWorkspace() {
       </Drawer>
 
       <Drawer
-        open={
-          filingEditorMode !== null
-        }
-        onClose={() =>
-          setFilingEditorMode(null)
-        }
+        open={filingEditorMode !== null}
+        onClose={() => setFilingEditorMode(null)}
         title={
-          filingEditorMode === "create"
-            ? "Add statutory filing"
-            : "Edit statutory filing"
+          filingEditorMode === "create" ? "Add statutory filing" : "Edit statutory filing"
         }
         description="Configure branch filing amount, period, due date and submission status."
       >
         {filingEditorMode && (
           <StatutoryFilingForm
             key={
-              filingEditorMode ===
-              "create"
-                ? "new-statutory-filing"
-                : selectedFiling?.id
+              filingEditorMode === "create" ? "new-statutory-filing" : selectedFiling?.id
             }
             filing={
-              filingEditorMode ===
-              "edit"
-                ? selectedFiling ??
-                  undefined
-                : undefined
+              filingEditorMode === "edit" ? (selectedFiling ?? undefined) : undefined
             }
-            selectedBranchId={
-              selectedBranchId
-            }
-            onCancel={() =>
-              setFilingEditorMode(null)
-            }
+            selectedBranchId={selectedBranchId}
+            onCancel={() => setFilingEditorMode(null)}
             onSave={saveFiling}
           />
         )}

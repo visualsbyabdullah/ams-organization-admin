@@ -1,14 +1,8 @@
 import type { MouseEvent } from "react";
 
-import {
-  Building2,
-  Globe2,
-  MoreHorizontal,
-} from "lucide-react";
+import { Building2, Globe2, MoreHorizontal } from "lucide-react";
 
-import type {
-  DataTableColumn,
-} from "@/components/shared/data-table";
+import type { DataTableColumn } from "@/components/shared/data-table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,18 +16,10 @@ import {
 import { BRANCH_OPTIONS } from "@/data/branches";
 import { formatPKR } from "@/lib/currency";
 import { formatDate } from "@/lib/date";
-import type {
-  Invoice,
-  InvoiceSettings,
-  RecurringInvoice,
-} from "@/types/invoice";
+import type { Invoice, InvoiceSettings, RecurringInvoice } from "@/types/invoice";
 
 function getBranchName(branchId?: string) {
-  return (
-    BRANCH_OPTIONS.find(
-      (branch) => branch.id === branchId,
-    )?.name ?? "Organization"
-  );
+  return BRANCH_OPTIONS.find((branch) => branch.id === branchId)?.name ?? "Organization";
 }
 
 type InvoiceColumnOptions = {
@@ -51,9 +37,7 @@ export function createInvoiceColumns({
       header: "Invoice",
       cell: (invoice) => (
         <div>
-          <p className="font-semibold">
-            {invoice.invoiceNumber}
-          </p>
+          <p className="font-semibold">{invoice.invoiceNumber}</p>
 
           <p className="mt-1 text-xs text-text-muted">
             {getBranchName(invoice.branchId)}
@@ -66,13 +50,9 @@ export function createInvoiceColumns({
       header: "Client",
       cell: (invoice) => (
         <div>
-          <p className="font-semibold">
-            {invoice.clientName}
-          </p>
+          <p className="font-semibold">{invoice.clientName}</p>
 
-          <p className="mt-1 text-xs text-text-muted">
-            {invoice.clientEmail}
-          </p>
+          <p className="mt-1 text-xs text-text-muted">{invoice.clientEmail}</p>
         </div>
       ),
     },
@@ -80,58 +60,32 @@ export function createInvoiceColumns({
       id: "category",
       header: "Category",
       cell: (invoice) => (
-        <Badge
-          variant={
-            INVOICE_CATEGORY_CONFIG[
-              invoice.category
-            ].badgeVariant
-          }
-        >
-          {
-            INVOICE_CATEGORY_CONFIG[
-              invoice.category
-            ].label
-          }
+        <Badge variant={INVOICE_CATEGORY_CONFIG[invoice.category].badgeVariant}>
+          {INVOICE_CATEGORY_CONFIG[invoice.category].label}
         </Badge>
       ),
     },
     {
       id: "total",
       header: "Total",
-      cell: (invoice) => (
-        <strong>
-          {formatPKR(invoice.totalAmount)}
-        </strong>
-      ),
+      cell: (invoice) => <strong>{formatPKR(invoice.totalAmount)}</strong>,
     },
     {
       id: "balance",
       header: "Balance",
-      cell: (invoice) =>
-        formatPKR(invoice.balanceAmount),
+      cell: (invoice) => formatPKR(invoice.balanceAmount),
     },
     {
       id: "dueDate",
       header: "Due date",
-      cell: (invoice) =>
-        formatDate(invoice.dueDate),
+      cell: (invoice) => formatDate(invoice.dueDate),
     },
     {
       id: "status",
       header: "Status",
       cell: (invoice) => (
-        <Badge
-          variant={
-            INVOICE_STATUS_CONFIG[
-              invoice.status
-            ].badgeVariant
-          }
-        >
-          {
-            INVOICE_STATUS_CONFIG[
-              invoice.status
-            ].label
-          }
+        <Badge variant={INVOICE_STATUS_CONFIG[invoice.status].badgeVariant}>
+          {INVOICE_STATUS_CONFIG[invoice.status].label}
         </Badge>
       ),
     },
@@ -141,15 +95,13 @@ export function createInvoiceColumns({
     columns.splice(4, 0, {
       id: "paid",
       header: "Paid",
-      cell: (invoice) =>
-        formatPKR(invoice.paidAmount),
+      cell: (invoice) => formatPKR(invoice.paidAmount),
     });
 
     columns.splice(5, 0, {
       id: "issueDate",
       header: "Issued",
-      cell: (invoice) =>
-        formatDate(invoice.issueDate),
+      cell: (invoice) => formatDate(invoice.issueDate),
     });
   }
 
@@ -189,9 +141,7 @@ export function createRecurringInvoiceColumns({
       header: "Schedule",
       cell: (invoice) => (
         <div>
-          <p className="font-semibold">
-            {invoice.name}
-          </p>
+          <p className="font-semibold">{invoice.name}</p>
 
           <p className="mt-1 text-xs text-text-muted">
             {getBranchName(invoice.branchId)}
@@ -204,13 +154,9 @@ export function createRecurringInvoiceColumns({
       header: "Client",
       cell: (invoice) => (
         <div>
-          <p className="font-semibold">
-            {invoice.clientName}
-          </p>
+          <p className="font-semibold">{invoice.clientName}</p>
 
-          <p className="mt-1 text-xs text-text-muted">
-            {invoice.clientEmail}
-          </p>
+          <p className="mt-1 text-xs text-text-muted">{invoice.clientEmail}</p>
         </div>
       ),
     },
@@ -218,58 +164,32 @@ export function createRecurringInvoiceColumns({
       id: "category",
       header: "Category",
       cell: (invoice) => (
-        <Badge
-          variant={
-            INVOICE_CATEGORY_CONFIG[
-              invoice.category
-            ].badgeVariant
-          }
-        >
-          {
-            INVOICE_CATEGORY_CONFIG[
-              invoice.category
-            ].label
-          }
+        <Badge variant={INVOICE_CATEGORY_CONFIG[invoice.category].badgeVariant}>
+          {INVOICE_CATEGORY_CONFIG[invoice.category].label}
         </Badge>
       ),
     },
     {
       id: "frequency",
       header: "Frequency",
-      cell: (invoice) =>
-        RECURRING_INVOICE_FREQUENCY_CONFIG[
-          invoice.frequency
-        ].label,
+      cell: (invoice) => RECURRING_INVOICE_FREQUENCY_CONFIG[invoice.frequency].label,
     },
     {
       id: "amount",
       header: "Invoice amount",
-      cell: (invoice) => (
-        <strong>
-          {formatPKR(invoice.totalAmount)}
-        </strong>
-      ),
+      cell: (invoice) => <strong>{formatPKR(invoice.totalAmount)}</strong>,
     },
     {
       id: "nextInvoiceDate",
       header: "Next invoice",
-      cell: (invoice) =>
-        formatDate(invoice.nextInvoiceDate),
+      cell: (invoice) => formatDate(invoice.nextInvoiceDate),
     },
     {
       id: "autoSend",
       header: "Delivery",
       cell: (invoice) => (
-        <Badge
-          variant={
-            invoice.autoSend
-              ? "success"
-              : "neutral"
-          }
-        >
-          {invoice.autoSend
-            ? "Automatic"
-            : "Manual review"}
+        <Badge variant={invoice.autoSend ? "success" : "neutral"}>
+          {invoice.autoSend ? "Automatic" : "Manual review"}
         </Badge>
       ),
     },
@@ -277,18 +197,8 @@ export function createRecurringInvoiceColumns({
       id: "status",
       header: "Status",
       cell: (invoice) => (
-        <Badge
-          variant={
-            RECURRING_INVOICE_STATUS_CONFIG[
-              invoice.status
-            ].badgeVariant
-          }
-        >
-          {
-            RECURRING_INVOICE_STATUS_CONFIG[
-              invoice.status
-            ].label
-          }
+        <Badge variant={RECURRING_INVOICE_STATUS_CONFIG[invoice.status].badgeVariant}>
+          {RECURRING_INVOICE_STATUS_CONFIG[invoice.status].label}
         </Badge>
       ),
     },
@@ -328,8 +238,7 @@ export function createInvoiceSettingsColumns({
       cell: (settings) => (
         <div className="flex items-center gap-3">
           <span className="flex size-10 shrink-0 items-center justify-center rounded-control bg-info-muted text-info">
-            {settings.scope ===
-            "organization" ? (
+            {settings.scope === "organization" ? (
               <Globe2 size={18} />
             ) : (
               <Building2 size={18} />
@@ -337,13 +246,10 @@ export function createInvoiceSettingsColumns({
           </span>
 
           <div>
-            <p className="font-semibold">
-              {settings.name}
-            </p>
+            <p className="font-semibold">{settings.name}</p>
 
             <p className="mt-1 text-xs text-text-muted">
-              {settings.branchName ??
-                "All organization branches"}
+              {settings.branchName ?? "All organization branches"}
             </p>
           </div>
         </div>
@@ -353,62 +259,37 @@ export function createInvoiceSettingsColumns({
       id: "scope",
       header: "Scope",
       cell: (settings) => (
-        <Badge
-          variant={
-            INVOICE_SETTINGS_SCOPE_CONFIG[
-              settings.scope
-            ].badgeVariant
-          }
-        >
-          {
-            INVOICE_SETTINGS_SCOPE_CONFIG[
-              settings.scope
-            ].label
-          }
+        <Badge variant={INVOICE_SETTINGS_SCOPE_CONFIG[settings.scope].badgeVariant}>
+          {INVOICE_SETTINGS_SCOPE_CONFIG[settings.scope].label}
         </Badge>
       ),
     },
     {
       id: "prefix",
       header: "Prefix",
-      cell: (settings) => (
-        <strong>{settings.invoicePrefix}</strong>
-      ),
+      cell: (settings) => <strong>{settings.invoicePrefix}</strong>,
     },
     {
       id: "sequence",
       header: "Next sequence",
-      cell: (settings) =>
-        String(settings.nextSequence),
+      cell: (settings) => String(settings.nextSequence),
     },
     {
       id: "terms",
       header: "Payment terms",
-      cell: (settings) =>
-        `${settings.paymentTermDays} days`,
+      cell: (settings) => `${settings.paymentTermDays} days`,
     },
     {
       id: "tax",
       header: "Default tax",
-      cell: (settings) =>
-        `${settings.defaultTaxRate}%`,
+      cell: (settings) => `${settings.defaultTaxRate}%`,
     },
     {
       id: "status",
       header: "Status",
       cell: (settings) => (
-        <Badge
-          variant={
-            INVOICE_SETTINGS_STATUS_CONFIG[
-              settings.status
-            ].badgeVariant
-          }
-        >
-          {
-            INVOICE_SETTINGS_STATUS_CONFIG[
-              settings.status
-            ].label
-          }
+        <Badge variant={INVOICE_SETTINGS_STATUS_CONFIG[settings.status].badgeVariant}>
+          {INVOICE_SETTINGS_STATUS_CONFIG[settings.status].label}
         </Badge>
       ),
     },
