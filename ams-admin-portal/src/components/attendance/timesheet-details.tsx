@@ -1,4 +1,5 @@
-﻿import { Badge } from "@/components/ui/badge";
+﻿import { DetailGrid } from "@/components/shared/detail-grid";
+import { Badge } from "@/components/ui/badge";
 import {
   TIMESHEET_DAY_STATUS_CONFIG,
   TIMESHEET_STATUS_CONFIG,
@@ -33,37 +34,27 @@ export function TimesheetDetails({ timesheet, employee }: TimesheetDetailsProps)
           <Badge variant={statusConfig.badgeVariant}>{statusConfig.label}</Badge>
         </div>
 
-        <dl className="grid gap-5 p-5 sm:grid-cols-2">
-          <div>
-            <dt className="text-xs text-text-muted">Period</dt>
-
-            <dd className="mt-1 text-sm font-semibold">
-              {formatDate(timesheet.periodStart)} – {formatDate(timesheet.periodEnd)}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Regular hours</dt>
-
-            <dd className="mt-1 text-sm font-semibold">
-              {formatMinutesAsHours(totals.regularMinutes)}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Overtime</dt>
-
-            <dd className="mt-1 text-sm font-semibold">
-              {formatMinutesAsHours(totals.overtimeMinutes)}
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Missing entries</dt>
-
-            <dd className="mt-1 text-sm font-semibold">{totals.missingEntries}</dd>
-          </div>
-        </dl>
+        <DetailGrid
+          variant="none"
+          items={[
+            {
+              label: "Period",
+              value: `${formatDate(timesheet.periodStart)} – ${formatDate(timesheet.periodEnd)}`,
+            },
+            {
+              label: "Regular hours",
+              value: formatMinutesAsHours(totals.regularMinutes),
+            },
+            {
+              label: "Overtime",
+              value: formatMinutesAsHours(totals.overtimeMinutes),
+            },
+            {
+              label: "Missing entries",
+              value: totals.missingEntries,
+            },
+          ]}
+        />
       </section>
 
       <section>

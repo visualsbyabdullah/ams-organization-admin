@@ -17,6 +17,7 @@ import {
 import { AttendanceExceptionForm } from "@/components/attendance/attendance-exception-form";
 import { AttendanceTabs } from "@/components/attendance/attendance-tabs";
 import { MetricCard } from "@/components/dashboard/metric-card";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -497,65 +498,48 @@ export function AttendanceExceptionsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Attendance date</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedException.date)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Branch</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEmployee.branchName}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Severity</dt>
-
-                  <dd className="mt-1">
-                    <Badge
-                      variant={
-                        ATTENDANCE_EXCEPTION_SEVERITY_CONFIG[selectedException.severity]
-                          .badgeVariant
-                      }
-                    >
-                      {
-                        ATTENDANCE_EXCEPTION_SEVERITY_CONFIG[selectedException.severity]
-                          .label
-                      }
-                    </Badge>
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Time impact</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatImpact(selectedException.impactMinutes)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Source</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {ATTENDANCE_EXCEPTION_SOURCE_CONFIG[selectedException.source].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Reviewer</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedException.reviewer || "Not assigned"}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Attendance date",
+                    value: formatDate(selectedException.date),
+                  },
+                  {
+                    label: "Branch",
+                    value: selectedEmployee.branchName,
+                  },
+                  {
+                    label: "Severity",
+                    value: (
+                      <Badge
+                        variant={
+                          ATTENDANCE_EXCEPTION_SEVERITY_CONFIG[selectedException.severity]
+                            .badgeVariant
+                        }
+                      >
+                        {
+                          ATTENDANCE_EXCEPTION_SEVERITY_CONFIG[selectedException.severity]
+                            .label
+                        }
+                      </Badge>
+                    ),
+                  },
+                  {
+                    label: "Time impact",
+                    value: formatImpact(selectedException.impactMinutes),
+                  },
+                  {
+                    label: "Source",
+                    value:
+                      ATTENDANCE_EXCEPTION_SOURCE_CONFIG[selectedException.source].label,
+                  },
+                  {
+                    label: "Reviewer",
+                    value: selectedException.reviewer || "Not assigned",
+                  },
+                ]}
+              />
             </section>
 
             <section>

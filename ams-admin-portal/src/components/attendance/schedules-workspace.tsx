@@ -19,6 +19,7 @@ import { ScheduleAssignmentForm } from "@/components/attendance/schedule-assignm
 import { ScheduleWeekGrid } from "@/components/attendance/schedule-week-grid";
 import { ShiftTemplateForm } from "@/components/attendance/shift-template-form";
 import { MetricCard } from "@/components/dashboard/metric-card";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -431,40 +432,27 @@ export function SchedulesWorkspace() {
                 </div>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Schedule date</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedAssignment.date)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Working time</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedAssignmentShift.startTime} –{" "}
-                    {selectedAssignmentShift.endTime}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Break</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedAssignmentShift.breakMinutes} minutes
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Working hours</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatMinutesAsHours(selectedAssignmentShift.workingMinutes)}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Schedule date",
+                    value: formatDate(selectedAssignment.date),
+                  },
+                  {
+                    label: "Working time",
+                    value: `${selectedAssignmentShift.startTime} – ${selectedAssignmentShift.endTime}`,
+                  },
+                  {
+                    label: "Break",
+                    value: `${selectedAssignmentShift.breakMinutes} minutes`,
+                  },
+                  {
+                    label: "Working hours",
+                    value: formatMinutesAsHours(selectedAssignmentShift.workingMinutes),
+                  },
+                ]}
+              />
             </section>
 
             <section>

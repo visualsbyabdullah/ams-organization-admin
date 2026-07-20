@@ -18,6 +18,7 @@ import {
 import { AttendancePolicyForm } from "@/components/attendance/attendance-policy-form";
 import { AttendanceTabs } from "@/components/attendance/attendance-tabs";
 import { MetricCard } from "@/components/dashboard/metric-card";
+import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -432,8 +433,8 @@ export function AttendancePoliciesWorkspace() {
             <section>
               <h3 className="text-sm font-bold">Attendance thresholds</h3>
 
-              <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-                {[
+              <DetailGrid
+                items={[
                   {
                     label: "Grace period",
                     value: `${selectedPolicy.rules.gracePeriodMinutes} min`,
@@ -468,21 +469,15 @@ export function AttendancePoliciesWorkspace() {
                     label: "Correction window",
                     value: `${selectedPolicy.rules.correctionWindowDays} days`,
                   },
-                ].map((item) => (
-                  <div key={item.label} className="rounded-control bg-canvas p-4">
-                    <dt className="text-xs text-text-muted">{item.label}</dt>
-
-                    <dd className="mt-1 text-sm font-semibold">{item.value}</dd>
-                  </div>
-                ))}
-              </dl>
+                ]}
+              />
             </section>
 
             <section>
               <h3 className="text-sm font-bold">Attendance controls</h3>
 
-              <div className="mt-3 space-y-3">
-                {[
+              <ToggleDetailList
+                items={[
                   {
                     label: "Location required",
                     enabled: selectedPolicy.rules.requireLocation,
@@ -495,19 +490,8 @@ export function AttendancePoliciesWorkspace() {
                     label: "Automatic overtime approval",
                     enabled: selectedPolicy.rules.autoApproveOvertime,
                   },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center justify-between rounded-control border border-border p-4"
-                  >
-                    <span className="text-sm font-semibold">{item.label}</span>
-
-                    <Badge variant={item.enabled ? "success" : "neutral"}>
-                      {item.enabled ? "Enabled" : "Disabled"}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
+                ]}
+              />
             </section>
           </div>
         )}
