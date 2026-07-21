@@ -18,6 +18,7 @@ import { AttendanceRecordForm } from "@/components/attendance/attendance-record-
 import { AttendanceTabs } from "@/components/attendance/attendance-tabs";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -81,7 +82,7 @@ export function AttendanceRegister() {
 
   const [status, setStatus] = useState("all");
 
-  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
+  const recordSelection = useEntitySelection(records, (record) => record.id);
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -147,7 +148,7 @@ export function AttendanceRegister() {
     });
   }, [branchRecords, department, searchQuery, selectedDate, status]);
 
-  const selectedRecord = records.find((record) => record.id === selectedRecordId) ?? null;
+  const selectedRecord = recordSelection.selected;
 
   const totalWorkedMinutes = branchRecords.reduce(
     (total, record) => total + record.workedMinutes,
@@ -220,7 +221,7 @@ export function AttendanceRegister() {
         : [nextRecord, ...currentRecords];
     });
 
-    setSelectedRecordId(null);
+    recordSelection.clear();
     setCreateOpen(false);
   }
 
@@ -414,7 +415,7 @@ export function AttendanceRegister() {
                   <TableRow
                     key={record.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedRecordId(record.id)}
+                    onClick={() => recordSelection.select(record.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -466,7 +467,7 @@ export function AttendanceRegister() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedRecordId(record.id);
+                          recordSelection.select(record.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -492,7 +493,7 @@ export function AttendanceRegister() {
 
       <Drawer
         open={Boolean(selectedRecord)}
-        onClose={() => setSelectedRecordId(null)}
+        onClose={() => recordSelection.clear()}
         title="Edit attendance record"
         description="Correct employee attendance timing, status or notes."
       >
@@ -501,7 +502,7 @@ export function AttendanceRegister() {
             key={selectedRecord.id}
             record={selectedRecord}
             selectedBranchId={selectedBranchId}
-            onCancel={() => setSelectedRecordId(null)}
+            onCancel={() => recordSelection.clear()}
             onSave={saveRecord}
           />
         )}

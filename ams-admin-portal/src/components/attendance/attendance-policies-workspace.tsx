@@ -19,6 +19,7 @@ import { AttendancePolicyForm } from "@/components/attendance/attendance-policy-
 import { AttendanceTabs } from "@/components/attendance/attendance-tabs";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -58,7 +59,7 @@ export function AttendancePoliciesWorkspace() {
 
   const [scopeFilter, setScopeFilter] = useState("all");
 
-  const [selectedPolicyId, setSelectedPolicyId] = useState<string | null>(null);
+  const policySelection = useEntitySelection(policies, (policy) => policy.id);
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -96,8 +97,7 @@ export function AttendancePoliciesWorkspace() {
     });
   }, [scopeFilter, scopedPolicies, searchQuery, statusFilter]);
 
-  const selectedPolicy =
-    policies.find((policy) => policy.id === selectedPolicyId) ?? null;
+  const selectedPolicy = policySelection.selected;
 
   const metrics = [
     {
@@ -142,7 +142,7 @@ export function AttendancePoliciesWorkspace() {
         : [nextPolicy, ...currentPolicies];
     });
 
-    setSelectedPolicyId(nextPolicy.id);
+    policySelection.select(nextPolicy.id);
 
     setEditorMode(null);
   }
@@ -159,7 +159,7 @@ export function AttendancePoliciesWorkspace() {
 
     setPolicies((currentPolicies) => [duplicate, ...currentPolicies]);
 
-    setSelectedPolicyId(duplicate.id);
+    policySelection.select(duplicate.id);
   }
 
   function archivePolicy(policyId: string) {
@@ -186,7 +186,7 @@ export function AttendancePoliciesWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedPolicyId(null);
+              policySelection.clear();
               setEditorMode("create");
             }}
           >
@@ -267,7 +267,7 @@ export function AttendancePoliciesWorkspace() {
                 <button
                   key={policy.id}
                   type="button"
-                  onClick={() => setSelectedPolicyId(policy.id)}
+                  onClick={() => policySelection.select(policy.id)}
                   className="text-left"
                 >
                   <Card className="h-full p-5 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
@@ -284,7 +284,7 @@ export function AttendancePoliciesWorkspace() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedPolicyId(policy.id);
+                          policySelection.select(policy.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -350,7 +350,7 @@ export function AttendancePoliciesWorkspace() {
 
       <Drawer
         open={Boolean(selectedPolicy)}
-        onClose={() => setSelectedPolicyId(null)}
+        onClose={() => policySelection.clear()}
         title="Attendance policy"
         description={selectedPolicy?.name}
         footer={

@@ -21,6 +21,7 @@ import { ShiftTemplateForm } from "@/components/attendance/shift-template-form";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -57,13 +58,15 @@ export function SchedulesWorkspace() {
 
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedAssignmentId, setSelectedAssignmentId] = useState<string | null>(null);
+  const assignmentSelection = useEntitySelection(
+    assignments,
+    (assignment) => assignment.id,
+  );
+  const shiftSelection = useEntitySelection(shifts, (shift) => shift.id);
 
   const [assignmentFormOpen, setAssignmentFormOpen] = useState(false);
 
   const [shiftEditorOpen, setShiftEditorOpen] = useState(false);
-
-  const [selectedShiftId, setSelectedShiftId] = useState<string | null>(null);
 
   const weekDates = useMemo(
     () => new Set<string>(SCHEDULE_WEEK_DAYS.map((day) => day.date)),
@@ -108,8 +111,7 @@ export function SchedulesWorkspace() {
     [scopedAssignments, statusFilter],
   );
 
-  const selectedAssignment =
-    assignments.find((assignment) => assignment.id === selectedAssignmentId) ?? null;
+  const selectedAssignment = assignmentSelection.selected;
 
   const selectedEmployee = selectedAssignment
     ? EMPLOYEES.find((employee) => employee.id === selectedAssignment.employeeId)
@@ -119,7 +121,7 @@ export function SchedulesWorkspace() {
     ? shifts.find((shift) => shift.id === selectedAssignment.shiftId)
     : null;
 
-  const selectedShift = shifts.find((shift) => shift.id === selectedShiftId) ?? null;
+  const selectedShift = shiftSelection.selected;
 
   const scheduledEmployeeIds = new Set(
     scopedAssignments.map((assignment) => assignment.employeeId),
@@ -187,7 +189,7 @@ export function SchedulesWorkspace() {
     });
 
     setShiftEditorOpen(false);
-    setSelectedShiftId(null);
+    shiftSelection.clear();
   }
 
   function updateAssignmentStatus(
@@ -211,7 +213,7 @@ export function SchedulesWorkspace() {
       currentAssignments.filter((assignment) => assignment.id !== assignmentId),
     );
 
-    setSelectedAssignmentId(null);
+    assignmentSelection.clear();
   }
 
   return (
@@ -225,7 +227,7 @@ export function SchedulesWorkspace() {
             <Button
               variant="outline"
               onClick={() => {
-                setSelectedShiftId(null);
+                shiftSelection.clear();
                 setShiftEditorOpen(true);
               }}
             >
@@ -304,7 +306,7 @@ export function SchedulesWorkspace() {
                 assignments={visibleAssignments}
                 shifts={shifts}
                 days={SCHEDULE_WEEK_DAYS}
-                onSelect={setSelectedAssignmentId}
+                onSelect={assignmentSelection.select}
               />
             </div>
           ) : (
@@ -342,7 +344,7 @@ export function SchedulesWorkspace() {
                   key={shift.id}
                   type="button"
                   onClick={() => {
-                    setSelectedShiftId(shift.id);
+                    shiftSelection.select(shift.id);
 
                     setShiftEditorOpen(true);
                   }}
@@ -378,7 +380,7 @@ export function SchedulesWorkspace() {
 
       <Drawer
         open={Boolean(selectedAssignment)}
-        onClose={() => setSelectedAssignmentId(null)}
+        onClose={() => assignmentSelection.clear()}
         title="Schedule assignment"
         description={
           selectedEmployee
@@ -485,7 +487,7 @@ export function SchedulesWorkspace() {
         open={shiftEditorOpen}
         onClose={() => {
           setShiftEditorOpen(false);
-          setSelectedShiftId(null);
+          shiftSelection.clear();
         }}
         title={selectedShift ? "Edit shift template" : "Create shift template"}
         description="Configure reusable shift timing, break duration and category."
@@ -495,7 +497,7 @@ export function SchedulesWorkspace() {
           shift={selectedShift ?? undefined}
           onCancel={() => {
             setShiftEditorOpen(false);
-            setSelectedShiftId(null);
+            shiftSelection.clear();
           }}
           onSave={saveShift}
         />

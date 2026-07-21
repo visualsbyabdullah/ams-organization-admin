@@ -24,6 +24,7 @@ import {
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -69,7 +70,7 @@ export function TimesheetsWorkspace() {
 
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedTimesheetId, setSelectedTimesheetId] = useState<string | null>(null);
+  const timesheetSelection = useEntitySelection(timesheets, (timesheet) => timesheet.id);
 
   const periodConfig =
     TIMESHEET_PERIOD_OPTIONS.find((period) => period.value === selectedPeriod) ??
@@ -116,8 +117,7 @@ export function TimesheetsWorkspace() {
     timesheets,
   ]);
 
-  const selectedTimesheet =
-    timesheets.find((timesheet) => timesheet.id === selectedTimesheetId) ?? null;
+  const selectedTimesheet = timesheetSelection.selected;
 
   const selectedEmployee = selectedTimesheet
     ? EMPLOYEES.find((employee) => employee.id === selectedTimesheet.employeeId)
@@ -376,7 +376,7 @@ export function TimesheetsWorkspace() {
                   <TableRow
                     key={timesheet.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedTimesheetId(timesheet.id)}
+                    onClick={() => timesheetSelection.select(timesheet.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -428,7 +428,7 @@ export function TimesheetsWorkspace() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedTimesheetId(timesheet.id);
+                          timesheetSelection.select(timesheet.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -454,7 +454,7 @@ export function TimesheetsWorkspace() {
 
       <Drawer
         open={Boolean(selectedTimesheet)}
-        onClose={() => setSelectedTimesheetId(null)}
+        onClose={() => timesheetSelection.clear()}
         title="Timesheet review"
         description={
           selectedEmployee

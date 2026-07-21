@@ -21,6 +21,7 @@ import { DepartmentAttendanceChart } from "@/components/attendance/department-at
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -77,11 +78,11 @@ export function AttendanceToday() {
 
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
+  const recordSelection = useEntitySelection(records, (record) => record.id);
 
   const [createOpen, setCreateOpen] = useState(false);
 
-  const selectedRecord = records.find((record) => record.id === selectedRecordId) ?? null;
+  const selectedRecord = recordSelection.selected;
 
   const visibleRecords = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -176,7 +177,7 @@ export function AttendanceToday() {
     });
 
     setCreateOpen(false);
-    setSelectedRecordId(null);
+    recordSelection.clear();
   }
 
   return (
@@ -251,7 +252,7 @@ export function AttendanceToday() {
                   <button
                     type="button"
                     key={record.id}
-                    onClick={() => setSelectedRecordId(record.id)}
+                    onClick={() => recordSelection.select(record.id)}
                     className="flex w-full items-center justify-between gap-4 rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div>
@@ -347,7 +348,7 @@ export function AttendanceToday() {
                   <TableRow
                     key={record.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedRecordId(record.id)}
+                    onClick={() => recordSelection.select(record.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -387,7 +388,7 @@ export function AttendanceToday() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedRecordId(record.id);
+                          recordSelection.select(record.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -413,7 +414,7 @@ export function AttendanceToday() {
 
       <Drawer
         open={Boolean(selectedRecord)}
-        onClose={() => setSelectedRecordId(null)}
+        onClose={() => recordSelection.clear()}
         title="Edit attendance"
         description="Correct attendance timings, status or administrator notes."
       >
@@ -422,7 +423,7 @@ export function AttendanceToday() {
             key={selectedRecord.id}
             record={selectedRecord}
             selectedBranchId={selectedBranchId}
-            onCancel={() => setSelectedRecordId(null)}
+            onCancel={() => recordSelection.clear()}
             onSave={saveRecord}
           />
         )}

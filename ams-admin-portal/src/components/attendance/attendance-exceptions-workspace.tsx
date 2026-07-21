@@ -18,6 +18,7 @@ import { AttendanceExceptionForm } from "@/components/attendance/attendance-exce
 import { AttendanceTabs } from "@/components/attendance/attendance-tabs";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -83,7 +84,7 @@ export function AttendanceExceptionsWorkspace() {
 
   const [severityFilter, setSeverityFilter] = useState("all");
 
-  const [selectedExceptionId, setSelectedExceptionId] = useState<string | null>(null);
+  const exceptionSelection = useEntitySelection(exceptions, (exception) => exception.id);
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -132,8 +133,7 @@ export function AttendanceExceptionsWorkspace() {
     });
   }, [scopedExceptions, searchQuery, severityFilter, statusFilter, typeFilter]);
 
-  const selectedException =
-    exceptions.find((exception) => exception.id === selectedExceptionId) ?? null;
+  const selectedException = exceptionSelection.selected;
 
   const selectedEmployee = selectedException
     ? EMPLOYEES.find((employee) => employee.id === selectedException.employeeId)
@@ -178,7 +178,7 @@ export function AttendanceExceptionsWorkspace() {
     setExceptions((currentExceptions) => [exception, ...currentExceptions]);
 
     setCreateOpen(false);
-    setSelectedExceptionId(exception.id);
+    exceptionSelection.select(exception.id);
   }
 
   function updateStatus(exceptionId: string, status: AttendanceExceptionStatus) {
@@ -333,7 +333,7 @@ export function AttendanceExceptionsWorkspace() {
                   <TableRow
                     key={exception.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedExceptionId(exception.id)}
+                    onClick={() => exceptionSelection.select(exception.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -391,7 +391,7 @@ export function AttendanceExceptionsWorkspace() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedExceptionId(exception.id);
+                          exceptionSelection.select(exception.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -417,7 +417,7 @@ export function AttendanceExceptionsWorkspace() {
 
       <Drawer
         open={Boolean(selectedException)}
-        onClose={() => setSelectedExceptionId(null)}
+        onClose={() => exceptionSelection.clear()}
         title="Attendance exception"
         description={
           selectedEmployee
