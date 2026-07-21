@@ -19,6 +19,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { TrainingEnrollmentForm } from "@/components/training/training-enrollment-form";
@@ -50,7 +51,10 @@ export function TrainingEnrollmentsWorkspace() {
 
   const [courseFilter, setCourseFilter] = useState("all");
 
-  const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
+  const enrollmentSelection = useEntitySelection(
+    enrollments,
+    (enrollment) => enrollment.id,
+  );
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -97,8 +101,7 @@ export function TrainingEnrollmentsWorkspace() {
     });
   }, [courseFilter, scopedEnrollments, searchQuery, statusFilter]);
 
-  const selectedEnrollment =
-    enrollments.find((enrollment) => enrollment.id === selectedEnrollmentId) ?? null;
+  const selectedEnrollment = enrollmentSelection.selected;
 
   const selectedEmployee = selectedEnrollment
     ? EMPLOYEES.find((employee) => employee.id === selectedEnrollment.employeeId)
@@ -271,7 +274,7 @@ export function TrainingEnrollmentsWorkspace() {
               aria-label={`Open training enrollment for ${employee?.name ?? "employee"}`}
               onClick={(event: MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
-                setSelectedEnrollmentId(enrollment.id);
+                enrollmentSelection.select(enrollment.id);
               }}
             >
               <MoreHorizontal />
@@ -280,13 +283,13 @@ export function TrainingEnrollmentsWorkspace() {
         },
       },
     ],
-    [],
+    [enrollmentSelection],
   );
 
   function saveEnrollment(enrollment: TrainingEnrollment) {
     setEnrollments((currentEnrollments) => [enrollment, ...currentEnrollments]);
     setCreateOpen(false);
-    setSelectedEnrollmentId(enrollment.id);
+    enrollmentSelection.select(enrollment.id);
   }
 
   function updateStatus(enrollmentId: string, status: TrainingEnrollmentStatus) {
@@ -464,7 +467,7 @@ export function TrainingEnrollmentsWorkspace() {
             rows={visibleEnrollments}
             columns={columns}
             getRowKey={(enrollment) => enrollment.id}
-            onRowClick={(enrollment) => setSelectedEnrollmentId(enrollment.id)}
+            onRowClick={(enrollment) => enrollmentSelection.select(enrollment.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <FileSearch className="size-8 text-text-muted" />
@@ -514,7 +517,7 @@ export function TrainingEnrollmentsWorkspace() {
                   <button
                     key={enrollment.id}
                     type="button"
-                    onClick={() => setSelectedEnrollmentId(enrollment.id)}
+                    onClick={() => enrollmentSelection.select(enrollment.id)}
                     className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -558,7 +561,7 @@ export function TrainingEnrollmentsWorkspace() {
 
       <Drawer
         open={Boolean(selectedEnrollment && selectedEmployee && selectedCourse)}
-        onClose={() => setSelectedEnrollmentId(null)}
+        onClose={() => enrollmentSelection.clear()}
         title="Training enrollment"
         description={
           selectedEmployee

@@ -18,6 +18,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { TrainingSettingsForm } from "@/components/training/training-settings-form";
 import { TrainingTabs } from "@/components/training/training-tabs";
@@ -51,7 +52,7 @@ export function TrainingSettingsWorkspace() {
 
   const [scopeFilter, setScopeFilter] = useState("all");
 
-  const [selectedSettingsId, setSelectedSettingsId] = useState<string | null>(null);
+  const settingsSelection = useEntitySelection(settings, (item) => item.id);
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -88,8 +89,7 @@ export function TrainingSettingsWorkspace() {
     });
   }, [scopedSettings, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedSettings =
-    settings.find((item) => item.id === selectedSettingsId) ?? null;
+  const selectedSettings = settingsSelection.selected;
 
   const organizationDefault =
     settings.find((item) => item.scope === "organization" && item.status === "active") ??
@@ -225,7 +225,7 @@ export function TrainingSettingsWorkspace() {
         : [nextSettings, ...currentSettings];
     });
 
-    setSelectedSettingsId(nextSettings.id);
+    settingsSelection.select(nextSettings.id);
     setEditorMode(null);
   }
 
@@ -240,7 +240,7 @@ export function TrainingSettingsWorkspace() {
     };
 
     setSettings((currentSettings) => [duplicate, ...currentSettings]);
-    setSelectedSettingsId(duplicate.id);
+    settingsSelection.select(duplicate.id);
   }
 
   function updateStatus(settingsId: string, status: TrainingSettingsStatus) {
@@ -284,7 +284,7 @@ export function TrainingSettingsWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedSettingsId(null);
+              settingsSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -359,7 +359,7 @@ export function TrainingSettingsWorkspace() {
             rows={visibleSettings}
             columns={columns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) => setSelectedSettingsId(item.id)}
+            onRowClick={(item) => settingsSelection.select(item.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <Settings2 className="size-8 text-text-muted" />
@@ -460,7 +460,7 @@ export function TrainingSettingsWorkspace() {
 
       <Drawer
         open={Boolean(selectedSettings)}
-        onClose={() => setSelectedSettingsId(null)}
+        onClose={() => settingsSelection.clear()}
         title="Training settings"
         description={selectedSettings?.name}
         footer={

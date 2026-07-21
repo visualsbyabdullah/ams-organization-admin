@@ -21,6 +21,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { TrainingSessionForm } from "@/components/training/training-session-form";
@@ -57,7 +58,7 @@ export function TrainingSessionsWorkspace() {
 
   const [modeFilter, setModeFilter] = useState("all");
 
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const sessionSelection = useEntitySelection(sessions, (session) => session.id);
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -97,8 +98,7 @@ export function TrainingSessionsWorkspace() {
     });
   }, [modeFilter, scopedSessions, searchQuery, statusFilter]);
 
-  const selectedSession =
-    sessions.find((session) => session.id === selectedSessionId) ?? null;
+  const selectedSession = sessionSelection.selected;
 
   const selectedCourse = selectedSession
     ? TRAINING_COURSES.find((course) => course.id === selectedSession.courseId)
@@ -265,7 +265,7 @@ export function TrainingSessionsWorkspace() {
             aria-label="Open training session"
             onClick={(event: MouseEvent<HTMLButtonElement>) => {
               event.stopPropagation();
-              setSelectedSessionId(session.id);
+              sessionSelection.select(session.id);
             }}
           >
             <MoreHorizontal />
@@ -273,7 +273,7 @@ export function TrainingSessionsWorkspace() {
         ),
       },
     ],
-    [],
+    [sessionSelection],
   );
 
   function saveSession(nextSession: TrainingSession) {
@@ -287,7 +287,7 @@ export function TrainingSessionsWorkspace() {
         : [nextSession, ...currentSessions];
     });
 
-    setSelectedSessionId(nextSession.id);
+    sessionSelection.select(nextSession.id);
     setEditorMode(null);
   }
 
@@ -376,7 +376,7 @@ export function TrainingSessionsWorkspace() {
 
             <Button
               onClick={() => {
-                setSelectedSessionId(null);
+                sessionSelection.clear();
                 setEditorMode("create");
               }}
             >
@@ -450,7 +450,7 @@ export function TrainingSessionsWorkspace() {
             rows={visibleSessions}
             columns={columns}
             getRowKey={(session) => session.id}
-            onRowClick={(session) => setSelectedSessionId(session.id)}
+            onRowClick={(session) => sessionSelection.select(session.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <FileSearch className="size-8 text-text-muted" />
@@ -493,7 +493,7 @@ export function TrainingSessionsWorkspace() {
                   <button
                     key={session.id}
                     type="button"
-                    onClick={() => setSelectedSessionId(session.id)}
+                    onClick={() => sessionSelection.select(session.id)}
                     className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <p className="text-sm font-semibold">
@@ -523,7 +523,7 @@ export function TrainingSessionsWorkspace() {
 
       <Drawer
         open={Boolean(selectedSession && selectedCourse)}
-        onClose={() => setSelectedSessionId(null)}
+        onClose={() => sessionSelection.clear()}
         title="Training session"
         description={selectedCourse?.title}
         footer={

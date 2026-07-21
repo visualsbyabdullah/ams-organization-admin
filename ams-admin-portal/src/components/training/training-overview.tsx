@@ -17,6 +17,7 @@ import { ChartCard } from "@/components/dashboard/chart-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { ProgressBar } from "@/components/shared/progress-bar";
 import { TrainingActivityChart } from "@/components/training/training-activity-chart";
@@ -57,7 +58,10 @@ export function TrainingOverview() {
 
   const [createOpen, setCreateOpen] = useState(false);
 
-  const [selectedEnrollmentId, setSelectedEnrollmentId] = useState<string | null>(null);
+  const enrollmentSelection = useEntitySelection(
+    enrollments,
+    (enrollment) => enrollment.id,
+  );
 
   const scopedCourses = useMemo(
     () =>
@@ -109,8 +113,7 @@ export function TrainingOverview() {
     .sort((first, second) => first.sessionDate.localeCompare(second.sessionDate))
     .slice(0, 4);
 
-  const selectedEnrollment =
-    enrollments.find((enrollment) => enrollment.id === selectedEnrollmentId) ?? null;
+  const selectedEnrollment = enrollmentSelection.selected;
 
   const selectedEmployee = selectedEnrollment
     ? EMPLOYEES.find((employee) => employee.id === selectedEnrollment.employeeId)
@@ -384,7 +387,7 @@ export function TrainingOverview() {
           rows={activeEnrollments}
           columns={columns}
           getRowKey={(enrollment) => enrollment.id}
-          onRowClick={(enrollment) => setSelectedEnrollmentId(enrollment.id)}
+          onRowClick={(enrollment) => enrollmentSelection.select(enrollment.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <GraduationCap className="size-8 text-text-muted" />
@@ -401,7 +404,7 @@ export function TrainingOverview() {
 
       <Drawer
         open={Boolean(selectedEnrollment && selectedEmployee && selectedCourse)}
-        onClose={() => setSelectedEnrollmentId(null)}
+        onClose={() => enrollmentSelection.clear()}
         title="Training enrollment"
         description={
           selectedEmployee

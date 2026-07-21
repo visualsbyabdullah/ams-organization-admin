@@ -18,6 +18,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { TrainingCourseForm } from "@/components/training/training-course-form";
 import { TrainingTabs } from "@/components/training/training-tabs";
@@ -56,7 +57,7 @@ export function TrainingCoursesWorkspace() {
 
   const [modeFilter, setModeFilter] = useState("all");
 
-  const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+  const courseSelection = useEntitySelection(courses, (course) => course.id);
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -97,7 +98,7 @@ export function TrainingCoursesWorkspace() {
     });
   }, [categoryFilter, modeFilter, scopedCourses, searchQuery, statusFilter]);
 
-  const selectedCourse = courses.find((course) => course.id === selectedCourseId) ?? null;
+  const selectedCourse = courseSelection.selected;
 
   const publishedCourses = scopedCourses.filter(
     (course) => course.status === "published",
@@ -230,7 +231,7 @@ export function TrainingCoursesWorkspace() {
             aria-label={`Open ${course.title}`}
             onClick={(event: MouseEvent<HTMLButtonElement>) => {
               event.stopPropagation();
-              setSelectedCourseId(course.id);
+              courseSelection.select(course.id);
             }}
           >
             <MoreHorizontal />
@@ -238,7 +239,7 @@ export function TrainingCoursesWorkspace() {
         ),
       },
     ],
-    [],
+    [courseSelection],
   );
 
   function saveCourse(nextCourse: TrainingCourse) {
@@ -252,7 +253,7 @@ export function TrainingCoursesWorkspace() {
         : [nextCourse, ...currentCourses];
     });
 
-    setSelectedCourseId(nextCourse.id);
+    courseSelection.select(nextCourse.id);
     setEditorMode(null);
   }
 
@@ -268,7 +269,7 @@ export function TrainingCoursesWorkspace() {
     };
 
     setCourses((currentCourses) => [duplicate, ...currentCourses]);
-    setSelectedCourseId(duplicate.id);
+    courseSelection.select(duplicate.id);
   }
 
   function updateStatus(courseId: string, status: TrainingCourseStatus) {
@@ -329,7 +330,7 @@ export function TrainingCoursesWorkspace() {
 
             <Button
               onClick={() => {
-                setSelectedCourseId(null);
+                courseSelection.clear();
                 setEditorMode("create");
               }}
             >
@@ -415,7 +416,7 @@ export function TrainingCoursesWorkspace() {
           rows={visibleCourses}
           columns={columns}
           getRowKey={(course) => course.id}
-          onRowClick={(course) => setSelectedCourseId(course.id)}
+          onRowClick={(course) => courseSelection.select(course.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <FileSearch className="size-8 text-text-muted" />
@@ -432,7 +433,7 @@ export function TrainingCoursesWorkspace() {
 
       <Drawer
         open={Boolean(selectedCourse)}
-        onClose={() => setSelectedCourseId(null)}
+        onClose={() => courseSelection.clear()}
         title="Training course"
         description={selectedCourse?.title}
         footer={
