@@ -18,6 +18,7 @@ import { FormField } from "@/components/forms/form-field";
 import type { DataTableColumn } from "@/components/shared/data-table";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -65,9 +66,12 @@ export function GovernanceWorkspace() {
   const [query, setQuery] = useState("");
   const [moduleFilter, setModuleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [requestId, setRequestId] = useState<string | null>(null);
-  const [recoveryId, setRecoveryId] = useState<string | null>(null);
-  const [notificationId, setNotificationId] = useState<string | null>(null);
+  const requestSelection = useEntitySelection(state.requests, (item) => item.id);
+  const recoverySelection = useEntitySelection(state.recovery, (item) => item.id);
+  const notificationSelection = useEntitySelection(
+    state.notifications,
+    (item) => item.id,
+  );
   const [createOpen, setCreateOpen] = useState(false);
   const [reviewReason, setReviewReason] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
@@ -116,10 +120,9 @@ export function GovernanceWorkspace() {
     [selectedBranch.name, selectedBranchId, state.notifications],
   );
 
-  const selectedRequest = state.requests.find((item) => item.id === requestId) ?? null;
-  const selectedRecovery = state.recovery.find((item) => item.id === recoveryId) ?? null;
-  const selectedNotification =
-    state.notifications.find((item) => item.id === notificationId) ?? null;
+  const selectedRequest = requestSelection.selected;
+  const selectedRecovery = recoverySelection.selected;
+  const selectedNotification = notificationSelection.selected;
 
   const normalizedQuery = query.trim().toLowerCase();
 
@@ -260,7 +263,7 @@ export function GovernanceWorkspace() {
           aria-label={`Open actions for ${item.entityName}`}
           onClick={(event) => {
             event.stopPropagation();
-            setRequestId(item.id);
+            requestSelection.select(item.id);
           }}
         >
           <MoreHorizontal />
@@ -332,7 +335,7 @@ export function GovernanceWorkspace() {
           aria-label={`Open actions for ${item.entityName}`}
           onClick={(event) => {
             event.stopPropagation();
-            setRecoveryId(item.id);
+            recoverySelection.select(item.id);
           }}
         >
           <MoreHorizontal />
@@ -394,7 +397,7 @@ export function GovernanceWorkspace() {
           aria-label={`Open notification ${item.title}`}
           onClick={(event) => {
             event.stopPropagation();
-            setNotificationId(item.id);
+            notificationSelection.select(item.id);
           }}
         >
           <MoreHorizontal />
@@ -473,7 +476,7 @@ export function GovernanceWorkspace() {
     }));
 
     setReviewReason("");
-    setRequestId(null);
+    requestSelection.clear();
   }
 
   function rejectRequest() {
@@ -522,7 +525,7 @@ export function GovernanceWorkspace() {
     }));
 
     setReviewReason("");
-    setRequestId(null);
+    requestSelection.clear();
   }
 
   function restoreRecord() {
@@ -555,7 +558,7 @@ export function GovernanceWorkspace() {
       ],
     }));
 
-    setRecoveryId(null);
+    recoverySelection.clear();
   }
 
   function permanentlyDeleteRecord() {
@@ -594,7 +597,7 @@ export function GovernanceWorkspace() {
       ],
     }));
 
-    setRecoveryId(null);
+    recoverySelection.clear();
     resetConfirmation();
   }
 
@@ -703,7 +706,7 @@ export function GovernanceWorkspace() {
             rows={visibleRequests}
             columns={requestColumns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) => setRequestId(item.id)}
+            onRowClick={(item) => requestSelection.select(item.id)}
             emptyState={<EmptyState />}
           />
         </Card>
@@ -728,7 +731,7 @@ export function GovernanceWorkspace() {
             rows={visibleRecovery}
             columns={recoveryColumns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) => setRecoveryId(item.id)}
+            onRowClick={(item) => recoverySelection.select(item.id)}
             emptyState={<EmptyState />}
           />
         </Card>
@@ -750,7 +753,7 @@ export function GovernanceWorkspace() {
             rows={visibleNotifications}
             columns={notificationColumns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) => setNotificationId(item.id)}
+            onRowClick={(item) => notificationSelection.select(item.id)}
             emptyState={<EmptyState />}
           />
         </Card>
@@ -761,7 +764,7 @@ export function GovernanceWorkspace() {
       <Drawer
         open={Boolean(selectedRequest)}
         onClose={() => {
-          setRequestId(null);
+          requestSelection.clear();
           setReviewReason("");
         }}
         title="Deletion request"
@@ -796,7 +799,7 @@ export function GovernanceWorkspace() {
       <Drawer
         open={Boolean(selectedRecovery)}
         onClose={() => {
-          setRecoveryId(null);
+          recoverySelection.clear();
           resetConfirmation();
         }}
         title="Recovery record"
@@ -835,7 +838,7 @@ export function GovernanceWorkspace() {
 
       <Drawer
         open={Boolean(selectedNotification)}
-        onClose={() => setNotificationId(null)}
+        onClose={() => notificationSelection.clear()}
         title="Governance notification"
         description={selectedNotification?.title}
         footer={
@@ -851,7 +854,7 @@ export function GovernanceWorkspace() {
                         : item,
                     ),
                   }));
-                  setNotificationId(null);
+                  notificationSelection.clear();
                 }}
               >
                 Mark as read
