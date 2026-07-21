@@ -21,6 +21,7 @@ import { LeaveRequestForm } from "@/components/leave/leave-request-form";
 import { LeaveTabs } from "@/components/leave/leave-tabs";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -85,7 +86,7 @@ export function LeaveRequestsWorkspace() {
 
   const [periodFilter, setPeriodFilter] = useState("all");
 
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const requestSelection = useEntitySelection(requests, (request) => request.id);
 
   const [reviewNote, setReviewNote] = useState("");
 
@@ -136,8 +137,7 @@ export function LeaveRequestsWorkspace() {
     });
   }, [periodFilter, scopedRequests, searchQuery, statusFilter, typeFilter]);
 
-  const selectedRequest =
-    requests.find((request) => request.id === selectedRequestId) ?? null;
+  const selectedRequest = requestSelection.selected;
 
   const selectedEmployee = selectedRequest
     ? EMPLOYEES.find((employee) => employee.id === selectedRequest.employeeId)
@@ -190,7 +190,7 @@ export function LeaveRequestsWorkspace() {
     setRequests((currentRequests) => [request, ...currentRequests]);
 
     setCreateOpen(false);
-    setSelectedRequestId(request.id);
+    requestSelection.select(request.id);
   }
 
   function saveReviewNote() {
@@ -349,7 +349,7 @@ export function LeaveRequestsWorkspace() {
                   <TableRow
                     key={request.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedRequestId(request.id)}
+                    onClick={() => requestSelection.select(request.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -393,7 +393,7 @@ export function LeaveRequestsWorkspace() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedRequestId(request.id);
+                          requestSelection.select(request.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -419,7 +419,7 @@ export function LeaveRequestsWorkspace() {
 
       <Drawer
         open={Boolean(selectedRequest)}
-        onClose={() => setSelectedRequestId(null)}
+        onClose={requestSelection.clear}
         title="Leave request review"
         description={
           selectedEmployee
