@@ -21,6 +21,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { LoanRepaymentForm } from "@/components/loans/loan-repayment-form";
 import { LoanTabs } from "@/components/loans/loan-tabs";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -80,7 +81,7 @@ export function LoanRepaymentsWorkspace() {
 
   const [periodFilter, setPeriodFilter] = useState(LOAN_REPAYMENT_REFERENCE_PERIOD);
 
-  const [selectedRepaymentId, setSelectedRepaymentId] = useState<string | null>(null);
+  const repaymentSelection = useEntitySelection(repayments, (repayment) => repayment.id);
 
   const [paymentOpen, setPaymentOpen] = useState(false);
 
@@ -130,8 +131,7 @@ export function LoanRepaymentsWorkspace() {
     });
   }, [periodFilter, scopedRepayments, searchQuery, sourceFilter, statusFilter]);
 
-  const selectedRepayment =
-    repayments.find((repayment) => repayment.id === selectedRepaymentId) ?? null;
+  const selectedRepayment = repaymentSelection.selected;
 
   const selectedEmployee = selectedRepayment
     ? EMPLOYEES.find((employee) => employee.id === selectedRepayment.employeeId)
@@ -443,7 +443,7 @@ export function LoanRepaymentsWorkspace() {
                       <TableRow
                         key={repayment.id}
                         className="cursor-pointer transition hover:bg-canvas"
-                        onClick={() => setSelectedRepaymentId(repayment.id)}
+                        onClick={() => repaymentSelection.select(repayment.id)}
                       >
                         <TableCell>
                           <div className="flex items-center gap-3">
@@ -493,7 +493,7 @@ export function LoanRepaymentsWorkspace() {
                             onClick={(event) => {
                               event.stopPropagation();
 
-                              setSelectedRepaymentId(repayment.id);
+                              repaymentSelection.select(repayment.id);
                             }}
                           >
                             <MoreHorizontal />
@@ -548,7 +548,7 @@ export function LoanRepaymentsWorkspace() {
                   <button
                     key={repayment.id}
                     type="button"
-                    onClick={() => setSelectedRepaymentId(repayment.id)}
+                    onClick={() => repaymentSelection.select(repayment.id)}
                     className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -593,7 +593,7 @@ export function LoanRepaymentsWorkspace() {
       <Drawer
         open={Boolean(selectedRepayment && selectedEmployee && selectedLoan)}
         onClose={() => {
-          setSelectedRepaymentId(null);
+          repaymentSelection.clear();
           setPaymentOpen(false);
         }}
         title="Loan repayment"

@@ -26,6 +26,7 @@ import { LoanApplicationForm } from "@/components/loans/loan-application-form";
 import { LoanRepaymentChart } from "@/components/loans/loan-repayment-chart";
 import { LoanTabs } from "@/components/loans/loan-tabs";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -81,7 +82,7 @@ export function LoanOverview() {
 
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedLoanId, setSelectedLoanId] = useState<string | null>(null);
+  const loanSelection = useEntitySelection(loans, (loan) => loan.id);
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -122,7 +123,7 @@ export function LoanOverview() {
     });
   }, [scopedLoans, searchQuery, statusFilter, typeFilter]);
 
-  const selectedLoan = loans.find((loan) => loan.id === selectedLoanId) ?? null;
+  const selectedLoan = loanSelection.selected;
 
   const selectedEmployee = selectedLoan
     ? EMPLOYEES.find((employee) => employee.id === selectedLoan.employeeId)
@@ -187,7 +188,7 @@ export function LoanOverview() {
     setLoans((currentLoans) => [loan, ...currentLoans]);
 
     setCreateOpen(false);
-    setSelectedLoanId(loan.id);
+    loanSelection.select(loan.id);
   }
 
   function updateStatus(loanId: string, status: EmployeeLoanStatus) {
@@ -321,7 +322,7 @@ export function LoanOverview() {
                   <button
                     key={loan.id}
                     type="button"
-                    onClick={() => setSelectedLoanId(loan.id)}
+                    onClick={() => loanSelection.select(loan.id)}
                     className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -443,7 +444,7 @@ export function LoanOverview() {
                   <TableRow
                     key={loan.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedLoanId(loan.id)}
+                    onClick={() => loanSelection.select(loan.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -489,7 +490,7 @@ export function LoanOverview() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedLoanId(loan.id);
+                          loanSelection.select(loan.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -513,7 +514,7 @@ export function LoanOverview() {
 
       <Drawer
         open={Boolean(selectedLoan)}
-        onClose={() => setSelectedLoanId(null)}
+        onClose={() => loanSelection.clear()}
         title="Employee loan"
         description={
           selectedEmployee

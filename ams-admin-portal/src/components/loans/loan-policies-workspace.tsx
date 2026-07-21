@@ -20,6 +20,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { LoanPolicyForm } from "@/components/loans/loan-policy-form";
 import { LoanTabs } from "@/components/loans/loan-tabs";
 import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -63,7 +64,7 @@ export function LoanPoliciesWorkspace() {
 
   const [scopeFilter, setScopeFilter] = useState("all");
 
-  const [selectedPolicyId, setSelectedPolicyId] = useState<string | null>(null);
+  const policySelection = useEntitySelection(policies, (policy) => policy.id);
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -100,8 +101,7 @@ export function LoanPoliciesWorkspace() {
     });
   }, [scopedPolicies, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedPolicy =
-    policies.find((policy) => policy.id === selectedPolicyId) ?? null;
+  const selectedPolicy = policySelection.selected;
 
   const organizationDefault =
     policies.find(
@@ -169,7 +169,7 @@ export function LoanPoliciesWorkspace() {
         : [nextPolicy, ...currentPolicies];
     });
 
-    setSelectedPolicyId(nextPolicy.id);
+    policySelection.select(nextPolicy.id);
 
     setEditorMode(null);
   }
@@ -186,7 +186,7 @@ export function LoanPoliciesWorkspace() {
 
     setPolicies((currentPolicies) => [duplicate, ...currentPolicies]);
 
-    setSelectedPolicyId(duplicate.id);
+    policySelection.select(duplicate.id);
   }
 
   function updateStatus(policyId: string, status: LoanPolicy["status"]) {
@@ -213,7 +213,7 @@ export function LoanPoliciesWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedPolicyId(null);
+              policySelection.clear();
               setEditorMode("create");
             }}
           >
@@ -310,7 +310,7 @@ export function LoanPoliciesWorkspace() {
                     <TableRow
                       key={policy.id}
                       className="cursor-pointer transition hover:bg-canvas"
-                      onClick={() => setSelectedPolicyId(policy.id)}
+                      onClick={() => policySelection.select(policy.id)}
                     >
                       <TableCell>
                         <div className="flex items-center gap-3">
@@ -468,7 +468,7 @@ export function LoanPoliciesWorkspace() {
 
       <Drawer
         open={Boolean(selectedPolicy)}
-        onClose={() => setSelectedPolicyId(null)}
+        onClose={() => policySelection.clear()}
         title="Employee loan policy"
         description={selectedPolicy?.name}
         footer={
