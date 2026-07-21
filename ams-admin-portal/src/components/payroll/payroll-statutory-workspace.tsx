@@ -24,6 +24,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
 import { StatutoryContributionChart } from "@/components/payroll/statutory-contribution-chart";
 import { StatutoryFilingForm } from "@/components/payroll/statutory-filing-form";
+import { DetailGrid, LineItemList } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -721,103 +722,73 @@ export function PayrollStatutoryWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Payroll period</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPeriod(selectedEmployeeRecord.period)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Registration number</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedEmployeeRecord.registrationNumber || "Not registered"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Taxable income</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPKR(selectedEmployeeRecord.taxableIncome)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Income tax</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPKR(selectedEmployeeRecord.incomeTax)}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Payroll period",
+                    value: formatPeriod(selectedEmployeeRecord.period),
+                  },
+                  {
+                    label: "Registration number",
+                    value: selectedEmployeeRecord.registrationNumber || "Not registered",
+                  },
+                  {
+                    label: "Taxable income",
+                    value: formatPKR(selectedEmployeeRecord.taxableIncome),
+                  },
+                  {
+                    label: "Income tax",
+                    value: formatPKR(selectedEmployeeRecord.incomeTax),
+                  },
+                ]}
+              />
             </section>
 
             <section>
               <h3 className="text-sm font-bold">Employee deductions</h3>
 
-              <dl className="mt-3 space-y-3">
-                {[
+              <LineItemList
+                items={[
                   {
                     label: "Income tax",
-                    value: selectedEmployeeRecord.incomeTax,
+                    value: formatPKR(selectedEmployeeRecord.incomeTax),
                   },
                   {
                     label: "Social security",
-                    value: selectedEmployeeRecord.employeeSocialSecurity,
+                    value: formatPKR(selectedEmployeeRecord.employeeSocialSecurity),
                   },
                   {
                     label: "Retirement contribution",
-                    value: selectedEmployeeRecord.employeeRetirement,
+                    value: formatPKR(selectedEmployeeRecord.employeeRetirement),
                   },
                   {
                     label: "Other deductions",
-                    value: selectedEmployeeRecord.otherEmployeeDeductions,
+                    value: formatPKR(selectedEmployeeRecord.otherEmployeeDeductions),
                   },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
-                  >
-                    <dt className="text-sm text-text-muted">{item.label}</dt>
-
-                    <dd className="text-sm font-semibold">{formatPKR(item.value)}</dd>
-                  </div>
-                ))}
-              </dl>
+                ]}
+              />
             </section>
 
             <section>
               <h3 className="text-sm font-bold">Employer contributions</h3>
 
-              <dl className="mt-3 space-y-3">
-                {[
+              <LineItemList
+                items={[
                   {
                     label: "Social security",
-                    value: selectedEmployeeRecord.employerSocialSecurity,
+                    value: formatPKR(selectedEmployeeRecord.employerSocialSecurity),
                   },
                   {
                     label: "Retirement contribution",
-                    value: selectedEmployeeRecord.employerRetirement,
+                    value: formatPKR(selectedEmployeeRecord.employerRetirement),
                   },
                   {
                     label: "Other contributions",
-                    value: selectedEmployeeRecord.otherEmployerContributions,
+                    value: formatPKR(selectedEmployeeRecord.otherEmployerContributions),
                   },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
-                  >
-                    <dt className="text-sm text-text-muted">{item.label}</dt>
-
-                    <dd className="text-sm font-semibold">{formatPKR(item.value)}</dd>
-                  </div>
-                ))}
-              </dl>
+                ]}
+              />
             </section>
 
             <section>
@@ -910,57 +881,41 @@ export function PayrollStatutoryWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Filing amount</dt>
-
-                  <dd className="mt-1 text-lg font-bold">
-                    {formatPKR(selectedFiling.amount)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Due date</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedFiling.dueDate)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Branch</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedFiling.branchName}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Payroll period</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPeriod(selectedFiling.period)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Submitted date</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedFiling.submittedAt
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Filing amount",
+                    value: (
+                      <span className="text-lg font-bold">
+                        {formatPKR(selectedFiling.amount)}
+                      </span>
+                    ),
+                  },
+                  {
+                    label: "Due date",
+                    value: formatDate(selectedFiling.dueDate),
+                  },
+                  {
+                    label: "Branch",
+                    value: selectedFiling.branchName,
+                  },
+                  {
+                    label: "Payroll period",
+                    value: formatPeriod(selectedFiling.period),
+                  },
+                  {
+                    label: "Submitted date",
+                    value: selectedFiling.submittedAt
                       ? formatDate(selectedFiling.submittedAt)
-                      : "Not submitted"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Reference number</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedFiling.referenceNumber || "Not assigned"}
-                  </dd>
-                </div>
-              </dl>
+                      : "Not submitted",
+                  },
+                  {
+                    label: "Reference number",
+                    value: selectedFiling.referenceNumber || "Not assigned",
+                  },
+                ]}
+              />
             </section>
 
             <section>

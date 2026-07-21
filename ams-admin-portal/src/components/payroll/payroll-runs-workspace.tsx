@@ -26,6 +26,7 @@ import {
   type PayrollBranchComparisonPoint,
 } from "@/components/payroll/payroll-runs-branch-chart";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
+import { DetailGrid, LineItemList } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -457,83 +458,58 @@ export function PayrollRunsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Organization scope</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">{selectedRun.branchName}</dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Employees</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedRun.employeeCount}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Period start</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedRun.periodStart)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Period end</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedRun.periodEnd)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Expected pay date</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedRun.payDate)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Current status</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {PAYROLL_RUN_STATUS_CONFIG[selectedRun.status].label}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Organization scope",
+                    value: selectedRun.branchName,
+                  },
+                  {
+                    label: "Employees",
+                    value: selectedRun.employeeCount,
+                  },
+                  {
+                    label: "Period start",
+                    value: formatDate(selectedRun.periodStart),
+                  },
+                  {
+                    label: "Period end",
+                    value: formatDate(selectedRun.periodEnd),
+                  },
+                  {
+                    label: "Expected pay date",
+                    value: formatDate(selectedRun.payDate),
+                  },
+                  {
+                    label: "Current status",
+                    value: PAYROLL_RUN_STATUS_CONFIG[selectedRun.status].label,
+                  },
+                ]}
+              />
             </section>
 
             <section>
               <h3 className="text-sm font-bold">Payroll totals</h3>
 
-              <dl className="mt-3 space-y-3">
-                <div className="flex items-center justify-between rounded-control bg-canvas px-4 py-3">
-                  <dt className="text-sm text-text-muted">Gross payroll</dt>
-
-                  <dd className="text-sm font-semibold">
-                    {formatPKR(selectedRun.grossAmount)}
-                  </dd>
-                </div>
-
-                <div className="flex items-center justify-between rounded-control bg-warning-muted px-4 py-3">
-                  <dt className="text-sm font-semibold text-warning">Total deductions</dt>
-
-                  <dd className="text-sm font-bold text-warning">
-                    {formatPKR(selectedRun.deductionAmount)}
-                  </dd>
-                </div>
-
-                <div className="flex items-center justify-between rounded-control bg-success-muted px-4 py-3">
-                  <dt className="text-sm font-semibold text-success">Net payroll</dt>
-
-                  <dd className="text-sm font-bold text-success">
-                    {formatPKR(selectedRun.netAmount)}
-                  </dd>
-                </div>
-              </dl>
+              <LineItemList
+                items={[
+                  {
+                    label: "Gross payroll",
+                    value: formatPKR(selectedRun.grossAmount),
+                  },
+                  {
+                    label: "Total deductions",
+                    value: formatPKR(selectedRun.deductionAmount),
+                    tone: "warning",
+                  },
+                  {
+                    label: "Net payroll",
+                    value: formatPKR(selectedRun.netAmount),
+                    tone: "success",
+                  },
+                ]}
+              />
             </section>
 
             <section>

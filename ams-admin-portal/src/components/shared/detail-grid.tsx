@@ -49,6 +49,61 @@ export function DetailGrid({ items, columns = 2, variant = "card" }: DetailGridP
   );
 }
 
+export type LineItem = {
+  label: string;
+  value: ReactNode;
+  /** Used for total/summary rows that need visual emphasis. */
+  tone?: "default" | "danger" | "warning" | "success";
+};
+
+const LINE_ITEM_ROW_CLASSES: Record<NonNullable<LineItem["tone"]>, string> = {
+  default: "bg-canvas",
+  danger: "bg-danger-muted",
+  warning: "bg-warning-muted",
+  success: "bg-success-muted",
+};
+
+const LINE_ITEM_LABEL_CLASSES: Record<NonNullable<LineItem["tone"]>, string> = {
+  default: "text-text-muted",
+  danger: "font-semibold text-danger",
+  warning: "font-semibold text-warning",
+  success: "font-semibold text-success",
+};
+
+const LINE_ITEM_VALUE_CLASSES: Record<NonNullable<LineItem["tone"]>, string> = {
+  default: "font-semibold",
+  danger: "font-bold text-danger",
+  warning: "font-bold text-warning",
+  success: "font-bold text-success",
+};
+
+/**
+ * Replaces the horizontal "label left, value right" financial breakdown row
+ * list (e.g. earnings/deductions lines, totals rows) hand-written across
+ * payroll files as `<dl className="mt-3 space-y-3">...</dl>`.
+ */
+export function LineItemList({ items }: { items: readonly LineItem[] }) {
+  return (
+    <dl className="mt-3 space-y-3">
+      {items.map((item) => {
+        const tone = item.tone ?? "default";
+
+        return (
+          <div
+            key={item.label}
+            className={cn(
+              "flex items-center justify-between rounded-control px-4 py-3",
+              LINE_ITEM_ROW_CLASSES[tone],
+            )}
+          >
+            <dt className={cn("text-sm", LINE_ITEM_LABEL_CLASSES[tone])}>{item.label}</dt>
+            <dd className={cn("text-sm", LINE_ITEM_VALUE_CLASSES[tone])}>{item.value}</dd>
+          </div>
+        );
+      })}
+    </dl>
+  );
+}
 export type ToggleDetailItem = {
   label: string;
   enabled: boolean;

@@ -21,6 +21,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PayrollAdjustmentForm } from "@/components/payroll/payroll-adjustment-form";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -653,75 +654,62 @@ export function PayrollAdjustmentsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Amount</dt>
-
-                  <dd
-                    className={
-                      selectedAdjustment.direction === "earning"
-                        ? "mt-1 text-lg font-bold text-success"
-                        : "mt-1 text-lg font-bold text-danger"
-                    }
-                  >
-                    {selectedAdjustment.direction === "deduction" ? "−" : "+"}
-                    {formatPKR(selectedAdjustment.amount)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Direction</dt>
-
-                  <dd className="mt-1">
-                    <Badge
-                      variant={
-                        PAYROLL_ADJUSTMENT_DIRECTION_CONFIG[selectedAdjustment.direction]
-                          .badgeVariant
-                      }
-                    >
-                      {
-                        PAYROLL_ADJUSTMENT_DIRECTION_CONFIG[selectedAdjustment.direction]
-                          .label
-                      }
-                    </Badge>
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Payroll period</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPeriod(selectedAdjustment.effectivePeriod)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Frequency</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Amount",
+                    value: (
+                      <span
+                        className={
+                          selectedAdjustment.direction === "earning"
+                            ? "text-lg font-bold text-success"
+                            : "text-lg font-bold text-danger"
+                        }
+                      >
+                        {selectedAdjustment.direction === "deduction" ? "−" : "+"}
+                        {formatPKR(selectedAdjustment.amount)}
+                      </span>
+                    ),
+                  },
+                  {
+                    label: "Direction",
+                    value: (
+                      <Badge
+                        variant={
+                          PAYROLL_ADJUSTMENT_DIRECTION_CONFIG[
+                            selectedAdjustment.direction
+                          ].badgeVariant
+                        }
+                      >
+                        {
+                          PAYROLL_ADJUSTMENT_DIRECTION_CONFIG[
+                            selectedAdjustment.direction
+                          ].label
+                        }
+                      </Badge>
+                    ),
+                  },
+                  {
+                    label: "Payroll period",
+                    value: formatPeriod(selectedAdjustment.effectivePeriod),
+                  },
+                  {
+                    label: "Frequency",
+                    value:
                       PAYROLL_ADJUSTMENT_FREQUENCY_CONFIG[selectedAdjustment.frequency]
-                        .label
-                    }
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Tax treatment</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedAdjustment.taxable ? "Taxable" : "Non-taxable"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Reviewer</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedAdjustment.reviewedBy || "Not reviewed"}
-                  </dd>
-                </div>
-              </dl>
+                        .label,
+                  },
+                  {
+                    label: "Tax treatment",
+                    value: selectedAdjustment.taxable ? "Taxable" : "Non-taxable",
+                  },
+                  {
+                    label: "Reviewer",
+                    value: selectedAdjustment.reviewedBy || "Not reviewed",
+                  },
+                ]}
+              />
             </section>
 
             <section>

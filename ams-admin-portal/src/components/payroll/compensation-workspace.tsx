@@ -22,6 +22,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { CompensationForm } from "@/components/payroll/compensation-form";
 import { DepartmentCompensationChart } from "@/components/payroll/department-compensation-chart";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
+import { DetailGrid, LineItemList } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -588,95 +589,72 @@ export function CompensationWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Base salary</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPKR(selectedRecord.baseSalary)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Fixed compensation</dt>
-
-                  <dd className="mt-1 text-sm font-bold text-success">
-                    {formatPKR(getTotalFixedCompensation(selectedRecord))}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Pay frequency</dt>
-
-                  <dd className="mt-1">
-                    <Badge
-                      variant={
-                        PAY_FREQUENCY_CONFIG[selectedRecord.payFrequency].badgeVariant
-                      }
-                    >
-                      {PAY_FREQUENCY_CONFIG[selectedRecord.payFrequency].label}
-                    </Badge>
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Bonus target</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedRecord.bonusTargetPercentage}%
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Effective date</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedRecord.effectiveDate)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Next review</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedRecord.nextReviewDate)}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Base salary",
+                    value: formatPKR(selectedRecord.baseSalary),
+                  },
+                  {
+                    label: "Fixed compensation",
+                    value: (
+                      <span className="font-bold text-success">
+                        {formatPKR(getTotalFixedCompensation(selectedRecord))}
+                      </span>
+                    ),
+                  },
+                  {
+                    label: "Pay frequency",
+                    value: (
+                      <Badge
+                        variant={
+                          PAY_FREQUENCY_CONFIG[selectedRecord.payFrequency].badgeVariant
+                        }
+                      >
+                        {PAY_FREQUENCY_CONFIG[selectedRecord.payFrequency].label}
+                      </Badge>
+                    ),
+                  },
+                  {
+                    label: "Bonus target",
+                    value: `${selectedRecord.bonusTargetPercentage}%`,
+                  },
+                  {
+                    label: "Effective date",
+                    value: formatDate(selectedRecord.effectiveDate),
+                  },
+                  {
+                    label: "Next review",
+                    value: formatDate(selectedRecord.nextReviewDate),
+                  },
+                ]}
+              />
             </section>
 
             <section>
               <h3 className="text-sm font-bold">Fixed allowances</h3>
 
-              <dl className="mt-3 space-y-3">
-                {[
+              <LineItemList
+                items={[
                   {
                     label: "Housing allowance",
-                    value: selectedRecord.housingAllowance,
+                    value: formatPKR(selectedRecord.housingAllowance),
                   },
                   {
                     label: "Transport allowance",
-                    value: selectedRecord.transportAllowance,
+                    value: formatPKR(selectedRecord.transportAllowance),
                   },
                   {
                     label: "Medical allowance",
-                    value: selectedRecord.medicalAllowance,
+                    value: formatPKR(selectedRecord.medicalAllowance),
                   },
                   {
                     label: "Other allowance",
-                    value: selectedRecord.otherAllowance,
+                    value: formatPKR(selectedRecord.otherAllowance),
                   },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
-                  >
-                    <dt className="text-sm text-text-muted">{item.label}</dt>
-
-                    <dd className="text-sm font-semibold">{formatPKR(item.value)}</dd>
-                  </div>
-                ))}
-              </dl>
+                ]}
+              />
             </section>
 
             <section>

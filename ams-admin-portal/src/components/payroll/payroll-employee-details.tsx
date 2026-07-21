@@ -1,4 +1,5 @@
-﻿import { Badge } from "@/components/ui/badge";
+﻿import { DetailGrid, LineItemList } from "@/components/shared/detail-grid";
+import { Badge } from "@/components/ui/badge";
 import {
   PAYROLL_EMPLOYEE_STATUS_CONFIG,
   PAYROLL_PAYMENT_METHOD_CONFIG,
@@ -40,95 +41,78 @@ export function PayrollEmployeeDetails({
           <Badge variant={statusConfig.badgeVariant}>{statusConfig.label}</Badge>
         </div>
 
-        <dl className="grid gap-5 p-5 sm:grid-cols-2">
-          <div>
-            <dt className="text-xs text-text-muted">Payroll period</dt>
-
-            <dd className="mt-1 text-sm font-semibold">July 2026</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Payment method</dt>
-
-            <dd className="mt-1">
-              <Badge variant={paymentConfig.badgeVariant}>{paymentConfig.label}</Badge>
-            </dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Gross pay</dt>
-
-            <dd className="mt-1 text-sm font-semibold">{formatPKR(grossPay)}</dd>
-          </div>
-
-          <div>
-            <dt className="text-xs text-text-muted">Net pay</dt>
-
-            <dd className="mt-1 text-sm font-bold text-success">
-              {formatPKR(record.netPay)}
-            </dd>
-          </div>
-        </dl>
+        <DetailGrid
+          variant="none"
+          items={[
+            {
+              label: "Payroll period",
+              value: "July 2026",
+            },
+            {
+              label: "Payment method",
+              value: (
+                <Badge variant={paymentConfig.badgeVariant}>{paymentConfig.label}</Badge>
+              ),
+            },
+            {
+              label: "Gross pay",
+              value: formatPKR(grossPay),
+            },
+            {
+              label: "Net pay",
+              value: (
+                <span className="font-bold text-success">{formatPKR(record.netPay)}</span>
+              ),
+            },
+          ]}
+        />
       </section>
 
       <section>
         <h3 className="text-sm font-bold">Earnings</h3>
 
-        <dl className="mt-3 space-y-3">
-          {[
+        <LineItemList
+          items={[
             {
               label: "Base salary",
-              value: record.baseSalary,
+              value: formatPKR(record.baseSalary),
             },
             {
               label: "Allowances",
-              value: record.allowances,
+              value: formatPKR(record.allowances),
             },
             {
               label: "Overtime pay",
-              value: record.overtimePay,
+              value: formatPKR(record.overtimePay),
             },
             {
               label: "Bonus",
-              value: record.bonus,
+              value: formatPKR(record.bonus),
             },
-          ].map((item) => (
-            <div
-              key={item.label}
-              className="flex items-center justify-between rounded-control bg-canvas px-4 py-3"
-            >
-              <dt className="text-sm text-text-muted">{item.label}</dt>
-
-              <dd className="text-sm font-semibold">{formatPKR(item.value)}</dd>
-            </div>
-          ))}
-        </dl>
+          ]}
+        />
       </section>
 
       <section>
         <h3 className="text-sm font-bold">Deductions</h3>
 
-        <dl className="mt-3 space-y-3">
-          <div className="flex items-center justify-between rounded-control bg-canvas px-4 py-3">
-            <dt className="text-sm text-text-muted">Other deductions</dt>
-
-            <dd className="text-sm font-semibold">{formatPKR(record.deductions)}</dd>
-          </div>
-
-          <div className="flex items-center justify-between rounded-control bg-canvas px-4 py-3">
-            <dt className="text-sm text-text-muted">Income tax</dt>
-
-            <dd className="text-sm font-semibold">{formatPKR(record.tax)}</dd>
-          </div>
-
-          <div className="flex items-center justify-between rounded-control bg-danger-muted px-4 py-3">
-            <dt className="text-sm font-semibold text-danger">Total deductions</dt>
-
-            <dd className="text-sm font-bold text-danger">
-              {formatPKR(totalDeductions)}
-            </dd>
-          </div>
-        </dl>
+        <LineItemList
+          items={[
+            {
+              label: "Other deductions",
+              value: formatPKR(record.deductions),
+            },
+            {
+              label: "Income tax",
+              value: formatPKR(record.tax),
+            },
+            {
+              label: "Total deductions",
+              value: formatPKR(totalDeductions),
+              tone: "danger",
+            },
+          ]}
+        />
       </section>
 
       <section>

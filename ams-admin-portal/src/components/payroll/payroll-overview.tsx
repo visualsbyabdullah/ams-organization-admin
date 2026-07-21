@@ -24,6 +24,7 @@ import { PayrollEmployeeDetails } from "@/components/payroll/payroll-employee-de
 import { PayrollRunForm } from "@/components/payroll/payroll-run-form";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
 import { PayrollTrendChart } from "@/components/payroll/payroll-trend-chart";
+import { DetailGrid } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -686,54 +687,39 @@ export function PayrollOverview() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Organization scope</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">{selectedRun.branchName}</dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Employees</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedRun.employeeCount}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Payroll period</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedRun.periodStart)} –{" "}
-                    {formatDate(selectedRun.periodEnd)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Pay date</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatDate(selectedRun.payDate)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Gross amount</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {formatPKR(selectedRun.grossAmount)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Net amount</dt>
-
-                  <dd className="mt-1 text-sm font-bold text-success">
-                    {formatPKR(selectedRun.netAmount)}
-                  </dd>
-                </div>
-              </dl>
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Organization scope",
+                    value: selectedRun.branchName,
+                  },
+                  {
+                    label: "Employees",
+                    value: selectedRun.employeeCount,
+                  },
+                  {
+                    label: "Payroll period",
+                    value: `${formatDate(selectedRun.periodStart)} – ${formatDate(selectedRun.periodEnd)}`,
+                  },
+                  {
+                    label: "Pay date",
+                    value: formatDate(selectedRun.payDate),
+                  },
+                  {
+                    label: "Gross amount",
+                    value: formatPKR(selectedRun.grossAmount),
+                  },
+                  {
+                    label: "Net amount",
+                    value: (
+                      <span className="font-bold text-success">
+                        {formatPKR(selectedRun.netAmount)}
+                      </span>
+                    ),
+                  },
+                ]}
+              />
             </section>
 
             <section>

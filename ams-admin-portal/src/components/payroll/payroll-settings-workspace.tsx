@@ -21,6 +21,7 @@ import {
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PayrollSettingsForm } from "@/components/payroll/payroll-settings-form";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
+import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -574,82 +575,55 @@ export function PayrollSettingsWorkspace() {
                 </Badge>
               </div>
 
-              <dl className="grid gap-5 p-5 sm:grid-cols-2">
-                <div>
-                  <dt className="text-xs text-text-muted">Configuration scope</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {PAYROLL_SETTINGS_SCOPE_CONFIG[selectedConfiguration.scope].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Branch</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedConfiguration.branchName || "All organization branches"}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Payroll schedule</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {PAYROLL_SCHEDULE_CONFIG[selectedConfiguration.schedule].label}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Payroll cutoff</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    Day {selectedConfiguration.cutoffDay}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Pay-date rule</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {getPayDateLabel(selectedConfiguration)}
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Payment method</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {
+              <DetailGrid
+                variant="none"
+                items={[
+                  {
+                    label: "Configuration scope",
+                    value:
+                      PAYROLL_SETTINGS_SCOPE_CONFIG[selectedConfiguration.scope].label,
+                  },
+                  {
+                    label: "Branch",
+                    value:
+                      selectedConfiguration.branchName || "All organization branches",
+                  },
+                  {
+                    label: "Payroll schedule",
+                    value: PAYROLL_SCHEDULE_CONFIG[selectedConfiguration.schedule].label,
+                  },
+                  {
+                    label: "Payroll cutoff",
+                    value: `Day ${selectedConfiguration.cutoffDay}`,
+                  },
+                  {
+                    label: "Pay-date rule",
+                    value: getPayDateLabel(selectedConfiguration),
+                  },
+                  {
+                    label: "Payment method",
+                    value:
                       PAYROLL_PAYMENT_METHOD_CONFIG[
                         selectedConfiguration.defaultPaymentMethod
-                      ].label
-                    }
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Working days</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedConfiguration.standardWorkingDays} days
-                  </dd>
-                </div>
-
-                <div>
-                  <dt className="text-xs text-text-muted">Daily hours</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {selectedConfiguration.standardDailyHours} hours
-                  </dd>
-                </div>
-              </dl>
+                      ].label,
+                  },
+                  {
+                    label: "Working days",
+                    value: `${selectedConfiguration.standardWorkingDays} days`,
+                  },
+                  {
+                    label: "Daily hours",
+                    value: `${selectedConfiguration.standardDailyHours} hours`,
+                  },
+                ]}
+              />
             </section>
 
             <section>
               <h3 className="text-sm font-bold">Approval workflow</h3>
 
-              <div className="mt-3 space-y-3">
-                {[
+              <ToggleDetailList
+                items={[
                   {
                     label: "Finance approval",
                     enabled: selectedConfiguration.requireFinanceApproval,
@@ -662,19 +636,8 @@ export function PayrollSettingsWorkspace() {
                     label: "Lock approved runs",
                     enabled: selectedConfiguration.autoLockApprovedRuns,
                   },
-                ].map((item) => (
-                  <div
-                    key={item.label}
-                    className="flex items-center justify-between rounded-control border border-border p-4"
-                  >
-                    <span className="text-sm font-semibold">{item.label}</span>
-
-                    <Badge variant={item.enabled ? "success" : "neutral"}>
-                      {item.enabled ? "Enabled" : "Disabled"}
-                    </Badge>
-                  </div>
-                ))}
-              </div>
+                ]}
+              />
             </section>
 
             <section>
@@ -716,30 +679,23 @@ export function PayrollSettingsWorkspace() {
             <section>
               <h3 className="text-sm font-bold">Output settings</h3>
 
-              <dl className="mt-3 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">Rounding</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {
+              <DetailGrid
+                items={[
+                  {
+                    label: "Rounding",
+                    value:
                       PAYROLL_ROUNDING_MODE_CONFIG[selectedConfiguration.roundingMode]
-                        .label
-                    }
-                  </dd>
-                </div>
-
-                <div className="rounded-control bg-canvas p-4">
-                  <dt className="text-xs text-text-muted">Bank export</dt>
-
-                  <dd className="mt-1 text-sm font-semibold">
-                    {
+                        .label,
+                  },
+                  {
+                    label: "Bank export",
+                    value:
                       PAYROLL_BANK_FILE_FORMAT_CONFIG[
                         selectedConfiguration.bankFileFormat
-                      ].label
-                    }
-                  </dd>
-                </div>
-              </dl>
+                      ].label,
+                  },
+                ]}
+              />
             </section>
 
             <section>
