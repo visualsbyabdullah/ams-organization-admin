@@ -20,6 +20,7 @@ import { InvoiceTabs } from "@/components/invoices/invoice-tabs";
 import { createInvoiceSettingsColumns } from "@/components/invoices/invoice-table-columns";
 import { DataTable } from "@/components/shared/data-table";
 import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -52,7 +53,7 @@ export function InvoiceSettingsWorkspace() {
 
   const [scopeFilter, setScopeFilter] = useState("all");
 
-  const [selectedSettingsId, setSelectedSettingsId] = useState<string | null>(null);
+  const settingsSelection = useEntitySelection(settings, (item) => item.id);
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -89,8 +90,7 @@ export function InvoiceSettingsWorkspace() {
     });
   }, [scopedSettings, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedSettings =
-    settings.find((item) => item.id === selectedSettingsId) ?? null;
+  const selectedSettings = settingsSelection.selected;
 
   const effectiveSettings = getEffectiveInvoiceSettings(settings, selectedBranchId);
 
@@ -137,9 +137,9 @@ export function InvoiceSettingsWorkspace() {
   const columns = useMemo(
     () =>
       createInvoiceSettingsColumns({
-        onOpen: (item) => setSelectedSettingsId(item.id),
+        onOpen: (item) => settingsSelection.select(item.id),
       }),
-    [],
+    [settingsSelection],
   );
 
   function saveSettings(nextSettings: InvoiceSettings) {
@@ -154,7 +154,7 @@ export function InvoiceSettingsWorkspace() {
     });
 
     setEditorMode(null);
-    setSelectedSettingsId(nextSettings.id);
+    settingsSelection.select(nextSettings.id);
   }
 
   function updateStatus(settingsId: string, status: InvoiceSettingsStatus) {
@@ -184,7 +184,7 @@ export function InvoiceSettingsWorkspace() {
 
     setSettings((currentSettings) => [duplicate, ...currentSettings]);
 
-    setSelectedSettingsId(duplicate.id);
+    settingsSelection.select(duplicate.id);
   }
 
   return (
@@ -196,7 +196,7 @@ export function InvoiceSettingsWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedSettingsId(null);
+              settingsSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -269,7 +269,7 @@ export function InvoiceSettingsWorkspace() {
             rows={visibleSettings}
             columns={columns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) => setSelectedSettingsId(item.id)}
+            onRowClick={(item) => settingsSelection.select(item.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <Settings2 className="size-8 text-text-muted" />
@@ -366,7 +366,7 @@ export function InvoiceSettingsWorkspace() {
 
       <Drawer
         open={Boolean(selectedSettings)}
-        onClose={() => setSelectedSettingsId(null)}
+        onClose={() => settingsSelection.clear()}
         title="Invoice settings"
         description={selectedSettings?.name}
         footer={

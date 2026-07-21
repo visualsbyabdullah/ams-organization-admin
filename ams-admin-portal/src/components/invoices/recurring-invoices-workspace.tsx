@@ -21,6 +21,7 @@ import { RecurringInvoiceForm } from "@/components/invoices/recurring-invoice-fo
 import { createRecurringInvoiceColumns } from "@/components/invoices/invoice-table-columns";
 import { DataTable } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -56,7 +57,7 @@ export function RecurringInvoicesWorkspace() {
 
   const [frequencyFilter, setFrequencyFilter] = useState("all");
 
-  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);
+  const invoiceSelection = useEntitySelection(recurringInvoices, (invoice) => invoice.id);
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -91,8 +92,7 @@ export function RecurringInvoicesWorkspace() {
     });
   }, [frequencyFilter, scopedInvoices, searchQuery, statusFilter]);
 
-  const selectedInvoice =
-    recurringInvoices.find((invoice) => invoice.id === selectedInvoiceId) ?? null;
+  const selectedInvoice = invoiceSelection.selected;
 
   const activeInvoices = scopedInvoices.filter((invoice) => invoice.status === "active");
 
@@ -144,9 +144,9 @@ export function RecurringInvoicesWorkspace() {
   const columns = useMemo(
     () =>
       createRecurringInvoiceColumns({
-        onOpen: (invoice) => setSelectedInvoiceId(invoice.id),
+        onOpen: (invoice) => invoiceSelection.select(invoice.id),
       }),
-    [],
+    [invoiceSelection],
   );
 
   function saveInvoice(nextInvoice: RecurringInvoice) {
@@ -161,7 +161,7 @@ export function RecurringInvoicesWorkspace() {
     });
 
     setEditorMode(null);
-    setSelectedInvoiceId(nextInvoice.id);
+    invoiceSelection.select(nextInvoice.id);
   }
 
   function updateStatus(invoiceId: string, status: RecurringInvoiceStatus) {
@@ -188,7 +188,7 @@ export function RecurringInvoicesWorkspace() {
 
     setRecurringInvoices((currentInvoices) => [duplicate, ...currentInvoices]);
 
-    setSelectedInvoiceId(duplicate.id);
+    invoiceSelection.select(duplicate.id);
   }
 
   return (
@@ -200,7 +200,7 @@ export function RecurringInvoicesWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedInvoiceId(null);
+              invoiceSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -277,7 +277,7 @@ export function RecurringInvoicesWorkspace() {
             rows={visibleInvoices}
             columns={columns}
             getRowKey={(invoice) => invoice.id}
-            onRowClick={(invoice) => setSelectedInvoiceId(invoice.id)}
+            onRowClick={(invoice) => invoiceSelection.select(invoice.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <FileSearch className="size-8 text-text-muted" />
@@ -317,7 +317,7 @@ export function RecurringInvoicesWorkspace() {
                   <button
                     key={invoice.id}
                     type="button"
-                    onClick={() => setSelectedInvoiceId(invoice.id)}
+                    onClick={() => invoiceSelection.select(invoice.id)}
                     className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -354,7 +354,7 @@ export function RecurringInvoicesWorkspace() {
 
       <Drawer
         open={Boolean(selectedInvoice)}
-        onClose={() => setSelectedInvoiceId(null)}
+        onClose={() => invoiceSelection.clear()}
         title="Recurring invoice"
         description={selectedInvoice?.name}
         footer={

@@ -21,6 +21,7 @@ import { createInvoiceColumns } from "@/components/invoices/invoice-table-column
 import { useInvoiceRecords } from "@/components/invoices/use-invoice-records";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
@@ -54,7 +55,7 @@ export function InvoiceRegisterWorkspace() {
 
   const [categoryFilter, setCategoryFilter] = useState("all");
 
-  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);
+  const invoiceSelection = useEntitySelection(invoices, (invoice) => invoice.id);
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -94,26 +95,25 @@ export function InvoiceRegisterWorkspace() {
     });
   }, [categoryFilter, scopedInvoices, searchQuery, statusFilter]);
 
-  const selectedInvoice =
-    invoices.find((invoice) => invoice.id === selectedInvoiceId) ?? null;
+  const selectedInvoice = invoiceSelection.selected;
 
   const columns = useMemo(
     () =>
       createInvoiceColumns({
-        onOpen: (invoice) => setSelectedInvoiceId(invoice.id),
+        onOpen: (invoice) => invoiceSelection.select(invoice.id),
       }),
-    [],
+    [invoiceSelection],
   );
 
   function saveAndOpen(invoice: Invoice) {
     saveInvoice(invoice);
     setEditorMode(null);
-    setSelectedInvoiceId(invoice.id);
+    invoiceSelection.select(invoice.id);
   }
 
   function duplicateAndOpen(invoice: Invoice) {
     const duplicate = duplicateInvoice(invoice);
-    setSelectedInvoiceId(duplicate.id);
+    invoiceSelection.select(duplicate.id);
   }
 
   function recordPayment(invoiceId: string, values: InvoicePaymentValues) {
@@ -139,7 +139,7 @@ export function InvoiceRegisterWorkspace() {
 
             <Button
               onClick={() => {
-                setSelectedInvoiceId(null);
+                invoiceSelection.clear();
                 setEditorMode("create");
               }}
             >
@@ -206,7 +206,7 @@ export function InvoiceRegisterWorkspace() {
           rows={visibleInvoices}
           columns={columns}
           getRowKey={(invoice) => invoice.id}
-          onRowClick={(invoice) => setSelectedInvoiceId(invoice.id)}
+          onRowClick={(invoice) => invoiceSelection.select(invoice.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <FileSearch className="size-8 text-text-muted" />
@@ -224,7 +224,7 @@ export function InvoiceRegisterWorkspace() {
       <Drawer
         open={Boolean(selectedInvoice)}
         onClose={() => {
-          setSelectedInvoiceId(null);
+          invoiceSelection.clear();
           setPaymentOpen(false);
         }}
         title="Client invoice"

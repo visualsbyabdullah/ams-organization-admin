@@ -24,6 +24,7 @@ import { createInvoiceColumns } from "@/components/invoices/invoice-table-column
 import { useInvoiceRecords } from "@/components/invoices/use-invoice-records";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -45,7 +46,7 @@ export function InvoiceOverview() {
   const { invoices, saveInvoice, updateInvoiceStatus, recordInvoicePayment } =
     useInvoiceRecords();
 
-  const [selectedInvoiceId, setSelectedInvoiceId] = useState<string | null>(null);
+  const invoiceSelection = useEntitySelection(invoices, (invoice) => invoice.id);
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -59,8 +60,7 @@ export function InvoiceOverview() {
     [invoices, selectedBranch],
   );
 
-  const selectedInvoice =
-    invoices.find((invoice) => invoice.id === selectedInvoiceId) ?? null;
+  const selectedInvoice = invoiceSelection.selected;
 
   const referencePeriod = INVOICE_REFERENCE_DATE.slice(0, 7);
 
@@ -147,16 +147,16 @@ export function InvoiceOverview() {
   const columns = useMemo(
     () =>
       createInvoiceColumns({
-        onOpen: (invoice) => setSelectedInvoiceId(invoice.id),
+        onOpen: (invoice) => invoiceSelection.select(invoice.id),
         compact: true,
       }),
-    [],
+    [invoiceSelection],
   );
 
   function saveAndOpen(invoice: Invoice) {
     saveInvoice(invoice);
     setCreateOpen(false);
-    setSelectedInvoiceId(invoice.id);
+    invoiceSelection.select(invoice.id);
   }
 
   function recordPayment(invoiceId: string, values: InvoicePaymentValues) {
@@ -226,7 +226,7 @@ export function InvoiceOverview() {
                 <button
                   key={invoice.id}
                   type="button"
-                  onClick={() => setSelectedInvoiceId(invoice.id)}
+                  onClick={() => invoiceSelection.select(invoice.id)}
                   className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -276,7 +276,7 @@ export function InvoiceOverview() {
           rows={recentInvoices}
           columns={columns}
           getRowKey={(invoice) => invoice.id}
-          onRowClick={(invoice) => setSelectedInvoiceId(invoice.id)}
+          onRowClick={(invoice) => invoiceSelection.select(invoice.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <ReceiptText className="size-8 text-text-muted" />
@@ -294,7 +294,7 @@ export function InvoiceOverview() {
       <Drawer
         open={Boolean(selectedInvoice)}
         onClose={() => {
-          setSelectedInvoiceId(null);
+          invoiceSelection.clear();
           setPaymentOpen(false);
         }}
         title="Client invoice"
