@@ -19,6 +19,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import type { DataTableColumn } from "@/components/shared/data-table";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -77,9 +78,12 @@ export function SettingsWorkspace() {
   const [integrations, setIntegrations] = useState(SETTINGS_INTEGRATIONS);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedProfileId, setSelectedProfileId] = useState<string | null>(null);
-  const [selectedIntegrationId, setSelectedIntegrationId] = useState<string | null>(null);
-  const [selectedAuditId, setSelectedAuditId] = useState<string | null>(null);
+  const profileSelection = useEntitySelection(profiles, (profile) => profile.id);
+  const integrationSelection = useEntitySelection(
+    integrations,
+    (integration) => integration.id,
+  );
+  const auditSelection = useEntitySelection(SETTINGS_AUDIT_LOG, (entry) => entry.id);
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
   const [createCategory, setCreateCategory] = useState<SettingsCategory>("organization");
 
@@ -158,12 +162,9 @@ export function SettingsWorkspace() {
     );
   }, [query, scopedAudit]);
 
-  const selectedProfile =
-    profiles.find((profile) => profile.id === selectedProfileId) ?? null;
-  const selectedIntegration =
-    integrations.find((integration) => integration.id === selectedIntegrationId) ?? null;
-  const selectedAudit =
-    SETTINGS_AUDIT_LOG.find((entry) => entry.id === selectedAuditId) ?? null;
+  const selectedProfile = profileSelection.selected;
+  const selectedIntegration = integrationSelection.selected;
+  const selectedAudit = auditSelection.selected;
 
   const effectiveOrganization = resolveEffectiveProfile(
     profiles,
@@ -275,7 +276,7 @@ export function SettingsWorkspace() {
           aria-label={`Open actions for ${profile.name}`}
           onClick={(event) => {
             event.stopPropagation();
-            setSelectedProfileId(profile.id);
+            profileSelection.select(profile.id);
           }}
         >
           <MoreHorizontal />
@@ -338,7 +339,7 @@ export function SettingsWorkspace() {
           aria-label={`Open actions for ${integration.name}`}
           onClick={(event) => {
             event.stopPropagation();
-            setSelectedIntegrationId(integration.id);
+            integrationSelection.select(integration.id);
           }}
         >
           <MoreHorizontal />
@@ -401,7 +402,7 @@ export function SettingsWorkspace() {
           aria-label={`Open audit details for ${entry.entityName}`}
           onClick={(event) => {
             event.stopPropagation();
-            setSelectedAuditId(entry.id);
+            auditSelection.select(entry.id);
           }}
         >
           <MoreHorizontal />
@@ -412,7 +413,7 @@ export function SettingsWorkspace() {
 
   function openCreateProfile(category: SettingsCategory) {
     setCreateCategory(category);
-    setSelectedProfileId(null);
+    profileSelection.clear();
     setEditorMode("profile");
   }
 
@@ -426,7 +427,7 @@ export function SettingsWorkspace() {
     });
 
     setEditorMode(null);
-    setSelectedProfileId(profile.id);
+    profileSelection.select(profile.id);
   }
 
   function updateProfileStatus(status: SettingsStatus) {
@@ -458,7 +459,7 @@ export function SettingsWorkspace() {
     });
 
     setEditorMode(null);
-    setSelectedIntegrationId(integration.id);
+    integrationSelection.select(integration.id);
   }
 
   function updateIntegrationStatus(status: IntegrationStatus) {
@@ -488,7 +489,7 @@ export function SettingsWorkspace() {
   ) : section === "integrations" ? (
     <Button
       onClick={() => {
-        setSelectedIntegrationId(null);
+        integrationSelection.clear();
         setEditorMode("integration");
       }}
     >
@@ -605,7 +606,7 @@ export function SettingsWorkspace() {
               rows={scopedAudit.slice(0, 6)}
               columns={auditColumns}
               getRowKey={(entry) => entry.id}
-              onRowClick={(entry) => setSelectedAuditId(entry.id)}
+              onRowClick={(entry) => auditSelection.select(entry.id)}
               emptyState={<EmptyState />}
             />
           </Card>
@@ -630,7 +631,7 @@ export function SettingsWorkspace() {
             rows={filteredProfiles}
             columns={profileColumns}
             getRowKey={(profile) => profile.id}
-            onRowClick={(profile) => setSelectedProfileId(profile.id)}
+            onRowClick={(profile) => profileSelection.select(profile.id)}
             emptyState={<EmptyState />}
           />
         </Card>
@@ -654,7 +655,7 @@ export function SettingsWorkspace() {
             rows={filteredIntegrations}
             columns={integrationColumns}
             getRowKey={(integration) => integration.id}
-            onRowClick={(integration) => setSelectedIntegrationId(integration.id)}
+            onRowClick={(integration) => integrationSelection.select(integration.id)}
             emptyState={<EmptyState />}
           />
         </Card>
@@ -667,7 +668,7 @@ export function SettingsWorkspace() {
             rows={filteredAudit}
             columns={auditColumns}
             getRowKey={(entry) => entry.id}
-            onRowClick={(entry) => setSelectedAuditId(entry.id)}
+            onRowClick={(entry) => auditSelection.select(entry.id)}
             emptyState={<EmptyState />}
           />
         </Card>
@@ -675,7 +676,7 @@ export function SettingsWorkspace() {
 
       <Drawer
         open={Boolean(selectedProfile && editorMode === null)}
-        onClose={() => setSelectedProfileId(null)}
+        onClose={() => profileSelection.clear()}
         title="Settings profile"
         description={selectedProfile?.name}
         footer={
@@ -711,7 +712,7 @@ export function SettingsWorkspace() {
 
       <Drawer
         open={Boolean(selectedIntegration && editorMode === null)}
-        onClose={() => setSelectedIntegrationId(null)}
+        onClose={() => integrationSelection.clear()}
         title="Integration"
         description={selectedIntegration?.name}
         footer={
@@ -744,7 +745,7 @@ export function SettingsWorkspace() {
 
       <Drawer
         open={Boolean(selectedAudit)}
-        onClose={() => setSelectedAuditId(null)}
+        onClose={() => auditSelection.clear()}
         title="Settings audit details"
         description={selectedAudit?.entityName}
       >
