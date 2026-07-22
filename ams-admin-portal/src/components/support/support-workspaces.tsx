@@ -41,6 +41,7 @@ import { FormField } from "@/components/forms/form-field";
 import { SupportTabs } from "@/components/support/support-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -1406,7 +1407,7 @@ function TicketDrawerFooter({
 export function SupportOverview() {
   const { selectedBranch, selectedBranchId } = useBranchScope();
   const [tickets, setTickets] = useState<SupportTicket[]>(SUPPORT_TICKETS);
-  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
+  const ticketSelection = useEntitySelection(tickets, (ticket) => ticket.id);
   const [createOpen, setCreateOpen] = useState(false);
 
   const scopedTickets = useMemo(
@@ -1417,7 +1418,7 @@ export function SupportOverview() {
     [selectedBranch, tickets],
   );
 
-  const selectedTicket = tickets.find((ticket) => ticket.id === selectedTicketId) ?? null;
+  const selectedTicket = ticketSelection.selected;
 
   const activeTickets = scopedTickets.filter(
     (ticket) => !["resolved", "closed"].includes(ticket.status),
@@ -1558,7 +1559,7 @@ export function SupportOverview() {
             aria-label={`Open ${ticket.ticketNumber}`}
             onClick={(event) => {
               event.stopPropagation();
-              setSelectedTicketId(ticket.id);
+              ticketSelection.select(ticket.id);
             }}
           >
             <MoreHorizontal />
@@ -1566,7 +1567,7 @@ export function SupportOverview() {
         ),
       },
     ],
-    [],
+    [ticketSelection],
   );
 
   function saveTicket(ticket: SupportTicket) {
@@ -1577,7 +1578,7 @@ export function SupportOverview() {
         : [ticket, ...current];
     });
     setCreateOpen(false);
-    setSelectedTicketId(ticket.id);
+    ticketSelection.select(ticket.id);
   }
 
   function assignSelected() {
@@ -1670,7 +1671,7 @@ export function SupportOverview() {
                   <button
                     key={ticket.id}
                     type="button"
-                    onClick={() => setSelectedTicketId(ticket.id)}
+                    onClick={() => ticketSelection.select(ticket.id)}
                     className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -1717,7 +1718,7 @@ export function SupportOverview() {
           rows={recentTickets}
           columns={columns}
           getRowKey={(ticket) => ticket.id}
-          onRowClick={(ticket) => setSelectedTicketId(ticket.id)}
+          onRowClick={(ticket) => ticketSelection.select(ticket.id)}
           emptyState={
             <div className="flex min-h-64 flex-col items-center justify-center p-8 text-center">
               <Ticket className="size-8 text-text-muted" />
@@ -1729,7 +1730,7 @@ export function SupportOverview() {
 
       <Drawer
         open={Boolean(selectedTicket)}
-        onClose={() => setSelectedTicketId(null)}
+        onClose={() => ticketSelection.clear()}
         title="Support ticket"
         description={selectedTicket?.ticketNumber}
         footer={
@@ -1773,7 +1774,7 @@ export function SupportTicketsWorkspace() {
   const [priorityFilter, setPriorityFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [slaFilter, setSlaFilter] = useState("all");
-  const [selectedTicketId, setSelectedTicketId] = useState<string | null>(null);
+  const ticketSelection = useEntitySelection(tickets, (ticket) => ticket.id);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedTickets = useMemo(
@@ -1821,7 +1822,7 @@ export function SupportTicketsWorkspace() {
     statusFilter,
   ]);
 
-  const selectedTicket = tickets.find((ticket) => ticket.id === selectedTicketId) ?? null;
+  const selectedTicket = ticketSelection.selected;
 
   const categories = SUPPORT_CATEGORIES.filter(
     (category) =>
@@ -1918,7 +1919,7 @@ export function SupportTicketsWorkspace() {
             aria-label={`Open ${ticket.ticketNumber}`}
             onClick={(event) => {
               event.stopPropagation();
-              setSelectedTicketId(ticket.id);
+              ticketSelection.select(ticket.id);
             }}
           >
             <MoreHorizontal />
@@ -1926,7 +1927,7 @@ export function SupportTicketsWorkspace() {
         ),
       },
     ],
-    [],
+    [ticketSelection],
   );
 
   function saveTicket(ticket: SupportTicket) {
@@ -1937,7 +1938,7 @@ export function SupportTicketsWorkspace() {
         : [ticket, ...current];
     });
     setEditorMode(null);
-    setSelectedTicketId(ticket.id);
+    ticketSelection.select(ticket.id);
   }
 
   function assignSelected() {
@@ -1981,7 +1982,7 @@ export function SupportTicketsWorkspace() {
             </Button>
             <Button
               onClick={() => {
-                setSelectedTicketId(null);
+                ticketSelection.clear();
                 setEditorMode("create");
               }}
             >
@@ -2068,7 +2069,7 @@ export function SupportTicketsWorkspace() {
           rows={visibleTickets}
           columns={columns}
           getRowKey={(ticket) => ticket.id}
-          onRowClick={(ticket) => setSelectedTicketId(ticket.id)}
+          onRowClick={(ticket) => ticketSelection.select(ticket.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <FileSearch className="size-8 text-text-muted" />
@@ -2083,7 +2084,7 @@ export function SupportTicketsWorkspace() {
 
       <Drawer
         open={Boolean(selectedTicket)}
-        onClose={() => setSelectedTicketId(null)}
+        onClose={() => ticketSelection.clear()}
         title="Support ticket"
         description={selectedTicket?.ticketNumber}
         footer={
@@ -2130,7 +2131,7 @@ export function SupportCategoriesWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+  const categorySelection = useEntitySelection(categories, (category) => category.id);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedCategories = useMemo(
@@ -2167,8 +2168,7 @@ export function SupportCategoriesWorkspace() {
     });
   }, [scopedCategories, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedCategory =
-    categories.find((category) => category.id === selectedCategoryId) ?? null;
+  const selectedCategory = categorySelection.selected;
 
   const activeCategories = scopedCategories.filter(
     (category) => category.status === "active",
@@ -2294,7 +2294,7 @@ export function SupportCategoriesWorkspace() {
         : [category, ...current];
     });
     setEditorMode(null);
-    setSelectedCategoryId(category.id);
+    categorySelection.select(category.id);
   }
 
   function updateStatus(status: SupportCategory["status"]) {
@@ -2325,7 +2325,7 @@ export function SupportCategoriesWorkspace() {
       updatedBy: CURRENT_ADMIN.name,
     };
     setCategories((current) => [duplicate, ...current]);
-    setSelectedCategoryId(duplicate.id);
+    categorySelection.select(duplicate.id);
   }
 
   return (
@@ -2337,7 +2337,7 @@ export function SupportCategoriesWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedCategoryId(null);
+              categorySelection.clear();
               setEditorMode("create");
             }}
           >
@@ -2402,7 +2402,7 @@ export function SupportCategoriesWorkspace() {
           rows={visibleCategories}
           columns={columns}
           getRowKey={(category) => category.id}
-          onRowClick={(category) => setSelectedCategoryId(category.id)}
+          onRowClick={(category) => categorySelection.select(category.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <Tags className="size-8 text-text-muted" />
@@ -2417,7 +2417,7 @@ export function SupportCategoriesWorkspace() {
 
       <Drawer
         open={Boolean(selectedCategory)}
-        onClose={() => setSelectedCategoryId(null)}
+        onClose={() => categorySelection.clear()}
         title="Support category"
         description={selectedCategory?.name}
         footer={
@@ -2529,7 +2529,7 @@ export function SupportKnowledgeBaseWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [visibilityFilter, setVisibilityFilter] = useState("all");
-  const [selectedArticleId, setSelectedArticleId] = useState<string | null>(null);
+  const articleSelection = useEntitySelection(articles, (article) => article.id);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedArticles = useMemo(
@@ -2566,8 +2566,7 @@ export function SupportKnowledgeBaseWorkspace() {
     });
   }, [scopedArticles, searchQuery, statusFilter, visibilityFilter]);
 
-  const selectedArticle =
-    articles.find((article) => article.id === selectedArticleId) ?? null;
+  const selectedArticle = articleSelection.selected;
   const publishedArticles = scopedArticles.filter(
     (article) => article.status === "published",
   );
@@ -2695,7 +2694,7 @@ export function SupportKnowledgeBaseWorkspace() {
         : [article, ...current];
     });
     setEditorMode(null);
-    setSelectedArticleId(article.id);
+    articleSelection.select(article.id);
   }
 
   function updateStatus(status: SupportArticle["status"]) {
@@ -2732,7 +2731,7 @@ export function SupportKnowledgeBaseWorkspace() {
       updatedBy: CURRENT_ADMIN.name,
     };
     setArticles((current) => [duplicate, ...current]);
-    setSelectedArticleId(duplicate.id);
+    articleSelection.select(duplicate.id);
   }
 
   return (
@@ -2744,7 +2743,7 @@ export function SupportKnowledgeBaseWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedArticleId(null);
+              articleSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -2811,7 +2810,7 @@ export function SupportKnowledgeBaseWorkspace() {
           rows={visibleArticles}
           columns={columns}
           getRowKey={(article) => article.id}
-          onRowClick={(article) => setSelectedArticleId(article.id)}
+          onRowClick={(article) => articleSelection.select(article.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <BookOpen className="size-8 text-text-muted" />
@@ -2826,7 +2825,7 @@ export function SupportKnowledgeBaseWorkspace() {
 
       <Drawer
         open={Boolean(selectedArticle)}
-        onClose={() => setSelectedArticleId(null)}
+        onClose={() => articleSelection.clear()}
         title="Knowledge article"
         description={selectedArticle?.title}
         footer={
@@ -2949,7 +2948,7 @@ export function SupportSettingsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedSettingsId, setSelectedSettingsId] = useState<string | null>(null);
+  const settingsSelection = useEntitySelection(settings, (item) => item.id);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedSettings = useMemo(
@@ -2979,8 +2978,7 @@ export function SupportSettingsWorkspace() {
     });
   }, [scopedSettings, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedSettings =
-    settings.find((item) => item.id === selectedSettingsId) ?? null;
+  const selectedSettings = settingsSelection.selected;
 
   const organizationDefault =
     settings.find((item) => item.scope === "organization" && item.status === "active") ??
@@ -3113,7 +3111,7 @@ export function SupportSettingsWorkspace() {
         : [nextSettings, ...current];
     });
     setEditorMode(null);
-    setSelectedSettingsId(nextSettings.id);
+    settingsSelection.select(nextSettings.id);
   }
 
   function updateStatus(status: SupportSettings["status"]) {
@@ -3143,7 +3141,7 @@ export function SupportSettingsWorkspace() {
       updatedBy: CURRENT_ADMIN.name,
     };
     setSettings((current) => [duplicate, ...current]);
-    setSelectedSettingsId(duplicate.id);
+    settingsSelection.select(duplicate.id);
   }
 
   const effectiveControls = effectiveSettings
@@ -3162,7 +3160,7 @@ export function SupportSettingsWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedSettingsId(null);
+              settingsSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -3228,7 +3226,7 @@ export function SupportSettingsWorkspace() {
             rows={visibleSettings}
             columns={columns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) => setSelectedSettingsId(item.id)}
+            onRowClick={(item) => settingsSelection.select(item.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <Settings2 className="size-8 text-text-muted" />
@@ -3314,7 +3312,7 @@ export function SupportSettingsWorkspace() {
 
       <Drawer
         open={Boolean(selectedSettings)}
-        onClose={() => setSelectedSettingsId(null)}
+        onClose={() => settingsSelection.clear()}
         title="Support settings"
         description={selectedSettings?.name}
         footer={
