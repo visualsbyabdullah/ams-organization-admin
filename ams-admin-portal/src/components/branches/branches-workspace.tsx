@@ -18,6 +18,7 @@ import { createBranchColumns } from "@/components/branches/branch-table-columns"
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -40,7 +41,7 @@ export function BranchesWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [cityFilter, setCityFilter] = useState("all");
-  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
+  const recordSelection = useEntitySelection(branches, (branch) => branch.id);
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
   const scopedBranches = useMemo(
@@ -82,8 +83,7 @@ export function BranchesWorkspace() {
     });
   }, [cityFilter, scopedBranches, searchQuery, statusFilter]);
 
-  const selectedRecord =
-    branches.find((branch) => branch.id === selectedRecordId) ?? null;
+  const selectedRecord = recordSelection.selected;
 
   const activeBranches = scopedBranches.filter((branch) => branch.status === "active");
   const plannedBranches = scopedBranches.filter((branch) => branch.status === "planned");
@@ -130,7 +130,7 @@ export function BranchesWorkspace() {
   ];
 
   const columns = createBranchColumns({
-    onOpen: (branch) => setSelectedRecordId(branch.id),
+    onOpen: (branch) => recordSelection.select(branch.id),
   });
 
   function saveBranch(branch: BranchRecord) {
@@ -143,7 +143,7 @@ export function BranchesWorkspace() {
     });
 
     setEditorMode(null);
-    setSelectedRecordId(branch.id);
+    recordSelection.select(branch.id);
   }
 
   function updateBranchStatus(status: BranchStatus) {
@@ -174,7 +174,7 @@ export function BranchesWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedRecordId(null);
+              recordSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -203,7 +203,7 @@ export function BranchesWorkspace() {
 
               <button
                 type="button"
-                onClick={() => setSelectedRecordId(branch.id)}
+                onClick={() => recordSelection.select(branch.id)}
                 className="w-full p-5 text-left transition hover:bg-canvas"
               >
                 <div className="flex items-start justify-between gap-4">
@@ -290,7 +290,7 @@ export function BranchesWorkspace() {
           rows={visibleBranches}
           columns={columns}
           getRowKey={(branch) => branch.id}
-          onRowClick={(branch) => setSelectedRecordId(branch.id)}
+          onRowClick={(branch) => recordSelection.select(branch.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <Building2 className="size-8 text-text-muted" />
@@ -305,7 +305,7 @@ export function BranchesWorkspace() {
 
       <Drawer
         open={Boolean(selectedRecord && editorMode === null)}
-        onClose={() => setSelectedRecordId(null)}
+        onClose={() => recordSelection.clear()}
         title="Branch details"
         description={selectedRecord?.name}
         footer={
