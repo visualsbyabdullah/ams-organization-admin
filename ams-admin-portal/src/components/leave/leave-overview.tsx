@@ -21,6 +21,7 @@ import { LeaveTrendChart } from "@/components/leave/leave-trend-chart";
 import { ChartCard } from "@/components/dashboard/chart-card";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -73,7 +74,7 @@ export function LeaveOverview() {
 
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const requestSelection = useEntitySelection(requests, (request) => request.id);
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -127,8 +128,7 @@ export function LeaveOverview() {
     });
   }, [scopedRequests, searchQuery, statusFilter, typeFilter]);
 
-  const selectedRequest =
-    requests.find((request) => request.id === selectedRequestId) ?? null;
+  const selectedRequest = requestSelection.selected;
 
   const selectedEmployee = selectedRequest
     ? EMPLOYEES.find((employee) => employee.id === selectedRequest.employeeId)
@@ -195,7 +195,7 @@ export function LeaveOverview() {
     setRequests((currentRequests) => [request, ...currentRequests]);
 
     setCreateOpen(false);
-    setSelectedRequestId(request.id);
+    requestSelection.select(request.id);
   }
 
   function updateRequestStatus(requestId: string, status: LeaveRequestStatus) {
@@ -269,7 +269,7 @@ export function LeaveOverview() {
                   <button
                     key={request.id}
                     type="button"
-                    onClick={() => setSelectedRequestId(request.id)}
+                    onClick={() => requestSelection.select(request.id)}
                     className="flex w-full items-center justify-between gap-4 rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div>
@@ -377,7 +377,7 @@ export function LeaveOverview() {
                   <TableRow
                     key={request.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedRequestId(request.id)}
+                    onClick={() => requestSelection.select(request.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -421,7 +421,7 @@ export function LeaveOverview() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedRequestId(request.id);
+                          requestSelection.select(request.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -447,7 +447,7 @@ export function LeaveOverview() {
 
       <Drawer
         open={Boolean(selectedRequest)}
-        onClose={() => setSelectedRequestId(null)}
+        onClose={() => requestSelection.clear()}
         title="Leave request"
         description={
           selectedEmployee

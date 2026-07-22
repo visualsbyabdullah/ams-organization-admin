@@ -19,6 +19,7 @@ import { LeaveRequestForm } from "@/components/leave/leave-request-form";
 import { LeaveTabs } from "@/components/leave/leave-tabs";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -115,7 +116,7 @@ export function LeaveCalendarWorkspace() {
 
   const [statusFilter, setStatusFilter] = useState("active");
 
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const requestSelection = useEntitySelection(requests, (request) => request.id);
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -153,8 +154,7 @@ export function LeaveCalendarWorkspace() {
     .filter((request) => includesDate(request, selectedDate))
     .sort((first, second) => first.startDate.localeCompare(second.startDate));
 
-  const selectedRequest =
-    requests.find((request) => request.id === selectedRequestId) ?? null;
+  const selectedRequest = requestSelection.selected;
 
   const selectedEmployee = selectedRequest
     ? EMPLOYEES.find((employee) => employee.id === selectedRequest.employeeId)
@@ -230,7 +230,7 @@ export function LeaveCalendarWorkspace() {
 
     setCreateOpen(false);
 
-    setSelectedRequestId(request.id);
+    requestSelection.select(request.id);
   }
 
   function updateStatus(requestId: string, status: LeaveRequestStatus) {
@@ -343,7 +343,7 @@ export function LeaveCalendarWorkspace() {
             selectedDate={selectedDate}
             requests={calendarRequests}
             onDateSelect={setSelectedDate}
-            onRequestSelect={setSelectedRequestId}
+            onRequestSelect={requestSelection.select}
           />
         </Card>
 
@@ -377,7 +377,7 @@ export function LeaveCalendarWorkspace() {
                   <button
                     key={request.id}
                     type="button"
-                    onClick={() => setSelectedRequestId(request.id)}
+                    onClick={() => requestSelection.select(request.id)}
                     className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div className="flex items-center gap-3">
@@ -415,7 +415,7 @@ export function LeaveCalendarWorkspace() {
 
       <Drawer
         open={Boolean(selectedRequest)}
-        onClose={() => setSelectedRequestId(null)}
+        onClose={() => requestSelection.clear()}
         title="Calendar leave request"
         description={
           selectedEmployee

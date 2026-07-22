@@ -19,6 +19,7 @@ import { LeavePolicyForm } from "@/components/leave/leave-policy-form";
 import { LeaveTabs } from "@/components/leave/leave-tabs";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,7 @@ export function LeavePoliciesWorkspace() {
 
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedPolicyId, setSelectedPolicyId] = useState<string | null>(null);
+  const policySelection = useEntitySelection(policies, (policy) => policy.id);
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -103,8 +104,7 @@ export function LeavePoliciesWorkspace() {
     });
   }, [scopedPolicies, searchQuery, statusFilter, typeFilter]);
 
-  const selectedPolicy =
-    policies.find((policy) => policy.id === selectedPolicyId) ?? null;
+  const selectedPolicy = policySelection.selected;
 
   const metrics = [
     {
@@ -149,7 +149,7 @@ export function LeavePoliciesWorkspace() {
         : [nextPolicy, ...currentPolicies];
     });
 
-    setSelectedPolicyId(nextPolicy.id);
+    policySelection.select(nextPolicy.id);
 
     setEditorMode(null);
   }
@@ -166,7 +166,7 @@ export function LeavePoliciesWorkspace() {
 
     setPolicies((currentPolicies) => [duplicate, ...currentPolicies]);
 
-    setSelectedPolicyId(duplicate.id);
+    policySelection.select(duplicate.id);
   }
 
   function archivePolicy(policyId: string) {
@@ -193,7 +193,7 @@ export function LeavePoliciesWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedPolicyId(null);
+              policySelection.clear();
               setEditorMode("create");
             }}
           >
@@ -276,7 +276,7 @@ export function LeavePoliciesWorkspace() {
                 <button
                   key={policy.id}
                   type="button"
-                  onClick={() => setSelectedPolicyId(policy.id)}
+                  onClick={() => policySelection.select(policy.id)}
                   className="text-left"
                 >
                   <Card className="h-full p-5 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
@@ -347,7 +347,7 @@ export function LeavePoliciesWorkspace() {
 
       <Drawer
         open={Boolean(selectedPolicy)}
-        onClose={() => setSelectedPolicyId(null)}
+        onClose={() => policySelection.clear()}
         title="Leave policy"
         description={selectedPolicy?.name}
         footer={
