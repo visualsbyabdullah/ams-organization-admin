@@ -22,6 +22,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { PayrollAdjustmentForm } from "@/components/payroll/payroll-adjustment-form";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -84,7 +85,10 @@ export function PayrollAdjustmentsWorkspace() {
 
   const [periodFilter, setPeriodFilter] = useState("all");
 
-  const [selectedAdjustmentId, setSelectedAdjustmentId] = useState<string | null>(null);
+  const adjustmentSelection = useEntitySelection(
+    adjustments,
+    (adjustment) => adjustment.id,
+  );
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -145,8 +149,7 @@ export function PayrollAdjustmentsWorkspace() {
     typeFilter,
   ]);
 
-  const selectedAdjustment =
-    adjustments.find((adjustment) => adjustment.id === selectedAdjustmentId) ?? null;
+  const selectedAdjustment = adjustmentSelection.selected;
 
   const selectedEmployee = selectedAdjustment
     ? EMPLOYEES.find((employee) => employee.id === selectedAdjustment.employeeId)
@@ -219,7 +222,7 @@ export function PayrollAdjustmentsWorkspace() {
         : [nextAdjustment, ...currentAdjustments];
     });
 
-    setSelectedAdjustmentId(nextAdjustment.id);
+    adjustmentSelection.select(nextAdjustment.id);
 
     setEditorMode(null);
   }
@@ -263,7 +266,7 @@ export function PayrollAdjustmentsWorkspace() {
 
     setAdjustments((currentAdjustments) => [duplicate, ...currentAdjustments]);
 
-    setSelectedAdjustmentId(duplicate.id);
+    adjustmentSelection.select(duplicate.id);
   }
 
   return (
@@ -281,7 +284,7 @@ export function PayrollAdjustmentsWorkspace() {
 
             <Button
               onClick={() => {
-                setSelectedAdjustmentId(null);
+                adjustmentSelection.clear();
                 setEditorMode("create");
               }}
             >
@@ -421,7 +424,7 @@ export function PayrollAdjustmentsWorkspace() {
                       <TableRow
                         key={adjustment.id}
                         className="cursor-pointer transition hover:bg-canvas"
-                        onClick={() => setSelectedAdjustmentId(adjustment.id)}
+                        onClick={() => adjustmentSelection.select(adjustment.id)}
                       >
                         <TableCell>
                           <div className="flex items-center gap-3">
@@ -479,7 +482,7 @@ export function PayrollAdjustmentsWorkspace() {
                             onClick={(event) => {
                               event.stopPropagation();
 
-                              setSelectedAdjustmentId(adjustment.id);
+                              adjustmentSelection.select(adjustment.id);
                             }}
                           >
                             <MoreHorizontal />
@@ -526,7 +529,7 @@ export function PayrollAdjustmentsWorkspace() {
                   <button
                     key={adjustment.id}
                     type="button"
-                    onClick={() => setSelectedAdjustmentId(adjustment.id)}
+                    onClick={() => adjustmentSelection.select(adjustment.id)}
                     className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div className="flex items-start justify-between gap-3">
@@ -558,7 +561,7 @@ export function PayrollAdjustmentsWorkspace() {
 
       <Drawer
         open={Boolean(selectedAdjustment)}
-        onClose={() => setSelectedAdjustmentId(null)}
+        onClose={() => adjustmentSelection.clear()}
         title="Payroll adjustment"
         description={
           selectedEmployee

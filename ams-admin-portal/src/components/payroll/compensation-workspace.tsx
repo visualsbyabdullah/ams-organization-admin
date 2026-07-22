@@ -23,6 +23,7 @@ import { CompensationForm } from "@/components/payroll/compensation-form";
 import { DepartmentCompensationChart } from "@/components/payroll/department-compensation-chart";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
 import { DetailGrid, LineItemList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -90,7 +91,7 @@ export function CompensationWorkspace() {
 
   const [frequencyFilter, setFrequencyFilter] = useState("all");
 
-  const [selectedRecordId, setSelectedRecordId] = useState<string | null>(null);
+  const recordSelection = useEntitySelection(records, (record) => record.id);
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
@@ -131,7 +132,7 @@ export function CompensationWorkspace() {
     });
   }, [frequencyFilter, scopedRecords, searchQuery, statusFilter]);
 
-  const selectedRecord = records.find((record) => record.id === selectedRecordId) ?? null;
+  const selectedRecord = recordSelection.selected;
 
   const selectedEmployee = selectedRecord
     ? EMPLOYEES.find((employee) => employee.id === selectedRecord.employeeId)
@@ -264,7 +265,7 @@ export function CompensationWorkspace() {
       ]);
     }
 
-    setSelectedRecordId(nextRecord.id);
+    recordSelection.select(nextRecord.id);
 
     setEditorMode(null);
   }
@@ -299,7 +300,7 @@ export function CompensationWorkspace() {
 
             <Button
               onClick={() => {
-                setSelectedRecordId(null);
+                recordSelection.clear();
                 setEditorMode("create");
               }}
             >
@@ -354,7 +355,7 @@ export function CompensationWorkspace() {
                   <button
                     key={record.id}
                     type="button"
-                    onClick={() => setSelectedRecordId(record.id)}
+                    onClick={() => recordSelection.select(record.id)}
                     className="flex w-full items-center justify-between gap-4 rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div>
@@ -472,7 +473,7 @@ export function CompensationWorkspace() {
                   <TableRow
                     key={record.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedRecordId(record.id)}
+                    onClick={() => recordSelection.select(record.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -516,7 +517,7 @@ export function CompensationWorkspace() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedRecordId(record.id);
+                          recordSelection.select(record.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -542,7 +543,7 @@ export function CompensationWorkspace() {
 
       <Drawer
         open={Boolean(selectedRecord)}
-        onClose={() => setSelectedRecordId(null)}
+        onClose={() => recordSelection.clear()}
         title="Employee compensation"
         description={
           selectedEmployee

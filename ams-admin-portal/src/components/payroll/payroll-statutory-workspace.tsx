@@ -25,6 +25,7 @@ import { PayrollTabs } from "@/components/payroll/payroll-tabs";
 import { StatutoryContributionChart } from "@/components/payroll/statutory-contribution-chart";
 import { StatutoryFilingForm } from "@/components/payroll/statutory-filing-form";
 import { DetailGrid, LineItemList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -110,11 +111,12 @@ export function PayrollStatutoryWorkspace() {
 
   const [periodFilter, setPeriodFilter] = useState("all");
 
-  const [selectedEmployeeRecordId, setSelectedEmployeeRecordId] = useState<string | null>(
-    null,
+  const employeeRecordSelection = useEntitySelection(
+    employeeRecords,
+    (record) => record.id,
   );
 
-  const [selectedFilingId, setSelectedFilingId] = useState<string | null>(null);
+  const filingSelection = useEntitySelection(filings, (filing) => filing.id);
 
   const [filingEditorMode, setFilingEditorMode] = useState<FilingEditorMode>(null);
 
@@ -179,14 +181,13 @@ export function PayrollStatutoryWorkspace() {
     [categoryFilter, filingStatusFilter, periodFilter, scopedFilings],
   );
 
-  const selectedEmployeeRecord =
-    employeeRecords.find((record) => record.id === selectedEmployeeRecordId) ?? null;
+  const selectedEmployeeRecord = employeeRecordSelection.selected;
 
   const selectedEmployee = selectedEmployeeRecord
     ? EMPLOYEES.find((employee) => employee.id === selectedEmployeeRecord.employeeId)
     : null;
 
-  const selectedFiling = filings.find((filing) => filing.id === selectedFilingId) ?? null;
+  const selectedFiling = filingSelection.selected;
 
   const employeeDeductions = scopedEmployeeRecords.reduce(
     (total, record) => total + getEmployeeContribution(record),
@@ -284,7 +285,7 @@ export function PayrollStatutoryWorkspace() {
         : [nextFiling, ...currentFilings];
     });
 
-    setSelectedFilingId(nextFiling.id);
+    filingSelection.select(nextFiling.id);
 
     setFilingEditorMode(null);
   }
@@ -339,7 +340,7 @@ export function PayrollStatutoryWorkspace() {
 
             <Button
               onClick={() => {
-                setSelectedFilingId(null);
+                filingSelection.clear();
                 setFilingEditorMode("create");
               }}
             >
@@ -390,7 +391,7 @@ export function PayrollStatutoryWorkspace() {
                 <button
                   key={filing.id}
                   type="button"
-                  onClick={() => setSelectedFilingId(filing.id)}
+                  onClick={() => filingSelection.select(filing.id)}
                   className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                 >
                   <div className="flex items-start justify-between gap-3">
@@ -493,7 +494,7 @@ export function PayrollStatutoryWorkspace() {
                   <TableRow
                     key={record.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedEmployeeRecordId(record.id)}
+                    onClick={() => employeeRecordSelection.select(record.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -533,7 +534,7 @@ export function PayrollStatutoryWorkspace() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedEmployeeRecordId(record.id);
+                          employeeRecordSelection.select(record.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -631,7 +632,7 @@ export function PayrollStatutoryWorkspace() {
               <TableRow
                 key={filing.id}
                 className="cursor-pointer transition hover:bg-canvas"
-                onClick={() => setSelectedFilingId(filing.id)}
+                onClick={() => filingSelection.select(filing.id)}
               >
                 <TableCell>{formatPeriod(filing.period)}</TableCell>
 
@@ -669,7 +670,7 @@ export function PayrollStatutoryWorkspace() {
                     onClick={(event) => {
                       event.stopPropagation();
 
-                      setSelectedFilingId(filing.id);
+                      filingSelection.select(filing.id);
                     }}
                   >
                     <MoreHorizontal />
@@ -683,7 +684,7 @@ export function PayrollStatutoryWorkspace() {
 
       <Drawer
         open={Boolean(selectedEmployeeRecord)}
-        onClose={() => setSelectedEmployeeRecordId(null)}
+        onClose={() => employeeRecordSelection.clear()}
         title="Employee statutory record"
         description={
           selectedEmployee
@@ -804,7 +805,7 @@ export function PayrollStatutoryWorkspace() {
 
       <Drawer
         open={Boolean(selectedFiling)}
-        onClose={() => setSelectedFilingId(null)}
+        onClose={() => filingSelection.clear()}
         title="Statutory filing"
         description={
           selectedFiling

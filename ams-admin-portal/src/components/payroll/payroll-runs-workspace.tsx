@@ -27,6 +27,7 @@ import {
 } from "@/components/payroll/payroll-runs-branch-chart";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
 import { DetailGrid, LineItemList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -66,7 +67,7 @@ export function PayrollRunsWorkspace() {
 
   const [periodFilter, setPeriodFilter] = useState("all");
 
-  const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
+  const runSelection = useEntitySelection(runs, (run) => run.id);
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -99,7 +100,7 @@ export function PayrollRunsWorkspace() {
     });
   }, [periodFilter, scopedRuns, searchQuery, statusFilter]);
 
-  const selectedRun = runs.find((run) => run.id === selectedRunId) ?? null;
+  const selectedRun = runSelection.selected;
 
   const chartPeriod = periodFilter === "all" ? "2026-07" : periodFilter;
 
@@ -161,7 +162,7 @@ export function PayrollRunsWorkspace() {
     setRuns((currentRuns) => [run, ...currentRuns]);
 
     setCreateOpen(false);
-    setSelectedRunId(run.id);
+    runSelection.select(run.id);
   }
 
   function updateRunStatus(runId: string, status: PayrollRunStatus) {
@@ -189,7 +190,7 @@ export function PayrollRunsWorkspace() {
 
     setRuns((currentRuns) => [duplicate, ...currentRuns]);
 
-    setSelectedRunId(duplicate.id);
+    runSelection.select(duplicate.id);
   }
 
   return (
@@ -316,7 +317,7 @@ export function PayrollRunsWorkspace() {
                   <TableRow
                     key={run.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedRunId(run.id)}
+                    onClick={() => runSelection.select(run.id)}
                   >
                     <TableCell>
                       <p className="font-semibold">{run.periodLabel}</p>
@@ -354,7 +355,7 @@ export function PayrollRunsWorkspace() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedRunId(run.id);
+                          runSelection.select(run.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -380,7 +381,7 @@ export function PayrollRunsWorkspace() {
 
       <Drawer
         open={Boolean(selectedRun)}
-        onClose={() => setSelectedRunId(null)}
+        onClose={() => runSelection.clear()}
         title="Payroll run details"
         description={
           selectedRun

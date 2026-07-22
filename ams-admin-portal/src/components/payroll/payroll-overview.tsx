@@ -25,6 +25,7 @@ import { PayrollRunForm } from "@/components/payroll/payroll-run-form";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
 import { PayrollTrendChart } from "@/components/payroll/payroll-trend-chart";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -82,11 +83,9 @@ export function PayrollOverview() {
 
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedEmployeeRecordId, setSelectedEmployeeRecordId] = useState<string | null>(
-    null,
-  );
+  const recordSelection = useEntitySelection(employeeRecords, (record) => record.id);
 
-  const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
+  const runSelection = useEntitySelection(runs, (run) => run.id);
 
   const [createRunOpen, setCreateRunOpen] = useState(false);
 
@@ -137,14 +136,13 @@ export function PayrollOverview() {
     [runs, selectedBranch],
   );
 
-  const selectedRecord =
-    employeeRecords.find((record) => record.id === selectedEmployeeRecordId) ?? null;
+  const selectedRecord = recordSelection.selected;
 
   const selectedEmployee = selectedRecord
     ? EMPLOYEES.find((employee) => employee.id === selectedRecord.employeeId)
     : null;
 
-  const selectedRun = runs.find((run) => run.id === selectedRunId) ?? null;
+  const selectedRun = runSelection.selected;
 
   const grossPayroll = scopedRecords.reduce(
     (total, record) => total + getGrossPay(record),
@@ -228,7 +226,7 @@ export function PayrollOverview() {
     setRuns((currentRuns) => [run, ...currentRuns]);
 
     setCreateRunOpen(false);
-    setSelectedRunId(run.id);
+    runSelection.select(run.id);
   }
 
   function updateEmployeeStatus(recordId: string, status: PayrollEmployeeStatus) {
@@ -347,7 +345,7 @@ export function PayrollOverview() {
                   <TableRow
                     key={run.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedRunId(run.id)}
+                    onClick={() => runSelection.select(run.id)}
                   >
                     <TableCell>
                       <p className="font-semibold">{run.periodLabel}</p>
@@ -399,7 +397,7 @@ export function PayrollOverview() {
                   <button
                     key={record.id}
                     type="button"
-                    onClick={() => setSelectedEmployeeRecordId(record.id)}
+                    onClick={() => recordSelection.select(record.id)}
                     className="flex w-full items-center justify-between gap-4 rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
                   >
                     <div>
@@ -496,7 +494,7 @@ export function PayrollOverview() {
                   <TableRow
                     key={record.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedEmployeeRecordId(record.id)}
+                    onClick={() => recordSelection.select(record.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -540,7 +538,7 @@ export function PayrollOverview() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedEmployeeRecordId(record.id);
+                          recordSelection.select(record.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -566,7 +564,7 @@ export function PayrollOverview() {
 
       <Drawer
         open={Boolean(selectedRecord)}
-        onClose={() => setSelectedEmployeeRecordId(null)}
+        onClose={() => recordSelection.clear()}
         title="Employee payroll"
         description={
           selectedEmployee
@@ -624,7 +622,7 @@ export function PayrollOverview() {
 
       <Drawer
         open={Boolean(selectedRun)}
-        onClose={() => setSelectedRunId(null)}
+        onClose={() => runSelection.clear()}
         title="Payroll run"
         description={
           selectedRun

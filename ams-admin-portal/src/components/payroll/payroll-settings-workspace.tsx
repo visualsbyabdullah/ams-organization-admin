@@ -22,6 +22,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { PayrollSettingsForm } from "@/components/payroll/payroll-settings-form";
 import { PayrollTabs } from "@/components/payroll/payroll-tabs";
 import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -67,8 +68,9 @@ export function PayrollSettingsWorkspace() {
 
   const [scopeFilter, setScopeFilter] = useState("all");
 
-  const [selectedConfigurationId, setSelectedConfigurationId] = useState<string | null>(
-    null,
+  const configurationSelection = useEntitySelection(
+    configurations,
+    (configuration) => configuration.id,
   );
 
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
@@ -107,10 +109,7 @@ export function PayrollSettingsWorkspace() {
     });
   }, [scopedConfigurations, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedConfiguration =
-    configurations.find(
-      (configuration) => configuration.id === selectedConfigurationId,
-    ) ?? null;
+  const selectedConfiguration = configurationSelection.selected;
 
   const organizationDefault =
     configurations.find(
@@ -194,7 +193,7 @@ export function PayrollSettingsWorkspace() {
         : [nextConfiguration, ...currentConfigurations];
     });
 
-    setSelectedConfigurationId(nextConfiguration.id);
+    configurationSelection.select(nextConfiguration.id);
 
     setEditorMode(null);
   }
@@ -211,7 +210,7 @@ export function PayrollSettingsWorkspace() {
 
     setConfigurations((currentConfigurations) => [duplicate, ...currentConfigurations]);
 
-    setSelectedConfigurationId(duplicate.id);
+    configurationSelection.select(duplicate.id);
   }
 
   function archiveConfiguration(configurationId: string) {
@@ -253,7 +252,7 @@ export function PayrollSettingsWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedConfigurationId(null);
+              configurationSelection.clear();
 
               setEditorMode("create");
             }}
@@ -334,7 +333,7 @@ export function PayrollSettingsWorkspace() {
                   <button
                     key={configuration.id}
                     type="button"
-                    onClick={() => setSelectedConfigurationId(configuration.id)}
+                    onClick={() => configurationSelection.select(configuration.id)}
                     className="text-left"
                   >
                     <Card className="h-full p-5 transition hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md">
@@ -510,7 +509,7 @@ export function PayrollSettingsWorkspace() {
 
       <Drawer
         open={Boolean(selectedConfiguration)}
-        onClose={() => setSelectedConfigurationId(null)}
+        onClose={() => configurationSelection.clear()}
         title="Payroll configuration"
         description={selectedConfiguration?.name}
         footer={
