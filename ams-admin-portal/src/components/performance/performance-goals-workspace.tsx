@@ -18,6 +18,7 @@ import { PerformanceTabs } from "@/components/performance/performance-tabs";
 import { createGoalColumns } from "@/components/performance/performance-table-columns";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
@@ -38,7 +39,7 @@ export function PerformanceGoalsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [levelFilter, setLevelFilter] = useState("all");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const goalSelection = useEntitySelection(goals, (goal) => goal.id);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scoped = useMemo(
@@ -60,7 +61,7 @@ export function PerformanceGoalsWorkspace() {
         (levelFilter === "all" || goal.level === levelFilter),
     );
   }, [scoped, searchQuery, statusFilter, levelFilter]);
-  const selected = goals.find((goal) => goal.id === selectedId) ?? null;
+  const selected = goalSelection.selected;
   const active = scoped.filter((goal) => ["active", "at_risk"].includes(goal.status));
   const atRisk = scoped.filter((goal) => goal.status === "at_risk");
   const completed = scoped.filter((goal) => goal.status === "completed");
@@ -70,7 +71,10 @@ export function PerformanceGoalsWorkspace() {
           active.reduce((total, goal) => total + goal.progress, 0) / active.length,
         )
       : 0;
-  const columns = useMemo(() => createGoalColumns((goal) => setSelectedId(goal.id)), []);
+  const columns = useMemo(
+    () => createGoalColumns((goal) => goalSelection.select(goal.id)),
+    [goalSelection],
+  );
   const metrics = [
     {
       label: "Active goals",
@@ -108,7 +112,7 @@ export function PerformanceGoalsWorkspace() {
         ? current.map((item) => (item.id === goal.id ? goal : item))
         : [goal, ...current],
     );
-    setSelectedId(goal.id);
+    goalSelection.select(goal.id);
     setEditorMode(null);
   }
   function updateStatus(status: PerformanceGoalStatus) {
@@ -136,7 +140,7 @@ export function PerformanceGoalsWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedId(null);
+              goalSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -197,7 +201,7 @@ export function PerformanceGoalsWorkspace() {
           rows={visible}
           columns={columns}
           getRowKey={(goal) => goal.id}
-          onRowClick={(goal) => setSelectedId(goal.id)}
+          onRowClick={(goal) => goalSelection.select(goal.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <FileSearch className="size-8 text-text-muted" />
@@ -211,7 +215,7 @@ export function PerformanceGoalsWorkspace() {
       </Card>
       <Drawer
         open={Boolean(selected)}
-        onClose={() => setSelectedId(null)}
+        onClose={() => goalSelection.clear()}
         title="Performance goal"
         description={selected?.ownerName}
         footer={

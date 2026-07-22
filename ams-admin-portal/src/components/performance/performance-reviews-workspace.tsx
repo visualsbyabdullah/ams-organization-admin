@@ -10,6 +10,7 @@ import { PerformanceTabs } from "@/components/performance/performance-tabs";
 import { createReviewColumns } from "@/components/performance/performance-table-columns";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
@@ -28,7 +29,7 @@ export function PerformanceReviewsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [cycleFilter, setCycleFilter] = useState("all");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const reviewSelection = useEntitySelection(reviews, (review) => review.id);
   const [editOpen, setEditOpen] = useState(false);
 
   const scoped = useMemo(
@@ -60,14 +61,14 @@ export function PerformanceReviewsWorkspace() {
       );
     });
   }, [scoped, searchQuery, statusFilter, cycleFilter]);
-  const selected = reviews.find((review) => review.id === selectedId) ?? null;
+  const selected = reviewSelection.selected;
   const completed = scoped.filter((review) => review.status === "completed");
   const completionRate =
     scoped.length > 0 ? Math.round((completed.length / scoped.length) * 100) : 0;
   const averageScore = getAverageReviewScore(completed);
   const columns = useMemo(
-    () => createReviewColumns((review) => setSelectedId(review.id)),
-    [],
+    () => createReviewColumns((review) => reviewSelection.select(review.id)),
+    [reviewSelection],
   );
   const metrics = [
     {
@@ -166,7 +167,7 @@ export function PerformanceReviewsWorkspace() {
           rows={visible}
           columns={columns}
           getRowKey={(review) => review.id}
-          onRowClick={(review) => setSelectedId(review.id)}
+          onRowClick={(review) => reviewSelection.select(review.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <FileSearch className="size-8 text-text-muted" />
@@ -181,7 +182,7 @@ export function PerformanceReviewsWorkspace() {
       <Drawer
         open={Boolean(selected)}
         onClose={() => {
-          setSelectedId(null);
+          reviewSelection.clear();
           setEditOpen(false);
         }}
         title="Employee performance review"

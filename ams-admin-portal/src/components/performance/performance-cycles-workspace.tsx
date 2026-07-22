@@ -10,6 +10,7 @@ import { PerformanceTabs } from "@/components/performance/performance-tabs";
 import { createCycleColumns } from "@/components/performance/performance-table-columns";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
@@ -31,7 +32,7 @@ export function PerformanceCyclesWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const cycleSelection = useEntitySelection(cycles, (cycle) => cycle.id);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scoped = useMemo(
@@ -61,7 +62,7 @@ export function PerformanceCyclesWorkspace() {
         (scopeFilter === "all" || cycle.scope === scopeFilter),
     );
   }, [scoped, searchQuery, statusFilter, scopeFilter]);
-  const selected = cycles.find((cycle) => cycle.id === selectedId) ?? null;
+  const selected = cycleSelection.selected;
   const active = scoped.filter((cycle) =>
     ["active", "calibration"].includes(cycle.status),
   );
@@ -77,8 +78,8 @@ export function PerformanceCyclesWorkspace() {
         )
       : 0;
   const columns = useMemo(
-    () => createCycleColumns((cycle) => setSelectedId(cycle.id)),
-    [],
+    () => createCycleColumns((cycle) => cycleSelection.select(cycle.id)),
+    [cycleSelection],
   );
 
   const metrics = [
@@ -118,7 +119,7 @@ export function PerformanceCyclesWorkspace() {
         ? current.map((item) => (item.id === cycle.id ? cycle : item))
         : [cycle, ...current],
     );
-    setSelectedId(cycle.id);
+    cycleSelection.select(cycle.id);
     setEditorMode(null);
   }
   function updateStatus(status: PerformanceCycleStatus) {
@@ -141,7 +142,7 @@ export function PerformanceCyclesWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedId(null);
+              cycleSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -202,7 +203,7 @@ export function PerformanceCyclesWorkspace() {
           rows={visible}
           columns={columns}
           getRowKey={(cycle) => cycle.id}
-          onRowClick={(cycle) => setSelectedId(cycle.id)}
+          onRowClick={(cycle) => cycleSelection.select(cycle.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <CalendarRange className="size-8 text-text-muted" />
@@ -216,7 +217,7 @@ export function PerformanceCyclesWorkspace() {
       </Card>
       <Drawer
         open={Boolean(selected)}
-        onClose={() => setSelectedId(null)}
+        onClose={() => cycleSelection.clear()}
         title="Performance cycle"
         description={selected?.name}
         footer={

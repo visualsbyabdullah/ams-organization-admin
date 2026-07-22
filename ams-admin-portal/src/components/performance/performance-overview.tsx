@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { AlertTriangle, CheckCircle2, Download, Gauge, Star, Target } from "lucide-react";
 
 import { ChartCard } from "@/components/dashboard/chart-card";
@@ -14,6 +14,7 @@ import { PerformanceTabs } from "@/components/performance/performance-tabs";
 import { createReviewColumns } from "@/components/performance/performance-table-columns";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -38,8 +39,6 @@ import {
 
 export function PerformanceOverview() {
   const { selectedBranch } = useBranchScope();
-  const [selectedReviewId, setSelectedReviewId] = useState<string | null>(null);
-  const [selectedGoalId, setSelectedGoalId] = useState<string | null>(null);
 
   const reviews = useMemo(
     () =>
@@ -55,6 +54,10 @@ export function PerformanceOverview() {
       ),
     [selectedBranch],
   );
+
+  const reviewSelection = useEntitySelection(reviews, (review) => review.id);
+  const goalSelection = useEntitySelection(goals, (goal) => goal.id);
+
   const cycles = PERFORMANCE_CYCLES.filter(
     (cycle) =>
       selectedBranch.isAggregate ||
@@ -78,11 +81,11 @@ export function PerformanceOverview() {
       ),
     )
     .slice(0, 5);
-  const selectedReview = reviews.find((review) => review.id === selectedReviewId) ?? null;
-  const selectedGoal = goals.find((goal) => goal.id === selectedGoalId) ?? null;
+  const selectedReview = reviewSelection.selected;
+  const selectedGoal = goalSelection.selected;
   const columns = useMemo(
-    () => createReviewColumns((review) => setSelectedReviewId(review.id)),
-    [],
+    () => createReviewColumns((review) => reviewSelection.select(review.id)),
+    [reviewSelection],
   );
 
   const metrics = [
@@ -167,7 +170,7 @@ export function PerformanceOverview() {
                 key={goal.id}
                 variant="outline"
                 className="h-auto w-full justify-between p-4 text-left"
-                onClick={() => setSelectedGoalId(goal.id)}
+                onClick={() => goalSelection.select(goal.id)}
               >
                 <span>
                   <span className="block whitespace-normal font-semibold">
@@ -189,7 +192,7 @@ export function PerformanceOverview() {
                   key={review.id}
                   variant="outline"
                   className="h-auto w-full justify-between p-4 text-left"
-                  onClick={() => setSelectedReviewId(review.id)}
+                  onClick={() => reviewSelection.select(review.id)}
                 >
                   <span>
                     <span className="block font-semibold">
@@ -221,7 +224,7 @@ export function PerformanceOverview() {
           rows={recentReviews}
           columns={columns}
           getRowKey={(review) => review.id}
-          onRowClick={(review) => setSelectedReviewId(review.id)}
+          onRowClick={(review) => reviewSelection.select(review.id)}
           emptyState={
             <div className="p-8 text-center text-sm text-text-muted">
               No recent reviews are available.
@@ -231,7 +234,7 @@ export function PerformanceOverview() {
       </Card>
       <Drawer
         open={Boolean(selectedReview)}
-        onClose={() => setSelectedReviewId(null)}
+        onClose={() => reviewSelection.clear()}
         title="Performance review"
         description={
           selectedReview
@@ -243,7 +246,7 @@ export function PerformanceOverview() {
       </Drawer>
       <Drawer
         open={Boolean(selectedGoal)}
-        onClose={() => setSelectedGoalId(null)}
+        onClose={() => goalSelection.clear()}
         title="Performance goal"
         description={selectedGoal?.ownerName}
       >

@@ -18,6 +18,7 @@ import { PerformanceTabs } from "@/components/performance/performance-tabs";
 import { createSettingsColumns } from "@/components/performance/performance-table-columns";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -41,7 +42,7 @@ export function PerformanceSettingsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const settingsSelection = useEntitySelection(settings, (item) => item.id);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scoped = useMemo(
@@ -71,13 +72,13 @@ export function PerformanceSettingsWorkspace() {
         (scopeFilter === "all" || item.scope === scopeFilter),
     );
   }, [scoped, searchQuery, statusFilter, scopeFilter]);
-  const selected = settings.find((item) => item.id === selectedId) ?? null;
+  const selected = settingsSelection.selected;
   const effective = getEffectivePerformanceSettings(settings, selectedBranchId);
   const active = scoped.filter((item) => item.status === "active");
   const overrides = scoped.filter((item) => item.scope === "branch");
   const columns = useMemo(
-    () => createSettingsColumns((item) => setSelectedId(item.id)),
-    [],
+    () => createSettingsColumns((item) => settingsSelection.select(item.id)),
+    [settingsSelection],
   );
   const metrics = [
     {
@@ -118,7 +119,7 @@ export function PerformanceSettingsWorkspace() {
         ? current.map((entry) => (entry.id === item.id ? item : entry))
         : [item, ...current],
     );
-    setSelectedId(item.id);
+    settingsSelection.select(item.id);
     setEditorMode(null);
   }
   function updateStatus(status: PerformanceSettingsStatus) {
@@ -141,7 +142,7 @@ export function PerformanceSettingsWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedId(null);
+              settingsSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -209,7 +210,7 @@ export function PerformanceSettingsWorkspace() {
             rows={visible}
             columns={columns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) => setSelectedId(item.id)}
+            onRowClick={(item) => settingsSelection.select(item.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <FileSearch className="size-8 text-text-muted" />
@@ -293,7 +294,7 @@ export function PerformanceSettingsWorkspace() {
       </section>
       <Drawer
         open={Boolean(selected)}
-        onClose={() => setSelectedId(null)}
+        onClose={() => settingsSelection.clear()}
         title="Performance configuration"
         description={selected?.name}
         footer={
