@@ -17,6 +17,7 @@ import {
 import { PeopleTabs } from "@/components/people/people-tabs";
 import { RoleEditor } from "@/components/people/role-editor";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -62,11 +63,11 @@ export function RolesAccess() {
 
   const [userSearch, setUserSearch] = useState("");
 
-  const [selectedRoleId, setSelectedRoleId] = useState<string | null>(null);
+  const roleSelection = useEntitySelection(roles, (role) => role.id);
 
   const [roleEditorMode, setRoleEditorMode] = useState<RoleEditorMode>(null);
 
-  const selectedRole = roles.find((role) => role.id === selectedRoleId) ?? null;
+  const selectedRole = roleSelection.selected;
 
   const visibleUsers = useMemo(() => {
     const query = userSearch.trim().toLowerCase();
@@ -129,7 +130,7 @@ export function RolesAccess() {
         : [role, ...currentRoles];
     });
 
-    setSelectedRoleId(role.id);
+    roleSelection.select(role.id);
     setRoleEditorMode(null);
   }
 
@@ -170,7 +171,7 @@ export function RolesAccess() {
         actions={
           <Button
             onClick={() => {
-              setSelectedRoleId(null);
+              roleSelection.clear();
               setRoleEditorMode("create");
             }}
           >
@@ -249,7 +250,7 @@ export function RolesAccess() {
                 key={role.id}
                 type="button"
                 onClick={() => {
-                  setSelectedRoleId(role.id);
+                  roleSelection.select(role.id);
 
                   setRoleEditorMode("edit");
                 }}

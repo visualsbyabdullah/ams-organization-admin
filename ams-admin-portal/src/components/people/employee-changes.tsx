@@ -20,6 +20,7 @@ import {
 import { EmployeeChangeForm } from "@/components/people/employee-change-form";
 import { PeopleTabs } from "@/components/people/people-tabs";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -58,7 +59,7 @@ export function EmployeeChanges() {
 
   const [statusFilter, setStatusFilter] = useState("all");
 
-  const [selectedChangeId, setSelectedChangeId] = useState<string | null>(null);
+  const changeSelection = useEntitySelection(changes, (change) => change.id);
 
   const [createOpen, setCreateOpen] = useState(false);
 
@@ -95,7 +96,7 @@ export function EmployeeChanges() {
     });
   }, [changes, searchQuery, selectedBranch, statusFilter, typeFilter]);
 
-  const selectedChange = changes.find((change) => change.id === selectedChangeId) ?? null;
+  const selectedChange = changeSelection.selected;
 
   const selectedEmployee = selectedChange
     ? EMPLOYEES.find((employee) => employee.id === selectedChange.employeeId)
@@ -159,7 +160,7 @@ export function EmployeeChanges() {
     setChanges((currentChanges) => [change, ...currentChanges]);
 
     setCreateOpen(false);
-    setSelectedChangeId(change.id);
+    changeSelection.select(change.id);
   }
 
   return (
@@ -286,7 +287,7 @@ export function EmployeeChanges() {
                   <TableRow
                     key={change.id}
                     className="cursor-pointer transition hover:bg-canvas"
-                    onClick={() => setSelectedChangeId(change.id)}
+                    onClick={() => changeSelection.select(change.id)}
                   >
                     <TableCell>
                       <div className="flex items-center gap-3">
@@ -348,7 +349,7 @@ export function EmployeeChanges() {
                         onClick={(event) => {
                           event.stopPropagation();
 
-                          setSelectedChangeId(change.id);
+                          changeSelection.select(change.id);
                         }}
                       >
                         <MoreHorizontal />
@@ -374,7 +375,7 @@ export function EmployeeChanges() {
 
       <Drawer
         open={Boolean(selectedChange)}
-        onClose={() => setSelectedChangeId(null)}
+        onClose={() => changeSelection.clear()}
         title="Change request"
         description={
           selectedEmployee
