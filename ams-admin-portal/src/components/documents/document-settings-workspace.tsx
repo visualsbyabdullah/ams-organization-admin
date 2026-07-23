@@ -24,6 +24,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { IconContainer } from "@/components/shared/icon-container";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -54,7 +55,7 @@ export function DocumentSettingsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedSettingsId, setSelectedSettingsId] = useState<string | null>(null);
+  const settingsSelection = useEntitySelection(settings, (item) => item.id);
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
   const scopedSettings = useMemo(
@@ -84,8 +85,7 @@ export function DocumentSettingsWorkspace() {
     });
   }, [scopedSettings, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedSettings =
-    settings.find((item) => item.id === selectedSettingsId) ?? null;
+  const selectedSettings = settingsSelection.selected;
 
   const effectiveSettings = resolveDocumentSettings(settings, selectedBranchId);
 
@@ -123,7 +123,7 @@ export function DocumentSettingsWorkspace() {
   ];
 
   const columns = createDocumentSettingsColumns({
-    onOpen: (item) => setSelectedSettingsId(item.id),
+    onOpen: (item) => settingsSelection.select(item.id),
   });
 
   function saveSettings(nextSettings: DocumentSettings) {
@@ -137,7 +137,7 @@ export function DocumentSettingsWorkspace() {
         : [nextSettings, ...currentSettings];
     });
 
-    setSelectedSettingsId(nextSettings.id);
+    settingsSelection.select(nextSettings.id);
     setEditorMode(null);
   }
 
@@ -152,7 +152,7 @@ export function DocumentSettingsWorkspace() {
     };
 
     setSettings((currentSettings) => [duplicate, ...currentSettings]);
-    setSelectedSettingsId(duplicate.id);
+    settingsSelection.select(duplicate.id);
   }
 
   function updateStatus(settingsId: string, status: DocumentSettingsStatus) {
@@ -208,7 +208,7 @@ export function DocumentSettingsWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedSettingsId(null);
+              settingsSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -279,7 +279,7 @@ export function DocumentSettingsWorkspace() {
             rows={visibleSettings}
             columns={columns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) => setSelectedSettingsId(item.id)}
+            onRowClick={(item) => settingsSelection.select(item.id)}
             emptyState={
               <EmptyState
                 icon={FileSearch}
@@ -377,7 +377,7 @@ export function DocumentSettingsWorkspace() {
 
       <Drawer
         open={Boolean(selectedSettings)}
-        onClose={() => setSelectedSettingsId(null)}
+        onClose={() => settingsSelection.clear()}
         title="Document settings"
         description={selectedSettings?.name}
         footer={

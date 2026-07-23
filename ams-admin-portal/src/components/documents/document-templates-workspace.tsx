@@ -19,6 +19,7 @@ import { createDocumentTemplateColumns } from "@/components/documents/document-t
 import { DocumentTemplateDetails } from "@/components/documents/document-template-details";
 import { DocumentTemplateForm } from "@/components/documents/document-template-form";
 import { DataTable } from "@/components/shared/data-table";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { EmptyState } from "@/components/shared/empty-state";
 import { IconContainer } from "@/components/shared/icon-container";
 import { PageHeader } from "@/components/shared/page-header";
@@ -52,7 +53,7 @@ export function DocumentTemplatesWorkspace() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(null);
+  const templateSelection = useEntitySelection(templates, (template) => template.id);
   const [editorMode, setEditorMode] = useState<EditorMode>(null);
 
   const scopedTemplates = useMemo(
@@ -84,8 +85,7 @@ export function DocumentTemplatesWorkspace() {
     });
   }, [categoryFilter, scopedTemplates, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedTemplate =
-    templates.find((template) => template.id === selectedTemplateId) ?? null;
+  const selectedTemplate = templateSelection.selected;
 
   const publishedTemplates = scopedTemplates.filter(
     (template) => template.status === "published",
@@ -127,7 +127,7 @@ export function DocumentTemplatesWorkspace() {
   ];
 
   const columns = createDocumentTemplateColumns({
-    onOpen: (template) => setSelectedTemplateId(template.id),
+    onOpen: (template) => templateSelection.select(template.id),
   });
 
   function saveTemplate(nextTemplate: DocumentTemplate) {
@@ -141,7 +141,7 @@ export function DocumentTemplatesWorkspace() {
         : [nextTemplate, ...currentTemplates];
     });
 
-    setSelectedTemplateId(nextTemplate.id);
+    templateSelection.select(nextTemplate.id);
     setEditorMode(null);
   }
 
@@ -158,7 +158,7 @@ export function DocumentTemplatesWorkspace() {
     };
 
     setTemplates((currentTemplates) => [duplicate, ...currentTemplates]);
-    setSelectedTemplateId(duplicate.id);
+    templateSelection.select(duplicate.id);
   }
 
   function updateStatus(templateId: string, status: DocumentTemplateStatus) {
@@ -185,7 +185,7 @@ export function DocumentTemplatesWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedTemplateId(null);
+              templateSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -270,7 +270,7 @@ export function DocumentTemplatesWorkspace() {
             rows={visibleTemplates}
             columns={columns}
             getRowKey={(template) => template.id}
-            onRowClick={(template) => setSelectedTemplateId(template.id)}
+            onRowClick={(template) => templateSelection.select(template.id)}
             emptyState={
               <EmptyState
                 icon={FileSearch}
@@ -322,7 +322,7 @@ export function DocumentTemplatesWorkspace() {
 
       <Drawer
         open={Boolean(selectedTemplate)}
-        onClose={() => setSelectedTemplateId(null)}
+        onClose={() => templateSelection.clear()}
         title="Document template"
         description={selectedTemplate?.code}
         footer={

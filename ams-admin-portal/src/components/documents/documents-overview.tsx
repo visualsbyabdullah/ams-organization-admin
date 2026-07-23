@@ -21,6 +21,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { IconContainer } from "@/components/shared/icon-container";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -57,7 +58,7 @@ export function DocumentsOverview() {
 
   const [documents, setDocuments] = useState<DocumentRecord[]>(DOCUMENT_RECORDS);
 
-  const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
+  const documentSelection = useEntitySelection(documents, (document) => document.id);
 
   const [uploadOpen, setUploadOpen] = useState(false);
 
@@ -72,8 +73,7 @@ export function DocumentsOverview() {
     requestIsInScope(request, selectedBranchId),
   );
 
-  const selectedDocument =
-    documents.find((document) => document.id === selectedDocumentId) ?? null;
+  const selectedDocument = documentSelection.selected;
 
   const verifiedDocuments = scopedDocuments.filter(
     (document) => document.status === "verified",
@@ -150,14 +150,14 @@ export function DocumentsOverview() {
     DOCUMENT_ACTIVITY_TRENDS[selectedBranchId] ?? DOCUMENT_ACTIVITY_TRENDS.all;
 
   const columns = createDocumentColumns({
-    onOpen: (document) => setSelectedDocumentId(document.id),
+    onOpen: (document) => documentSelection.select(document.id),
     compact: true,
   });
 
   function createDocument(document: DocumentRecord) {
     setDocuments((currentDocuments) => [document, ...currentDocuments]);
     setUploadOpen(false);
-    setSelectedDocumentId(document.id);
+    documentSelection.select(document.id);
   }
 
   function updateStatus(documentId: string, status: DocumentStatus) {
@@ -275,7 +275,7 @@ export function DocumentsOverview() {
                   <Button
                     key={document.id}
                     variant="ghost"
-                    onClick={() => setSelectedDocumentId(document.id)}
+                    onClick={() => documentSelection.select(document.id)}
                     className="h-auto w-full justify-start whitespace-normal rounded-control border border-border p-4 text-left hover:border-primary/40 hover:bg-canvas"
                   >
                     <div className="w-full">
@@ -325,7 +325,7 @@ export function DocumentsOverview() {
           rows={recentDocuments}
           columns={columns}
           getRowKey={(document) => document.id}
-          onRowClick={(document) => setSelectedDocumentId(document.id)}
+          onRowClick={(document) => documentSelection.select(document.id)}
           emptyState={
             <EmptyState
               icon={Files}
@@ -338,7 +338,7 @@ export function DocumentsOverview() {
 
       <Drawer
         open={Boolean(selectedDocument)}
-        onClose={() => setSelectedDocumentId(null)}
+        onClose={() => documentSelection.clear()}
         title="Document record"
         description={selectedDocument?.documentNumber}
         footer={

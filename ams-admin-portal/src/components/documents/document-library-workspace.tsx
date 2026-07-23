@@ -10,6 +10,7 @@ import { DocumentUploadForm } from "@/components/documents/document-upload-form"
 import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
@@ -39,7 +40,7 @@ export function DocumentLibraryWorkspace() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [ownerFilter, setOwnerFilter] = useState("all");
-  const [selectedDocumentId, setSelectedDocumentId] = useState<string | null>(null);
+  const documentSelection = useEntitySelection(documents, (document) => document.id);
   const [uploadOpen, setUploadOpen] = useState(false);
 
   const effectiveSettings = resolveDocumentSettings(DOCUMENT_SETTINGS, selectedBranchId);
@@ -78,17 +79,16 @@ export function DocumentLibraryWorkspace() {
     });
   }, [categoryFilter, ownerFilter, scopedDocuments, searchQuery, statusFilter]);
 
-  const selectedDocument =
-    documents.find((document) => document.id === selectedDocumentId) ?? null;
+  const selectedDocument = documentSelection.selected;
 
   const columns = createDocumentColumns({
-    onOpen: (document) => setSelectedDocumentId(document.id),
+    onOpen: (document) => documentSelection.select(document.id),
   });
 
   function createDocument(document: DocumentRecord) {
     setDocuments((currentDocuments) => [document, ...currentDocuments]);
     setUploadOpen(false);
-    setSelectedDocumentId(document.id);
+    documentSelection.select(document.id);
   }
 
   function updateStatus(documentId: string, status: DocumentStatus) {
@@ -231,7 +231,7 @@ export function DocumentLibraryWorkspace() {
           rows={visibleDocuments}
           columns={columns}
           getRowKey={(document) => document.id}
-          onRowClick={(document) => setSelectedDocumentId(document.id)}
+          onRowClick={(document) => documentSelection.select(document.id)}
           emptyState={
             <EmptyState
               icon={Files}
@@ -250,7 +250,7 @@ export function DocumentLibraryWorkspace() {
 
       <Drawer
         open={Boolean(selectedDocument)}
-        onClose={() => setSelectedDocumentId(null)}
+        onClose={() => documentSelection.clear()}
         title="Document record"
         description={selectedDocument?.documentNumber}
         footer={

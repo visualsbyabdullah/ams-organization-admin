@@ -20,6 +20,7 @@ import { DataTable } from "@/components/shared/data-table";
 import { EmptyState } from "@/components/shared/empty-state";
 import { IconContainer } from "@/components/shared/icon-container";
 import { PageHeader } from "@/components/shared/page-header";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -47,7 +48,7 @@ export function DocumentRequestsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [categoryFilter, setCategoryFilter] = useState("all");
-  const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
+  const requestSelection = useEntitySelection(requests, (request) => request.id);
   const [createOpen, setCreateOpen] = useState(false);
 
   const scopedRequests = useMemo(
@@ -81,8 +82,7 @@ export function DocumentRequestsWorkspace() {
     });
   }, [categoryFilter, scopedRequests, searchQuery, statusFilter]);
 
-  const selectedRequest =
-    requests.find((request) => request.id === selectedRequestId) ?? null;
+  const selectedRequest = requestSelection.selected;
 
   const queue = scopedRequests
     .filter((request) => ["open", "submitted", "overdue"].includes(request.status))
@@ -126,13 +126,13 @@ export function DocumentRequestsWorkspace() {
   ];
 
   const columns = createDocumentRequestColumns({
-    onOpen: (request) => setSelectedRequestId(request.id),
+    onOpen: (request) => requestSelection.select(request.id),
   });
 
   function createRequest(request: DocumentRequest) {
     setRequests((currentRequests) => [request, ...currentRequests]);
     setCreateOpen(false);
-    setSelectedRequestId(request.id);
+    requestSelection.select(request.id);
   }
 
   function updateStatus(requestId: string, status: DocumentRequestStatus) {
@@ -235,7 +235,7 @@ export function DocumentRequestsWorkspace() {
             rows={visibleRequests}
             columns={columns}
             getRowKey={(request) => request.id}
-            onRowClick={(request) => setSelectedRequestId(request.id)}
+            onRowClick={(request) => requestSelection.select(request.id)}
             emptyState={
               <EmptyState
                 icon={FileSearch}
@@ -272,7 +272,7 @@ export function DocumentRequestsWorkspace() {
                   <Button
                     key={request.id}
                     variant="ghost"
-                    onClick={() => setSelectedRequestId(request.id)}
+                    onClick={() => requestSelection.select(request.id)}
                     className="h-auto w-full justify-start whitespace-normal rounded-control border border-border p-4 text-left hover:border-primary/40 hover:bg-canvas"
                   >
                     <div className="w-full">
@@ -309,7 +309,7 @@ export function DocumentRequestsWorkspace() {
 
       <Drawer
         open={Boolean(selectedRequest)}
-        onClose={() => setSelectedRequestId(null)}
+        onClose={() => requestSelection.clear()}
         title="Document request"
         description={selectedRequest?.title}
         footer={
