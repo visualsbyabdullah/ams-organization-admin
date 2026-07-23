@@ -18,6 +18,7 @@ import { ReportDefinitionForm } from "@/components/reports/report-definition-for
 import { ReportTabs } from "@/components/reports/report-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -49,7 +50,7 @@ export function ReportLibraryWorkspace() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  const reportSelection = useEntitySelection(reports, (report) => report.id);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedReports = useMemo(
@@ -88,7 +89,7 @@ export function ReportLibraryWorkspace() {
     });
   }, [categoryFilter, scopedReports, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedReport = reports.find((report) => report.id === selectedReportId) ?? null;
+  const selectedReport = reportSelection.selected;
 
   const activeReports = scopedReports.filter((report) => report.status === "active");
   const draftReports = scopedReports.filter((report) => report.status === "draft");
@@ -205,7 +206,7 @@ export function ReportLibraryWorkspace() {
             aria-label="Open report actions"
             onClick={(event) => {
               event.stopPropagation();
-              setSelectedReportId(report.id);
+              reportSelection.select(report.id);
             }}
           >
             <MoreHorizontal />
@@ -213,7 +214,7 @@ export function ReportLibraryWorkspace() {
         ),
       },
     ],
-    [],
+    [reportSelection],
   );
 
   function saveReport(report: ReportDefinition) {
@@ -226,7 +227,7 @@ export function ReportLibraryWorkspace() {
     });
 
     setEditorMode(null);
-    setSelectedReportId(report.id);
+    reportSelection.select(report.id);
   }
 
   function duplicateReport() {
@@ -246,7 +247,7 @@ export function ReportLibraryWorkspace() {
     };
 
     setReports((currentReports) => [duplicate, ...currentReports]);
-    setSelectedReportId(duplicate.id);
+    reportSelection.select(duplicate.id);
   }
 
   function updateStatus(status: ReportDefinition["status"]) {
@@ -299,7 +300,7 @@ export function ReportLibraryWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedReportId(null);
+              reportSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -379,7 +380,7 @@ export function ReportLibraryWorkspace() {
           rows={visibleReports}
           columns={columns}
           getRowKey={(report) => report.id}
-          onRowClick={(report) => setSelectedReportId(report.id)}
+          onRowClick={(report) => reportSelection.select(report.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <FileBarChart2 className="size-8 text-text-muted" />
@@ -394,7 +395,7 @@ export function ReportLibraryWorkspace() {
 
       <Drawer
         open={Boolean(selectedReport)}
-        onClose={() => setSelectedReportId(null)}
+        onClose={() => reportSelection.clear()}
         title="Report definition"
         description={selectedReport?.name}
         footer={

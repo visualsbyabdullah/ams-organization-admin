@@ -17,6 +17,7 @@ import { ReportScheduleForm } from "@/components/reports/report-schedule-form";
 import { ReportTabs } from "@/components/reports/report-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,7 +45,7 @@ export function ScheduledReportsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [frequencyFilter, setFrequencyFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedScheduleId, setSelectedScheduleId] = useState<string | null>(null);
+  const scheduleSelection = useEntitySelection(schedules, (schedule) => schedule.id);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedSchedules = useMemo(
@@ -83,8 +84,7 @@ export function ScheduledReportsWorkspace() {
     });
   }, [frequencyFilter, scopedSchedules, searchQuery, statusFilter]);
 
-  const selectedSchedule =
-    schedules.find((schedule) => schedule.id === selectedScheduleId) ?? null;
+  const selectedSchedule = scheduleSelection.selected;
 
   const selectedReport = selectedSchedule
     ? REPORT_DEFINITIONS.find((report) => report.id === selectedSchedule.reportId)
@@ -217,7 +217,7 @@ export function ScheduledReportsWorkspace() {
             aria-label="Open scheduled report actions"
             onClick={(event) => {
               event.stopPropagation();
-              setSelectedScheduleId(schedule.id);
+              scheduleSelection.select(schedule.id);
             }}
           >
             <MoreHorizontal />
@@ -225,7 +225,7 @@ export function ScheduledReportsWorkspace() {
         ),
       },
     ],
-    [],
+    [scheduleSelection],
   );
 
   function saveSchedule(schedule: ReportSchedule) {
@@ -238,7 +238,7 @@ export function ScheduledReportsWorkspace() {
     });
 
     setEditorMode(null);
-    setSelectedScheduleId(schedule.id);
+    scheduleSelection.select(schedule.id);
   }
 
   function updateStatus(status: ReportSchedule["status"]) {
@@ -269,7 +269,7 @@ export function ScheduledReportsWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedScheduleId(null);
+              scheduleSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -337,7 +337,7 @@ export function ScheduledReportsWorkspace() {
           rows={visibleSchedules}
           columns={columns}
           getRowKey={(schedule) => schedule.id}
-          onRowClick={(schedule) => setSelectedScheduleId(schedule.id)}
+          onRowClick={(schedule) => scheduleSelection.select(schedule.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <CalendarClock className="size-8 text-text-muted" />
@@ -352,7 +352,7 @@ export function ScheduledReportsWorkspace() {
 
       <Drawer
         open={Boolean(selectedSchedule)}
-        onClose={() => setSelectedScheduleId(null)}
+        onClose={() => scheduleSelection.clear()}
         title="Scheduled report"
         description={selectedSchedule?.name}
         footer={

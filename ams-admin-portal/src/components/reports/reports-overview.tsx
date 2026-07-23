@@ -18,6 +18,7 @@ import { ReportGenerationChart } from "@/components/reports/report-generation-ch
 import { ReportTabs } from "@/components/reports/report-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -48,8 +49,8 @@ import type { ReportDefinition, ReportExport } from "@/types/report";
 export function ReportsOverview() {
   const { selectedBranch, selectedBranchId } = useBranchScope();
   const [exports, setExports] = useState<ReportExport[]>(REPORT_EXPORTS);
-  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
-  const [selectedExportId, setSelectedExportId] = useState<string | null>(null);
+  const reportSelection = useEntitySelection(REPORT_DEFINITIONS, (report) => report.id);
+  const exportSelection = useEntitySelection(exports, (item) => item.id);
 
   const scopedReports = useMemo(
     () =>
@@ -102,10 +103,9 @@ export function ReportsOverview() {
     .sort((first, second) => second.createdAt.localeCompare(first.createdAt))
     .slice(0, 6);
 
-  const selectedReport =
-    REPORT_DEFINITIONS.find((report) => report.id === selectedReportId) ?? null;
+  const selectedReport = reportSelection.selected;
 
-  const selectedExport = exports.find((item) => item.id === selectedExportId) ?? null;
+  const selectedExport = exportSelection.selected;
 
   const selectedExportReport = selectedExport
     ? REPORT_DEFINITIONS.find((report) => report.id === selectedExport.reportId)
@@ -206,7 +206,7 @@ export function ReportsOverview() {
             aria-label="Open report export actions"
             onClick={(event) => {
               event.stopPropagation();
-              setSelectedExportId(item.id);
+              exportSelection.select(item.id);
             }}
           >
             <MoreHorizontal />
@@ -214,7 +214,7 @@ export function ReportsOverview() {
         ),
       },
     ],
-    [],
+    [exportSelection],
   );
 
   function generateReport(report: ReportDefinition) {
@@ -226,8 +226,8 @@ export function ReportsOverview() {
 
     setExports((currentExports) => [reportExport, ...currentExports]);
     downloadReportSummary(report, reportExport);
-    setSelectedReportId(null);
-    setSelectedExportId(reportExport.id);
+    reportSelection.clear();
+    exportSelection.select(reportExport.id);
   }
 
   return (
@@ -237,7 +237,16 @@ export function ReportsOverview() {
         title={REPORT_COPY.overview.title}
         description={REPORT_COPY.overview.description}
         actions={
-          <Button onClick={() => setSelectedReportId(scopedReports[0]?.id ?? null)}>
+          <Button
+            onClick={() => {
+              const firstReportId = scopedReports[0]?.id;
+              if (firstReportId) {
+                reportSelection.select(firstReportId);
+              } else {
+                reportSelection.clear();
+              }
+            }}
+          >
             <Play />
             {REPORT_COPY.overview.generateAction}
           </Button>
@@ -285,7 +294,7 @@ export function ReportsOverview() {
               <button
                 key={report.id}
                 type="button"
-                onClick={() => setSelectedReportId(report.id)}
+                onClick={() => reportSelection.select(report.id)}
                 className="w-full rounded-control border border-border p-4 text-left transition hover:border-primary/40 hover:bg-canvas"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -320,7 +329,7 @@ export function ReportsOverview() {
           rows={recentExports}
           columns={columns}
           getRowKey={(item) => item.id}
-          onRowClick={(item) => setSelectedExportId(item.id)}
+          onRowClick={(item) => exportSelection.select(item.id)}
           emptyState={
             <div className="flex min-h-64 flex-col items-center justify-center p-8 text-center">
               <FileBarChart2 className="size-8 text-text-muted" />
@@ -332,7 +341,7 @@ export function ReportsOverview() {
 
       <Drawer
         open={Boolean(selectedReport)}
-        onClose={() => setSelectedReportId(null)}
+        onClose={() => reportSelection.clear()}
         title="Generate report"
         description={selectedReport?.name}
         footer={
@@ -396,7 +405,7 @@ export function ReportsOverview() {
 
       <Drawer
         open={Boolean(selectedExport && selectedExportReport)}
-        onClose={() => setSelectedExportId(null)}
+        onClose={() => exportSelection.clear()}
         title="Report export"
         description={selectedExportReport?.name}
         footer={

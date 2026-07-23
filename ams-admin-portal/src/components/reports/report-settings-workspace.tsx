@@ -20,6 +20,7 @@ import { ReportSettingsForm } from "@/components/reports/report-settings-form";
 import { ReportTabs } from "@/components/reports/report-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,7 +47,7 @@ export function ReportSettingsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [scopeFilter, setScopeFilter] = useState("all");
-  const [selectedSettingsId, setSelectedSettingsId] = useState<string | null>(null);
+  const settingsSelection = useEntitySelection(settings, (item) => item.id);
   const [editorMode, setEditorMode] = useState<"create" | "edit" | null>(null);
 
   const scopedSettings = useMemo(
@@ -77,8 +78,7 @@ export function ReportSettingsWorkspace() {
     });
   }, [scopedSettings, scopeFilter, searchQuery, statusFilter]);
 
-  const selectedSettings =
-    settings.find((item) => item.id === selectedSettingsId) ?? null;
+  const selectedSettings = settingsSelection.selected;
 
   const organizationDefault =
     settings.find((item) => item.scope === "organization" && item.status === "active") ??
@@ -212,7 +212,7 @@ export function ReportSettingsWorkspace() {
             aria-label="Open report settings actions"
             onClick={(event) => {
               event.stopPropagation();
-              setSelectedSettingsId(item.id);
+              settingsSelection.select(item.id);
             }}
           >
             <MoreHorizontal />
@@ -220,7 +220,7 @@ export function ReportSettingsWorkspace() {
         ),
       },
     ],
-    [],
+    [settingsSelection],
   );
 
   function saveSettings(nextSettings: ReportSettings) {
@@ -235,7 +235,7 @@ export function ReportSettingsWorkspace() {
     });
 
     setEditorMode(null);
-    setSelectedSettingsId(nextSettings.id);
+    settingsSelection.select(nextSettings.id);
   }
 
   function duplicateSettings() {
@@ -253,7 +253,7 @@ export function ReportSettingsWorkspace() {
     };
 
     setSettings((currentSettings) => [duplicate, ...currentSettings]);
-    setSelectedSettingsId(duplicate.id);
+    settingsSelection.select(duplicate.id);
   }
 
   function updateStatus(status: ReportSettings["status"]) {
@@ -291,7 +291,7 @@ export function ReportSettingsWorkspace() {
         actions={
           <Button
             onClick={() => {
-              setSelectedSettingsId(null);
+              settingsSelection.clear();
               setEditorMode("create");
             }}
           >
@@ -360,7 +360,7 @@ export function ReportSettingsWorkspace() {
             rows={visibleSettings}
             columns={columns}
             getRowKey={(item) => item.id}
-            onRowClick={(item) => setSelectedSettingsId(item.id)}
+            onRowClick={(item) => settingsSelection.select(item.id)}
             emptyState={
               <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
                 <Settings2 className="size-8 text-text-muted" />
@@ -447,7 +447,7 @@ export function ReportSettingsWorkspace() {
 
       <Drawer
         open={Boolean(selectedSettings)}
-        onClose={() => setSelectedSettingsId(null)}
+        onClose={() => settingsSelection.clear()}
         title="Report settings"
         description={selectedSettings?.name}
         footer={

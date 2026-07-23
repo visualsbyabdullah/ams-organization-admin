@@ -16,6 +16,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import { ReportTabs } from "@/components/reports/report-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -45,7 +46,7 @@ export function ReportExportsWorkspace() {
   const [searchQuery, setSearchQuery] = useState("");
   const [formatFilter, setFormatFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedExportId, setSelectedExportId] = useState<string | null>(null);
+  const exportSelection = useEntitySelection(exports, (item) => item.id);
   const [generateOpen, setGenerateOpen] = useState(false);
   const [selectedGenerateReportId, setSelectedGenerateReportId] = useState(
     REPORT_DEFINITIONS.find((report) => report.status === "active")?.id ?? "",
@@ -89,7 +90,7 @@ export function ReportExportsWorkspace() {
     });
   }, [formatFilter, scopedExports, searchQuery, statusFilter]);
 
-  const selectedExport = exports.find((item) => item.id === selectedExportId) ?? null;
+  const selectedExport = exportSelection.selected;
 
   const selectedReport = selectedExport
     ? REPORT_DEFINITIONS.find((report) => report.id === selectedExport.reportId)
@@ -210,7 +211,7 @@ export function ReportExportsWorkspace() {
             aria-label="Open report export actions"
             onClick={(event) => {
               event.stopPropagation();
-              setSelectedExportId(item.id);
+              exportSelection.select(item.id);
             }}
           >
             <MoreHorizontal />
@@ -218,7 +219,7 @@ export function ReportExportsWorkspace() {
         ),
       },
     ],
-    [],
+    [exportSelection],
   );
 
   function generateReport() {
@@ -238,7 +239,7 @@ export function ReportExportsWorkspace() {
 
     setExports((currentExports) => [reportExport, ...currentExports]);
     setGenerateOpen(false);
-    setSelectedExportId(reportExport.id);
+    exportSelection.select(reportExport.id);
     downloadReportSummary(report, reportExport);
   }
 
@@ -255,7 +256,7 @@ export function ReportExportsWorkspace() {
     );
 
     setExports((currentExports) => [retry, ...currentExports]);
-    setSelectedExportId(retry.id);
+    exportSelection.select(retry.id);
   }
 
   return (
@@ -330,7 +331,7 @@ export function ReportExportsWorkspace() {
           rows={visibleExports}
           columns={columns}
           getRowKey={(item) => item.id}
-          onRowClick={(item) => setSelectedExportId(item.id)}
+          onRowClick={(item) => exportSelection.select(item.id)}
           emptyState={
             <div className="flex min-h-72 flex-col items-center justify-center p-8 text-center">
               <FileBarChart2 className="size-8 text-text-muted" />
@@ -345,7 +346,7 @@ export function ReportExportsWorkspace() {
 
       <Drawer
         open={Boolean(selectedExport && selectedReport)}
-        onClose={() => setSelectedExportId(null)}
+        onClose={() => exportSelection.clear()}
         title="Report export"
         description={selectedReport?.name}
         footer={
