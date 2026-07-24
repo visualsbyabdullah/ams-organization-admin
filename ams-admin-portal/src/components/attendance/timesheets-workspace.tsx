@@ -64,7 +64,9 @@ export function TimesheetsWorkspace() {
 
   const [timesheets, setTimesheets] = useState<Timesheet[]>(TIMESHEETS);
 
-  const [selectedPeriod, setSelectedPeriod] = useState(TIMESHEET_PERIOD_OPTIONS[0].value);
+  const [selectedPeriod, setSelectedPeriod] = useState<string>(
+    TIMESHEET_PERIOD_OPTIONS[0].value,
+  );
 
   const [searchQuery, setSearchQuery] = useState("");
 

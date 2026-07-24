@@ -46,7 +46,7 @@ function findOptionLabel(
     value: string;
     label: string;
   }>,
-  value: string,
+  value: string | undefined,
 ) {
   return options.find((option) => option.value === value)?.label ?? "Not provided";
 }

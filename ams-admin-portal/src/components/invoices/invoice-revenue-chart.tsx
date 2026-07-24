@@ -57,7 +57,7 @@ export function InvoiceRevenueChart({ data }: InvoiceRevenueChartProps) {
 
           <Tooltip
             contentStyle={CHART_TOOLTIP_STYLE}
-            formatter={(value: number | string) => formatPKR(Number(value))}
+            formatter={(value) => formatPKR(Number(value ?? 0))}
           />
 
           <Legend

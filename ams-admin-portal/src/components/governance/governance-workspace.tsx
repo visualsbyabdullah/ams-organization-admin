@@ -1155,7 +1155,7 @@ function RequestForm({
   const [branchId, setBranchId] = useState(
     selectedBranchId === "all" ? "" : selectedBranchId,
   );
-  const [requesterName, setRequesterName] = useState(CURRENT_ADMIN.name);
+  const [requesterName, setRequesterName] = useState<string>(CURRENT_ADMIN.name);
   const [requesterRole, setRequesterRole] = useState<GovernanceRole>("line_manager");
   const [reason, setReason] = useState("");
   const [submitted, setSubmitted] = useState(false);
