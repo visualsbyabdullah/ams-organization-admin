@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   CalendarClock,
   Check,
@@ -147,9 +147,15 @@ export function LeaveRequestsWorkspace() {
     ? LEAVE_BALANCES.find((balance) => balance.employeeId === selectedRequest.employeeId)
     : undefined;
 
-  useEffect(() => {
-    setReviewNote(selectedRequest?.managerNote ?? "");
-  }, [selectedRequest]);
+  const [lastReviewedRequestId, setLastReviewedRequestId] = useState<string | null>(null);
+
+  if (selectedRequest && selectedRequest.id !== lastReviewedRequestId) {
+    setLastReviewedRequestId(selectedRequest.id);
+    setReviewNote(selectedRequest.managerNote ?? "");
+  } else if (!selectedRequest && lastReviewedRequestId !== null) {
+    setLastReviewedRequestId(null);
+    setReviewNote("");
+  }
 
   const metrics = [
     {

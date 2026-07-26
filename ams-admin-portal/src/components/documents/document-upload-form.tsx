@@ -33,6 +33,10 @@ type DocumentUploadFormProps = {
   onCreate: (document: DocumentRecord) => void;
 };
 
+function generateDocumentNumber() {
+  return `${DOCUMENT_NUMBER_PREFIX}-${Date.now().toString().slice(-8)}`;
+}
+
 export function DocumentUploadForm({
   selectedBranchId,
   maximumUploadMb,
@@ -118,7 +122,7 @@ export function DocumentUploadForm({
     onCreate({
       id: crypto.randomUUID(),
       title: title.trim(),
-      documentNumber: `${DOCUMENT_NUMBER_PREFIX}-${Date.now().toString().slice(-8)}`,
+      documentNumber: generateDocumentNumber(),
       category,
       ownerType,
       employeeId: ownerType === "employee" ? employeeId : undefined,
