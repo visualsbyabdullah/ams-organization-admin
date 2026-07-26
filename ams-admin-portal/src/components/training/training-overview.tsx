@@ -1,6 +1,6 @@
 ﻿"use client";
 
-import { type MouseEvent, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Award,
   BookOpenCheck,

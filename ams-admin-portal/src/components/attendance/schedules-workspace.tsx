@@ -5,7 +5,6 @@ import {
   AlertTriangle,
   CalendarClock,
   Check,
-  Clock3,
   MoreHorizontal,
   Plus,
   Search,

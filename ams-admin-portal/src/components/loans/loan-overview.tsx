@@ -16,7 +16,6 @@ import {
   Search,
   Send,
   ShieldCheck,
-  WalletCards,
   X,
 } from "lucide-react";
 

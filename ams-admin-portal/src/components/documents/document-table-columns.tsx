@@ -18,7 +18,6 @@ import {
   DOCUMENT_TEMPLATE_STATUS_CONFIG,
   DOCUMENT_VISIBILITY_CONFIG,
 } from "@/config/documents";
-import { BRANCH_OPTIONS } from "@/data/branches";
 import { EMPLOYEES } from "@/data/employees";
 import { formatDate } from "@/lib/date";
 import { formatFileSize } from "@/lib/documents";
@@ -35,10 +34,6 @@ type OpenAction<T> = {
 
 function getEmployee(employeeId?: string) {
   return EMPLOYEES.find((employee) => employee.id === employeeId);
-}
-
-function getBranchName(branchId?: string) {
-  return BRANCH_OPTIONS.find((branch) => branch.id === branchId)?.name;
 }
 
 function actionColumn<T>({ onOpen }: OpenAction<T>): DataTableColumn<T> {

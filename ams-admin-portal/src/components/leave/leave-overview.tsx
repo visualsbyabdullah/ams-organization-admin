@@ -10,7 +10,6 @@ import {
   Plus,
   Search,
   Umbrella,
-  UserCheck,
   Users,
   X,
 } from "lucide-react";

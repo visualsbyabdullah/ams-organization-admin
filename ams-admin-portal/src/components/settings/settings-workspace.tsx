@@ -12,7 +12,6 @@ import {
   Search,
   Settings2,
   ShieldCheck,
-  Unplug,
 } from "lucide-react";
 
 import { MetricCard } from "@/components/dashboard/metric-card";

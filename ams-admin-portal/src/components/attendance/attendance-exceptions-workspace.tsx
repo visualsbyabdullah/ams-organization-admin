@@ -49,9 +49,7 @@ import { EMPLOYEES } from "@/data/employees";
 import { formatDate } from "@/lib/date";
 import type {
   AttendanceException,
-  AttendanceExceptionSeverity,
   AttendanceExceptionStatus,
-  AttendanceExceptionType,
 } from "@/types/attendance-exception";
 
 function formatImpact(minutes: number) {
