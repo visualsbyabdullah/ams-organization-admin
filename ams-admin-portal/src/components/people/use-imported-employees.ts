@@ -67,6 +67,9 @@ export function useImportedEmployees() {
   const [employees, setEmployees] = useState<ImportedEmployee[]>([]);
 
   useEffect(() => {
+    // Intentional: hydrating client state from localStorage, which is
+    // unavailable during SSR and must be read after mount.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setEmployees(readImportedEmployees());
 
     function handleImported(event: Event) {

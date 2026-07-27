@@ -122,6 +122,11 @@ export function InvoiceForm({
       return;
     }
 
+    // Intentional: re-deriving form defaults (invoice number, tax rate,
+    // due date, note) from branch settings whenever the branch changes
+    // for a new (unsaved) invoice. These fields remain user-editable
+    // afterward, so this can't be pure render-time derived state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setInvoiceNumber(buildInvoiceNumber(settings.invoicePrefix, settings.nextSequence));
 
     setTaxRate(String(settings.defaultTaxRate));

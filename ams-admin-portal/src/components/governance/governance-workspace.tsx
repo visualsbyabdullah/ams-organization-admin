@@ -80,10 +80,13 @@ export function GovernanceWorkspace() {
   const [mfaCode, setMfaCode] = useState("");
 
   useEffect(() => {
+    // Intentional: hydrating client state from localStorage, which is
+    // unavailable during SSR and must be read after mount.
     const saved = window.localStorage.getItem(STORAGE_KEY);
 
     if (saved) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setState(JSON.parse(saved) as GovernanceState);
       } catch {
         setState(GOVERNANCE_INITIAL_STATE);
