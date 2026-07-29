@@ -1,4 +1,4 @@
-import { SupportTicketsWorkspace } from "@/components/support/support-workspaces";
+import { SupportTicketsWorkspace } from "@/components/support/support-tickets-workspace";
 
 export default function SupportTicketsPage() {
   return <SupportTicketsWorkspace />;
