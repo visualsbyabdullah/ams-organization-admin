@@ -9,7 +9,6 @@ import {
   Globe2,
   MoreHorizontal,
   Plus,
-  Search,
   ShieldCheck,
   Users,
 } from "lucide-react";
@@ -18,14 +17,13 @@ import { AttendancePolicyForm } from "@/components/attendance/attendance-policy-
 import { AttendanceTabs } from "@/components/attendance/attendance-tabs";
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DetailGrid, ToggleDetailList } from "@/components/shared/detail-grid";
+import { SearchFilterBar } from "@/components/shared/search-filter-bar";
 import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import {
   ATTENDANCE_POLICY_BRANCH_OPTIONS,
   ATTENDANCE_POLICY_COPY,
@@ -213,44 +211,46 @@ export function AttendancePoliciesWorkspace() {
             {ATTENDANCE_POLICY_COPY.policiesDescription}
           </p>
 
-          <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_14rem_14rem]">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-
-              <Input
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder={ATTENDANCE_POLICY_COPY.searchPlaceholder}
-                className="pl-9"
-              />
-            </div>
-
-            <Select
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="all">{ATTENDANCE_POLICY_COPY.allStatuses}</option>
-
-              {Object.entries(ATTENDANCE_POLICY_STATUS_CONFIG).map(([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ))}
-            </Select>
-
-            <Select
-              value={scopeFilter}
-              onChange={(event) => setScopeFilter(event.target.value)}
-            >
-              <option value="all">{ATTENDANCE_POLICY_COPY.allScopes}</option>
-
-              {Object.entries(ATTENDANCE_POLICY_SCOPE_CONFIG).map(([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <SearchFilterBar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={ATTENDANCE_POLICY_COPY.searchPlaceholder}
+            gridClassName="lg:grid-cols-[minmax(0,1fr)_14rem_14rem]"
+            filters={[
+              {
+                value: statusFilter,
+                onChange: setStatusFilter,
+                children: (
+                  <>
+                    <option value="all">{ATTENDANCE_POLICY_COPY.allStatuses}</option>
+                    {Object.entries(ATTENDANCE_POLICY_STATUS_CONFIG).map(
+                      ([value, config]) => (
+                        <option key={value} value={value}>
+                          {config.label}
+                        </option>
+                      ),
+                    )}
+                  </>
+                ),
+              },
+              {
+                value: scopeFilter,
+                onChange: setScopeFilter,
+                children: (
+                  <>
+                    <option value="all">{ATTENDANCE_POLICY_COPY.allScopes}</option>
+                    {Object.entries(ATTENDANCE_POLICY_SCOPE_CONFIG).map(
+                      ([value, config]) => (
+                        <option key={value} value={value}>
+                          {config.label}
+                        </option>
+                      ),
+                    )}
+                  </>
+                ),
+              },
+            ]}
+          />
         </div>
 
         {visiblePolicies.length > 0 ? (
