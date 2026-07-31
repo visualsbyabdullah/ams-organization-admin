@@ -7,7 +7,6 @@ import {
   FilePenLine,
   MapPinned,
   Plus,
-  Search,
   Users,
 } from "lucide-react";
 
@@ -18,13 +17,12 @@ import { createBranchColumns } from "@/components/branches/branch-table-columns"
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { SearchFilterBar } from "@/components/shared/search-filter-bar";
 import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { BRANCH_COPY, BRANCH_STATUS_CONFIG } from "@/config/branches";
 import { useBranchScope } from "@/context/branch-scope-context";
 import { CURRENT_ADMIN } from "@/data/current-admin";
@@ -246,44 +244,42 @@ export function BranchesWorkspace() {
             {BRANCH_COPY.registerDescription}
           </p>
 
-          <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1fr)_14rem_14rem]">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-
-              <Input
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder={BRANCH_COPY.searchPlaceholder}
-                className="pl-9"
-              />
-            </div>
-
-            <Select
-              value={cityFilter}
-              onChange={(event) => setCityFilter(event.target.value)}
-            >
-              <option value="all">{BRANCH_COPY.allCities}</option>
-
-              {cities.map((city) => (
-                <option key={city} value={city}>
-                  {city}
-                </option>
-              ))}
-            </Select>
-
-            <Select
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="all">{BRANCH_COPY.allStatuses}</option>
-
-              {Object.entries(BRANCH_STATUS_CONFIG).map(([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <SearchFilterBar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={BRANCH_COPY.searchPlaceholder}
+            gridClassName="xl:grid-cols-[minmax(0,1fr)_14rem_14rem]"
+            filters={[
+              {
+                value: cityFilter,
+                onChange: setCityFilter,
+                children: (
+                  <>
+                    <option value="all">{BRANCH_COPY.allCities}</option>
+                    {cities.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </>
+                ),
+              },
+              {
+                value: statusFilter,
+                onChange: setStatusFilter,
+                children: (
+                  <>
+                    <option value="all">{BRANCH_COPY.allStatuses}</option>
+                    {Object.entries(BRANCH_STATUS_CONFIG).map(([value, config]) => (
+                      <option key={value} value={value}>
+                        {config.label}
+                      </option>
+                    ))}
+                  </>
+                ),
+              },
+            ]}
+          />
         </div>
 
         <DataTable
