@@ -9,7 +9,6 @@ import {
   FilePenLine,
   FileSearch,
   Plus,
-  Search,
   Send,
 } from "lucide-react";
 
@@ -21,12 +20,11 @@ import { createInvoiceColumns } from "@/components/invoices/invoice-table-column
 import { useInvoiceRecords } from "@/components/invoices/use-invoice-records";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { SearchFilterBar } from "@/components/shared/search-filter-bar";
 import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import {
   INVOICE_CATEGORY_CONFIG,
   INVOICE_COPY,
@@ -162,44 +160,42 @@ export function InvoiceRegisterWorkspace() {
             {INVOICE_COPY.register.registerDescription}
           </p>
 
-          <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1fr)_14rem_14rem]">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-
-              <Input
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder={INVOICE_COPY.common.searchPlaceholder}
-                className="pl-9"
-              />
-            </div>
-
-            <Select
-              value={categoryFilter}
-              onChange={(event) => setCategoryFilter(event.target.value)}
-            >
-              <option value="all">{INVOICE_COPY.common.allCategories}</option>
-
-              {Object.entries(INVOICE_CATEGORY_CONFIG).map(([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ))}
-            </Select>
-
-            <Select
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="all">{INVOICE_COPY.common.allStatuses}</option>
-
-              {Object.entries(INVOICE_STATUS_CONFIG).map(([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <SearchFilterBar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={INVOICE_COPY.common.searchPlaceholder}
+            gridClassName="xl:grid-cols-[minmax(0,1fr)_14rem_14rem]"
+            filters={[
+              {
+                value: categoryFilter,
+                onChange: setCategoryFilter,
+                children: (
+                  <>
+                    <option value="all">{INVOICE_COPY.common.allCategories}</option>
+                    {Object.entries(INVOICE_CATEGORY_CONFIG).map(([value, config]) => (
+                      <option key={value} value={value}>
+                        {config.label}
+                      </option>
+                    ))}
+                  </>
+                ),
+              },
+              {
+                value: statusFilter,
+                onChange: setStatusFilter,
+                children: (
+                  <>
+                    <option value="all">{INVOICE_COPY.common.allStatuses}</option>
+                    {Object.entries(INVOICE_STATUS_CONFIG).map(([value, config]) => (
+                      <option key={value} value={value}>
+                        {config.label}
+                      </option>
+                    ))}
+                  </>
+                ),
+              },
+            ]}
+          />
         </div>
 
         <DataTable

@@ -11,7 +11,6 @@ import {
   Play,
   Plus,
   RefreshCw,
-  Search,
   XCircle,
 } from "lucide-react";
 
@@ -21,14 +20,13 @@ import { RecurringInvoiceForm } from "@/components/invoices/recurring-invoice-fo
 import { createRecurringInvoiceColumns } from "@/components/invoices/invoice-table-columns";
 import { DataTable } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { SearchFilterBar } from "@/components/shared/search-filter-bar";
 import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import {
   INVOICE_CATEGORY_CONFIG,
   INVOICE_COPY,
@@ -229,48 +227,46 @@ export function RecurringInvoicesWorkspace() {
               {INVOICE_COPY.recurring.registerDescription}
             </p>
 
-            <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1fr)_14rem_14rem]">
-              <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-
-                <Input
-                  value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder="Search schedule, client, email, category or note"
-                  className="pl-9"
-                />
-              </div>
-
-              <Select
-                value={frequencyFilter}
-                onChange={(event) => setFrequencyFilter(event.target.value)}
-              >
-                <option value="all">{INVOICE_COPY.recurring.allFrequencies}</option>
-
-                {Object.entries(RECURRING_INVOICE_FREQUENCY_CONFIG).map(
-                  ([value, config]) => (
-                    <option key={value} value={value}>
-                      {config.label}
-                    </option>
+            <SearchFilterBar
+              searchValue={searchQuery}
+              onSearchChange={setSearchQuery}
+              searchPlaceholder="Search schedule, client, email, category or note"
+              gridClassName="xl:grid-cols-[minmax(0,1fr)_14rem_14rem]"
+              filters={[
+                {
+                  value: frequencyFilter,
+                  onChange: setFrequencyFilter,
+                  children: (
+                    <>
+                      <option value="all">{INVOICE_COPY.recurring.allFrequencies}</option>
+                      {Object.entries(RECURRING_INVOICE_FREQUENCY_CONFIG).map(
+                        ([value, config]) => (
+                          <option key={value} value={value}>
+                            {config.label}
+                          </option>
+                        ),
+                      )}
+                    </>
                   ),
-                )}
-              </Select>
-
-              <Select
-                value={statusFilter}
-                onChange={(event) => setStatusFilter(event.target.value)}
-              >
-                <option value="all">{INVOICE_COPY.recurring.allStatuses}</option>
-
-                {Object.entries(RECURRING_INVOICE_STATUS_CONFIG).map(
-                  ([value, config]) => (
-                    <option key={value} value={value}>
-                      {config.label}
-                    </option>
+                },
+                {
+                  value: statusFilter,
+                  onChange: setStatusFilter,
+                  children: (
+                    <>
+                      <option value="all">{INVOICE_COPY.recurring.allStatuses}</option>
+                      {Object.entries(RECURRING_INVOICE_STATUS_CONFIG).map(
+                        ([value, config]) => (
+                          <option key={value} value={value}>
+                            {config.label}
+                          </option>
+                        ),
+                      )}
+                    </>
                   ),
-                )}
-              </Select>
-            </div>
+                },
+              ]}
+            />
           </div>
 
           <DataTable
