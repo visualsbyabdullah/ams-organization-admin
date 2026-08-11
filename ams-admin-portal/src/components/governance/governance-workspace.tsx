@@ -8,7 +8,6 @@ import {
   MoreHorizontal,
   Plus,
   RotateCcw,
-  Search,
   ShieldCheck,
   Trash2,
 } from "lucide-react";
@@ -18,6 +17,7 @@ import { FormField } from "@/components/forms/form-field";
 import type { DataTableColumn } from "@/components/shared/data-table";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { SearchFilterBar } from "@/components/shared/search-filter-bar";
 import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -946,43 +946,46 @@ function TableFilters({
 }) {
   return (
     <div className="border-b border-border p-5">
-      <div className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_14rem_14rem]">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-          <Input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search record, branch, requester or reason"
-            className="pl-9"
-          />
-        </div>
-
-        {setModuleFilter && (
-          <Select
-            value={moduleFilter ?? "all"}
-            onChange={(event) => setModuleFilter(event.target.value)}
-          >
-            <option value="all">All modules</option>
-            {Object.entries(GOVERNANCE_MODULE_CONFIG).map(([value, config]) => (
-              <option key={value} value={value}>
-                {config.label}
-              </option>
-            ))}
-          </Select>
-        )}
-
-        <Select
-          value={statusFilter}
-          onChange={(event) => setStatusFilter(event.target.value)}
-        >
-          <option value="all">All statuses</option>
-          {statuses.map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </Select>
-      </div>
+      <SearchFilterBar
+        searchValue={query}
+        onSearchChange={setQuery}
+        searchPlaceholder="Search record, branch, requester or reason"
+        gridClassName="xl:grid-cols-[minmax(0,1fr)_14rem_14rem]"
+        filters={[
+          ...(setModuleFilter
+            ? [
+                {
+                  value: moduleFilter ?? "all",
+                  onChange: setModuleFilter,
+                  children: (
+                    <>
+                      <option value="all">All modules</option>
+                      {Object.entries(GOVERNANCE_MODULE_CONFIG).map(([value, config]) => (
+                        <option key={value} value={value}>
+                          {config.label}
+                        </option>
+                      ))}
+                    </>
+                  ),
+                },
+              ]
+            : []),
+          {
+            value: statusFilter,
+            onChange: setStatusFilter,
+            children: (
+              <>
+                <option value="all">All statuses</option>
+                {statuses.map(([value, label]) => (
+                  <option key={value} value={value}>
+                    {label}
+                  </option>
+                ))}
+              </>
+            ),
+          },
+        ]}
+      />
     </div>
   );
 }
