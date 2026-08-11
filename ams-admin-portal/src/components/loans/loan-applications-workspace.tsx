@@ -9,7 +9,6 @@ import {
   FileSearch,
   MoreHorizontal,
   Plus,
-  Search,
   ShieldCheck,
   XCircle,
 } from "lucide-react";
@@ -19,14 +18,13 @@ import { LoanApplicationForm } from "@/components/loans/loan-application-form";
 import { LoanApplicationReview } from "@/components/loans/loan-application-review";
 import { LoanTabs } from "@/components/loans/loan-tabs";
 import { PageHeader } from "@/components/shared/page-header";
+import { SearchFilterBar } from "@/components/shared/search-filter-bar";
 import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -347,44 +345,40 @@ export function LoanApplicationsWorkspace() {
               Review loan requests within the selected organization scope.
             </p>
 
-            <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1fr)_14rem_14rem]">
-              <div className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-
-                <Input
-                  value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder="Search employee, ID, department, type or purpose"
-                  className="pl-9"
-                />
-              </div>
-
-              <Select
-                value={typeFilter}
-                onChange={(event) => setTypeFilter(event.target.value)}
-              >
-                <option value="all">All loan types</option>
-
-                {Object.entries(LOAN_TYPE_CONFIG).map(([value, config]) => (
-                  <option key={value} value={value}>
-                    {config.label}
-                  </option>
-                ))}
-              </Select>
-
-              <Select
-                value={statusFilter}
-                onChange={(event) => setStatusFilter(event.target.value)}
-              >
-                <option value="all">All application statuses</option>
-
-                <option value="pending_approval">Pending approval</option>
-
-                <option value="approved">Approved</option>
-
-                <option value="rejected">Rejected</option>
-              </Select>
-            </div>
+            <SearchFilterBar
+              searchValue={searchQuery}
+              onSearchChange={setSearchQuery}
+              searchPlaceholder="Search employee, ID, department, type or purpose"
+              gridClassName="xl:grid-cols-[minmax(0,1fr)_14rem_14rem]"
+              filters={[
+                {
+                  value: typeFilter,
+                  onChange: setTypeFilter,
+                  children: (
+                    <>
+                      <option value="all">All loan types</option>
+                      {Object.entries(LOAN_TYPE_CONFIG).map(([value, config]) => (
+                        <option key={value} value={value}>
+                          {config.label}
+                        </option>
+                      ))}
+                    </>
+                  ),
+                },
+                {
+                  value: statusFilter,
+                  onChange: setStatusFilter,
+                  children: (
+                    <>
+                      <option value="all">All application statuses</option>
+                      <option value="pending_approval">Pending approval</option>
+                      <option value="approved">Approved</option>
+                      <option value="rejected">Rejected</option>
+                    </>
+                  ),
+                },
+              ]}
+            />
           </div>
 
           {visibleApplications.length > 0 ? (
