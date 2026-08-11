@@ -13,7 +13,6 @@ import {
   MoreHorizontal,
   Plus,
   RotateCcw,
-  Search,
   Send,
   ShieldCheck,
   Users,
@@ -25,6 +24,7 @@ import { PayrollTabs } from "@/components/payroll/payroll-tabs";
 import { StatutoryContributionChart } from "@/components/payroll/statutory-contribution-chart";
 import { StatutoryFilingForm } from "@/components/payroll/statutory-filing-form";
 import { DetailGrid, LineItemList } from "@/components/shared/detail-grid";
+import { SearchFilterBar } from "@/components/shared/search-filter-bar";
 import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Avatar } from "@/components/ui/avatar";
@@ -32,7 +32,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
 import {
   Table,
@@ -431,31 +430,32 @@ export function PayrollStatutoryWorkspace() {
             {PAYROLL_STATUTORY_COPY.employeeDescription}
           </p>
 
-          <div className="mt-5 grid gap-3 lg:grid-cols-[minmax(0,1fr)_14rem]">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-
-              <Input
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder={PAYROLL_STATUTORY_COPY.searchPlaceholder}
-                className="pl-9"
-              />
-            </div>
-
-            <Select
-              value={employeeStatusFilter}
-              onChange={(event) => setEmployeeStatusFilter(event.target.value)}
-            >
-              <option value="all">{PAYROLL_STATUTORY_COPY.allEmployeeStatuses}</option>
-
-              {Object.entries(STATUTORY_EMPLOYEE_STATUS_CONFIG).map(([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <SearchFilterBar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={PAYROLL_STATUTORY_COPY.searchPlaceholder}
+            gridClassName="lg:grid-cols-[minmax(0,1fr)_14rem]"
+            filters={[
+              {
+                value: employeeStatusFilter,
+                onChange: setEmployeeStatusFilter,
+                children: (
+                  <>
+                    <option value="all">
+                      {PAYROLL_STATUTORY_COPY.allEmployeeStatuses}
+                    </option>
+                    {Object.entries(STATUTORY_EMPLOYEE_STATUS_CONFIG).map(
+                      ([value, config]) => (
+                        <option key={value} value={value}>
+                          {config.label}
+                        </option>
+                      ),
+                    )}
+                  </>
+                ),
+              },
+            ]}
+          />
         </div>
 
         {visibleEmployeeRecords.length > 0 ? (
