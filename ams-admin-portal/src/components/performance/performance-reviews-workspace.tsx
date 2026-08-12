@@ -1,7 +1,7 @@
 ﻿"use client";
 
 import { useMemo, useState } from "react";
-import { CheckCircle2, FileSearch, Gauge, Search, Star, Users } from "lucide-react";
+import { CheckCircle2, FileSearch, Gauge, Star, Users } from "lucide-react";
 
 import { MetricCard } from "@/components/dashboard/metric-card";
 import { PerformanceReviewDetails } from "@/components/performance/performance-details";
@@ -10,12 +10,11 @@ import { PerformanceTabs } from "@/components/performance/performance-tabs";
 import { createReviewColumns } from "@/components/performance/performance-table-columns";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { SearchFilterBar } from "@/components/shared/search-filter-bar";
 import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import { PERFORMANCE_COPY, PERFORMANCE_REVIEW_STATUS_CONFIG } from "@/config/performance";
 import { useBranchScope } from "@/context/branch-scope-context";
 import { EMPLOYEES } from "@/data/employees";
@@ -129,39 +128,44 @@ export function PerformanceReviewsWorkspace() {
           <p className="mt-1 text-sm text-text-muted">
             {PERFORMANCE_COPY.reviews.registerDescription}
           </p>
-          <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1fr)_16rem_14rem]">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-              <Input
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder={PERFORMANCE_COPY.common.searchPlaceholder}
-                className="pl-9"
-              />
-            </div>
-            <Select
-              value={cycleFilter}
-              onChange={(event) => setCycleFilter(event.target.value)}
-            >
-              <option value="all">All review cycles</option>
-              {PERFORMANCE_CYCLES.map((cycle) => (
-                <option key={cycle.id} value={cycle.id}>
-                  {cycle.name}
-                </option>
-              ))}
-            </Select>
-            <Select
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="all">All review statuses</option>
-              {Object.entries(PERFORMANCE_REVIEW_STATUS_CONFIG).map(([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <SearchFilterBar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={PERFORMANCE_COPY.common.searchPlaceholder}
+            gridClassName="xl:grid-cols-[minmax(0,1fr)_16rem_14rem]"
+            filters={[
+              {
+                value: cycleFilter,
+                onChange: setCycleFilter,
+                children: (
+                  <>
+                    <option value="all">All review cycles</option>
+                    {PERFORMANCE_CYCLES.map((cycle) => (
+                      <option key={cycle.id} value={cycle.id}>
+                        {cycle.name}
+                      </option>
+                    ))}
+                  </>
+                ),
+              },
+              {
+                value: statusFilter,
+                onChange: setStatusFilter,
+                children: (
+                  <>
+                    <option value="all">All review statuses</option>
+                    {Object.entries(PERFORMANCE_REVIEW_STATUS_CONFIG).map(
+                      ([value, config]) => (
+                        <option key={value} value={value}>
+                          {config.label}
+                        </option>
+                      ),
+                    )}
+                  </>
+                ),
+              },
+            ]}
+          />
         </div>
         <DataTable
           rows={visible}
