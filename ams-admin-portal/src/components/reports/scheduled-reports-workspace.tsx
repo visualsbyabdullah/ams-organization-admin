@@ -8,7 +8,6 @@ import {
   Pause,
   Play,
   Plus,
-  Search,
   StopCircle,
 } from "lucide-react";
 
@@ -17,14 +16,13 @@ import { ReportScheduleForm } from "@/components/reports/report-schedule-form";
 import { ReportTabs } from "@/components/reports/report-tabs";
 import { DataTable, type DataTableColumn } from "@/components/shared/data-table";
 import { DetailGrid } from "@/components/shared/detail-grid";
+import { SearchFilterBar } from "@/components/shared/search-filter-bar";
 import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { PageHeader } from "@/components/shared/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
-import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
 import {
   REPORT_COPY,
   REPORT_FORMAT_CONFIG,
@@ -296,41 +294,46 @@ export function ScheduledReportsWorkspace() {
             {REPORT_COPY.scheduled.registerDescription}
           </p>
 
-          <div className="mt-5 grid gap-3 xl:grid-cols-[minmax(0,1fr)_14rem_14rem]">
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-              <Input
-                value={searchQuery}
-                onChange={(event) => setSearchQuery(event.target.value)}
-                placeholder={REPORT_COPY.scheduled.searchPlaceholder}
-                className="pl-9"
-              />
-            </div>
-
-            <Select
-              value={frequencyFilter}
-              onChange={(event) => setFrequencyFilter(event.target.value)}
-            >
-              <option value="all">{REPORT_COPY.scheduled.allFrequencies}</option>
-              {Object.entries(REPORT_SCHEDULE_FREQUENCY_CONFIG).map(([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ))}
-            </Select>
-
-            <Select
-              value={statusFilter}
-              onChange={(event) => setStatusFilter(event.target.value)}
-            >
-              <option value="all">{REPORT_COPY.scheduled.allStatuses}</option>
-              {Object.entries(REPORT_SCHEDULE_STATUS_CONFIG).map(([value, config]) => (
-                <option key={value} value={value}>
-                  {config.label}
-                </option>
-              ))}
-            </Select>
-          </div>
+          <SearchFilterBar
+            searchValue={searchQuery}
+            onSearchChange={setSearchQuery}
+            searchPlaceholder={REPORT_COPY.scheduled.searchPlaceholder}
+            gridClassName="xl:grid-cols-[minmax(0,1fr)_14rem_14rem]"
+            filters={[
+              {
+                value: frequencyFilter,
+                onChange: setFrequencyFilter,
+                children: (
+                  <>
+                    <option value="all">{REPORT_COPY.scheduled.allFrequencies}</option>
+                    {Object.entries(REPORT_SCHEDULE_FREQUENCY_CONFIG).map(
+                      ([value, config]) => (
+                        <option key={value} value={value}>
+                          {config.label}
+                        </option>
+                      ),
+                    )}
+                  </>
+                ),
+              },
+              {
+                value: statusFilter,
+                onChange: setStatusFilter,
+                children: (
+                  <>
+                    <option value="all">{REPORT_COPY.scheduled.allStatuses}</option>
+                    {Object.entries(REPORT_SCHEDULE_STATUS_CONFIG).map(
+                      ([value, config]) => (
+                        <option key={value} value={value}>
+                          {config.label}
+                        </option>
+                      ),
+                    )}
+                  </>
+                ),
+              },
+            ]}
+          />
         </div>
 
         <DataTable
