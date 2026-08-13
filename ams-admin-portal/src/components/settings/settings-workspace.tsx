@@ -9,7 +9,6 @@ import {
   FilePenLine,
   MoreHorizontal,
   Plus,
-  Search,
   Settings2,
   ShieldCheck,
 } from "lucide-react";
@@ -18,6 +17,7 @@ import { MetricCard } from "@/components/dashboard/metric-card";
 import type { DataTableColumn } from "@/components/shared/data-table";
 import { DataTable } from "@/components/shared/data-table";
 import { PageHeader } from "@/components/shared/page-header";
+import { SearchFilterBar } from "@/components/shared/search-filter-bar";
 import { useEntitySelection } from "@/components/shared/use-entity-selection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -803,31 +803,32 @@ function TableHeader({
 }) {
   return (
     <div className="border-b border-border p-5">
-      <div className="grid gap-3 xl:grid-cols-[minmax(0,1fr)_14rem]">
-        <div className="relative">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-text-muted" />
-          <Input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder={SETTINGS_COPY.searchPlaceholder}
-            className="pl-9"
-          />
-        </div>
-
-        {setStatusFilter && statusOptions && (
-          <Select
-            value={statusFilter ?? "all"}
-            onChange={(event) => setStatusFilter(event.target.value)}
-          >
-            <option value="all">All statuses</option>
-            {statusOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </Select>
-        )}
-      </div>
+      <SearchFilterBar
+        searchValue={query}
+        onSearchChange={setQuery}
+        searchPlaceholder={SETTINGS_COPY.searchPlaceholder}
+        gridClassName="xl:grid-cols-[minmax(0,1fr)_14rem]"
+        filters={
+          setStatusFilter && statusOptions
+            ? [
+                {
+                  value: statusFilter ?? "all",
+                  onChange: setStatusFilter,
+                  children: (
+                    <>
+                      <option value="all">All statuses</option>
+                      {statusOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
+                    </>
+                  ),
+                },
+              ]
+            : []
+        }
+      />
     </div>
   );
 }
